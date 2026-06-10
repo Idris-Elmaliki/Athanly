@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    // Required for Navigation 3 type-safe routes — routes are @Serializable data objects
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -14,7 +16,7 @@ android {
     defaultConfig {
         applicationId = "com.example.athanly"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -55,4 +57,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Navigation 3
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.navigation3.ui)
+
+    // kotlinx.serialization
+    implementation(libs.kotlinx.serialization.json)
 }

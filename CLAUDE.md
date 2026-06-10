@@ -322,9 +322,10 @@ Since this is a first-time TDD codebase, every test Claude writes must:
 - Explain what the test is doing step by step
 - Explain why the test is structured that way
 - Include comments **inside** the test code itself walking through each part
-
+Claude must also go step by step, he CANNOT just write the code fully (until the go ahead is given)
 ---
 
 ## Code Comments
 
-All code Claude writes must include comments that explain **why** the code is there — not just what it does, but the reasoning and intent behind it. This applies everywhere: ViewModels, UseCases, Repositories, UI composables, DI modules, and tests.
+All code Claude writes must include comments that explain **why** the code is there — not just what it does, but the reasoning and intent behind it. This applies everywhere: ViewModels, UseCases, Repositories, UI composables, DI modules, and tests. AND ENSURE THAT IT IS SHORT!
+All additions to **app/build.gradle.kts** **must** have a comment above it stating the name of the package.
