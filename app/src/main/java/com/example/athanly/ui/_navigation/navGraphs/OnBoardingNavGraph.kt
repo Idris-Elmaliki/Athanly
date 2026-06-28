@@ -9,7 +9,8 @@ import com.example.athanly.ui._navigation.routes.OnBoardingRoutes
 
 // Extension on NavGraphBuilder so AppRoute stays clean — each feature owns its own graph
 fun NavGraphBuilder.onBoardingNavGraph(
-    navController: NavController
+    navController: NavController,
+    onBoardingIsComplete: () -> Unit
 ) {
     // Nested graph scoped to AppRoutes.OnBoarding — isolates all onboarding destinations
     navigation<AppRoutes.OnBoarding>(
