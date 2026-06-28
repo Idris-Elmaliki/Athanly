@@ -209,17 +209,13 @@ If a screen requires **300+ lines** to fully implement, the subscreen directory 
 ```
 screenName/
   compact/
-    screenNameSubScreens/
-      SomeSubSection.kt
     ScreenNameUiCompact.kt
-  medium/
-    screenNameSubScreens/
-      SomeSubSection.kt
+  medium/      
     ScreenNameUiMedium.kt
   expanded/
-    screenNameSubScreens/
-      SomeSubSection.kt
     ScreenNameUiExpanded.kt
+  screenNameSubScreens/
+    SomeSubSection.kt
   ScreenNameUi.kt   ← parent composable
 ```
 
