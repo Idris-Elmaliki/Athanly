@@ -1,4 +1,4 @@
-package com.example.athanly.ui._navigation
+package com.example.athanly.ui._navigation.routes
 
 import kotlinx.serialization.Serializable
 
