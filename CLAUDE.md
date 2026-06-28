@@ -24,6 +24,17 @@ A compass feature that uses the device's sensors to point the user in the direct
 
 ---
 
+## Development Process — NON-NEGOTIABLE
+Work through every feature **one file at a time** using the following loop:
+
+1. Claude creates or edits **one file**
+2. Claude **stops** and waits — no additional files are written
+3. The user reviews the file, makes edits directly if needed, and approves
+4. Claude moves to the next file and repeats
+
+This applies to all work: UI, business logic, repositories, use cases, data sources, etc.
+Never batch-write multiple files without a checkpoint in between.
+
 ## App Flow
 
 ### 1. Splash Screen
@@ -104,10 +115,10 @@ Both `local/` and `remote/` can contain the following if needed:
 All UI must adapt to 3 window size classes using `WindowSizeClass`, following the Android standard:
 
 | Breakpoint (dp) | Window Size Class | Columns | Min Margins |
-|---|---|---|---|
-| 0–599 | Compact | 4 | 8dp |
-| 600–839 | Medium | 12 | 12dp |
-| 840+ | Expanded | 12 | 32dp |
+|-----------------|-------------------|---------|-------------|
+| 0–599           | Compact           | 4       | 8dp         |
+| 600–839         | Medium            | 12      | 12dp        |
+| 840+            | Expanded          | 12      | 32dp        |
 
 For every screen, Claude must create 3 separate composables — one per size class:
 - `ScreenNameCompact` — Compact (0–599dp), 4 columns, 8dp min margins
@@ -231,7 +242,7 @@ Jetpack Compose — all UI is written in Compose, no XML layouts
 Ktor Client — handles all RESTful API calls
 
 ### Serialization
-kotlinx.serialization — used for both:
+kotlinx.serialization:
 - Ktor Client JSON parsing/serialization of API responses
 - Navigation 3 type-safe route arguments
 
@@ -291,7 +302,7 @@ Flow is only used when retrieving/observing data (e.g. reading from Room, DataSt
 **State updates:**
 All StateFlow updates must use `.update { }` — never reassign directly:
 ```kotlin
-_state.update { data -> data.copy(...) }
+_state.update { data -> data.copy("...") }
 ```
 
 **UI collection:**
