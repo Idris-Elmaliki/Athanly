@@ -5,15 +5,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.athanly.ui._navigation.navGraphs.onBoardingNavGraph
 import com.example.athanly.ui._navigation.routes.AppRoutes
+import com.example.athanly.ui.onBoarding.OnBoardingLayout
 
 // Single Compose entry point for all navigation — called by MainActivity
 @Composable
 fun AppRoute(
     modifier: Modifier = Modifier
 ) {
-    // NavController manages the back stack and destination state internally
+    // NavController manages app-level destinations (OnBoarding, Home, etc.)
     val navController = rememberNavController()
 
     NavHost(
@@ -22,8 +22,18 @@ fun AppRoute(
         startDestination = AppRoutes.OnBoarding,
         modifier = modifier
     ) {
-        // Each feature graph is registered as an extension function to keep this file clean
-        onBoardingNavGraph(navController)
+        // OnBoardingLayout owns its own inner NavHost and step routing.
+        // Lambda keeps OnBoardingLayout decoupled from AppRoutes — it only needs to signal "done"
+        composable<AppRoutes.OnBoarding> {
+            OnBoardingLayout(
+                onOnBoardingComplete = {
+                    navController.navigate(AppRoutes.Home) {
+                        // Clear onboarding off the back stack so the user can't navigate back into it
+                        popUpTo(AppRoutes.OnBoarding) { inclusive = true }
+                    }
+                }
+            )
+        }
         composable<AppRoutes.Home> {}
     }
 }
