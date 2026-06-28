@@ -11,6 +11,9 @@ composeBom = "2026.02.01"
 navigation3 = "1.0.0-alpha12"
 kotlinxSerialization = "1.7.3"
 navigation3Ui = "1.1.2"
+navigationCompose = "2.9.7"
+runtime = "1.11.3"
+navigationComposeVersion = "2.9.8"
 
 [libraries]
 androidx-navigation3-runtime = { group = "androidx.navigation", name = "navigation3-runtime", version.ref = "navigation3" }
@@ -31,6 +34,9 @@ androidx-compose-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
 navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", version.ref = "navigation3Ui" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
+navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

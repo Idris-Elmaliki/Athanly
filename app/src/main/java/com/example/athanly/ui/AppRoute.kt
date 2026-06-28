@@ -1,36 +1,29 @@
 package com.example.athanly.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation3.runtime.NavEntry
-import androidx.navigation3.ui.NavDisplay
-import com.example.athanly.ui._navigation.AppRoutes
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.athanly.ui._navigation.navGraphs.onBoardingNavGraph
+import com.example.athanly.ui._navigation.routes.AppRoutes
 
 // Single Compose entry point for all navigation — called by MainActivity
 @Composable
 fun AppRoute(
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
-    // Navigation 3's back stack — replaces NavController.
-    // Starts at OnBoarding; will be DataStore-driven (OnBoarding vs Home) once that's wired up
-    val backStack = remember { mutableListOf<AppRoutes>(AppRoutes.OnBoarding) }
+    // NavController manages the back stack and destination state internally
+    val navController = rememberNavController()
 
-    // Renders whichever destination is at the top of the back stack
-    NavDisplay(
-        backStack = backStack,
-        // Guard: only pop when there's more than one destination to prevent exiting the root
-        onBack = { if (backStack.size > 1) backStack.removeAt(backStack.lastIndex) }
-    ) { route ->
-        // NavEntry pairs a route key with its composable content — required by NavDisplay
-        NavEntry(
-            key = route
-        ) {
-            // Destinations will be registered here as screens are built
-            when (route) {
-                is AppRoutes.OnBoarding -> {}
-                is AppRoutes.Home -> {}
-            }
-        }
+    NavHost(
+        navController = navController,
+        // First destination shown on launch — will be DataStore-driven (OnBoarding vs Home) once wired up
+        startDestination = AppRoutes.OnBoarding,
+        modifier = modifier
+    ) {
+        // Each feature graph is registered as an extension function to keep this file clean
+        onBoardingNavGraph(navController)
+        composable<AppRoutes.Home> {}
     }
 }
