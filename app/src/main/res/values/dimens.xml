@@ -1,2 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+
+    <!-- Onboarding progress indicator -->
+    <dimen name="onboarding_dot_size">6dp</dimen>
+    <dimen name="onboarding_active_dot_width">32dp</dimen>
+    <dimen name="onboarding_dot_spacing">8dp</dimen>
+    <dimen name="onboarding_top_bar_padding">16dp</dimen>
+
+    <!-- Onboarding continue button -->
+    <dimen name="onboarding_bottom_bar_padding">20dp</dimen>
+    <dimen name="onboarding_button_vertical_padding">16dp</dimen>
+
+</resources>

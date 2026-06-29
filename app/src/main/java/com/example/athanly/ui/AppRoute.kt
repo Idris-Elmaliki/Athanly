@@ -26,7 +26,7 @@ fun AppRoute(
         // Lambda keeps OnBoardingLayout decoupled from AppRoutes — it only needs to signal "done"
         composable<AppRoutes.OnBoarding> {
             OnBoardingLayout(
-                onOnBoardingComplete = {
+                onBoardingIsComplete = {
                     navController.navigate(AppRoutes.Home) {
                         // Clear onboarding off the back stack so the user can't navigate back into it
                         popUpTo(AppRoutes.OnBoarding) { inclusive = true }
