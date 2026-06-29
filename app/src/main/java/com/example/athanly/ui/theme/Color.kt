@@ -2,10 +2,12 @@ package com.example.athanly.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// ── Brand ────────────────────────────────────────────────────────────────────
+val DarkGreen = Color(0xFF003527)   // primary brand color — buttons, active indicators
+val Gold = Color(0xFF735C00)         // secondary accent — Arabic text, labels
+val Yellow = Color(0xFFFED65B)       // highlight — active card borders, radio buttons
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// ── Neutrals ─────────────────────────────────────────────────────────────────
+val BackgroundWhite = Color(0xFFF9F9FF)   // app background
+val TextMuted = Color(0xFF404944)          // body / subtitle text
+val InactiveDot = Color(0x4DBFC9C3)       // onboarding progress dots — inactive state
