@@ -3,4 +3,11 @@
 
     <!-- Onboarding -->
     <string name="onboarding_continue">CONTINUE</string>
+
+    <!-- Welcome screen -->
+    <string name="welcome_title">Welcome</string>
+    <string name="welcome_title_arabic">أهلاً بك</string>
+    <string name="welcome_subtitle">Choose your preferred language to begin your journey to peace.</string>
+    <string name="welcome_language_english">English</string>
+    <string name="welcome_language_arabic">العربية</string>
 </resources>

@@ -1,6 +1,10 @@
 package com.example.athanly.ui.onBoarding
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,8 +20,10 @@ import com.example.athanly.ui.onBoarding.onBoardingSubScreens.OnBoardingTopBar
 
 // Persistent scaffold for all onboarding steps — owns the inner NavHost so the
 // progress indicator and continue button don't recompose on every step navigation
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OnBoardingLayout(
+    modifier: Modifier,
     onBoardingIsComplete: () -> Unit
 ) {
     val innerNavController = rememberNavController()
@@ -39,11 +45,16 @@ fun OnBoardingLayout(
 
     Scaffold(
         topBar = {
-            if(currentBackStackEntry?.destination != OnBoardingRoutes.Notifications)
-                OnBoardingTopBar(
-                    currentStep = currentStep,
-                    totalSteps = steps.size - 1 // we don't want to include the notification page into the pagination system
-                )
+            CenterAlignedTopAppBar(
+                modifier = Modifier.fillMaxWidth(),
+                title = {
+                    if (currentBackStackEntry?.destination != OnBoardingRoutes.Notifications)
+                        OnBoardingTopBar(
+                            currentStep = currentStep,
+                            totalSteps = steps.size - 1 // we don't want to include the notification page into the pagination system
+                        )
+                }
+            )
         },
         bottomBar = {
             if(currentBackStackEntry?.destination != OnBoardingRoutes.Notifications)
@@ -59,7 +70,8 @@ fun OnBoardingLayout(
                         }
                     }
                 )
-        }
+        },
+        modifier = modifier
     ) { innerPadding ->
         NavHost(
             modifier = Modifier.padding(innerPadding),

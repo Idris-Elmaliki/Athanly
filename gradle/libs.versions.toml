@@ -6,7 +6,7 @@ junitVersion = "1.3.0"
 espressoCore = "3.7.0"
 lifecycleRuntimeKtx = "2.10.0"
 activityCompose = "1.13.0"
-kotlin = "2.2.10"
+kotlin = "2.3.20"
 composeBom = "2026.02.01"
 navigation3 = "1.0.0-alpha12"
 kotlinxSerialization = "1.7.3"
@@ -14,6 +14,10 @@ navigation3Ui = "1.1.2"
 navigationCompose = "2.9.7"
 runtime = "1.11.3"
 navigationComposeVersion = "2.9.8"
+hilt = "2.60"
+ksp = "2.3.6"
+hiltNavigationCompose = "1.2.0"
+windowCore = "1.4.0"
 
 [libraries]
 androidx-navigation3-runtime = { group = "androidx.navigation", name = "navigation3-runtime", version.ref = "navigation3" }
@@ -38,9 +42,16 @@ navigation3-ui = { group = "androidx.navigation3", name = "navigation3-ui", vers
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationComposeVersion" }
+androidx-window-core = { group = "androidx.window", name = "window-core", version.ref = "windowCore" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
