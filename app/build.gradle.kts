@@ -3,15 +3,15 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     // Required for Navigation 3 type-safe routes — routes are @Serializable data objects
     alias(libs.plugins.kotlin.serialization)
+    // Hilt dependency injection
+    alias(libs.plugins.hilt)
+    // KSP — Kotlin Symbol Processing, required by Hilt to generate DI code at compile time
+    alias(libs.plugins.ksp)
 }
 
 android {
     namespace = "com.example.athanly"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.athanly"
@@ -67,4 +67,17 @@ dependencies {
 
     // kotlinx.serialization
     implementation(libs.kotlinx.serialization.json)
+
+    // Hilt
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
+    // hiltViewModel() support in Compose
+    implementation(libs.hilt.navigation.compose)
+
+    // collectAsStateWithLifecycle()
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // WindowSizeClass and WindowWidthSizeClass
+    implementation(libs.androidx.window.core)
 }
