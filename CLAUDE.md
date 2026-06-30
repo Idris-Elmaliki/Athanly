@@ -150,8 +150,6 @@ ui/
     PageLayout.kt           ← top-level page container
 ```
 
-For ordered multi-step flows, screen folders inside `screens/` use a numbered prefix to enforce ordering: `_1_`, `_2_`, `_3_`, etc.
-
 Shared across all pages:
 - `_navigation/` — all navigation concerns (routes, graphs, actions, back handling)
 - `subscreens/` — shared reusable UI components (alerts, animations, loading, pagination)
@@ -163,7 +161,6 @@ Shared across all pages:
 ## Naming Conventions
 - **PascalCase** is used for all file and class names
 - **Underscore prefix** on a folder → forced alphabetical ordering only, no architectural meaning
-- **Numbered prefix** (`_1_`, `_2_`, `_3_`…) → enforced screen order in a multi-step flow
 - **Dot notation** in folder names → scoping clarifier (e.g. `data.local`, `splashScreen.domain`, `navData.homepage`)
 - `Layout.kt` → top-level container file for a page
 - `Ui.kt` suffix → screen-level composable file

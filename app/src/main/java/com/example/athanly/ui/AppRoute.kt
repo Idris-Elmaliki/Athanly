@@ -1,5 +1,6 @@
 package com.example.athanly.ui
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -26,6 +27,7 @@ fun AppRoute(
         // Lambda keeps OnBoardingLayout decoupled from AppRoutes — it only needs to signal "done"
         composable<AppRoutes.OnBoarding> {
             OnBoardingLayout(
+                modifier = Modifier.fillMaxSize(),
                 onBoardingIsComplete = {
                     navController.navigate(AppRoutes.Home) {
                         // Clear onboarding off the back stack so the user can't navigate back into it
