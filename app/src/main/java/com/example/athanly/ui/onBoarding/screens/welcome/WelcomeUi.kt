@@ -13,30 +13,36 @@ import com.example.athanly.ui.onBoarding.viewModel.OnBoardingViewModel
 
 @Composable
 fun WelcomeUi(
+    modifier: Modifier,
     windowSizeClass: WindowSizeClass,
-    modifier: Modifier = Modifier,
     viewModel: OnBoardingViewModel = hiltViewModel()
 ) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
+    val state by viewModel.welcomeState.collectAsStateWithLifecycle()
 
     when {
         // 840dp+ — expanded (large tablets, landscape)
-        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> WelcomeUiExpanded(
-            state = state,
-            onLanguageSelected = viewModel::onLanguageSelected,
-            modifier = modifier
-        )
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
+            WelcomeUiExpanded(
+                state = state,
+                onLanguageSelected = viewModel::onLanguageSelected,
+                modifier = modifier
+            )
+        }
         // 600dp+ — medium (small tablets, large phones in landscape)
-        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> WelcomeUiMedium(
-            state = state,
-            onLanguageSelected = viewModel::onLanguageSelected,
-            modifier = modifier
-        )
+        windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
+            WelcomeUiMedium(
+                state = state,
+                onLanguageSelected = viewModel::onLanguageSelected,
+                modifier = modifier
+            )
+        }
         // < 600dp — compact (standard phones)
-        else -> WelcomeUiCompact(
-            state = state,
-            onLanguageSelected = viewModel::onLanguageSelected,
-            modifier = modifier
-        )
+        else -> {
+            WelcomeUiCompact(
+                state = state,
+                onLanguageSelected = viewModel::onLanguageSelected,
+                modifier = modifier
+            )
+        }
     }
 }

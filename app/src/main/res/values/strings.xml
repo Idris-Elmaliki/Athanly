@@ -10,4 +10,22 @@
     <string name="welcome_subtitle">Choose your preferred language to begin your journey to peace.</string>
     <string name="welcome_language_english">English</string>
     <string name="welcome_language_arabic">العربية</string>
+
+    <!-- Athan selection screen -->
+    <string name="athan_selection_title">Choose your Muadhin</string>
+    <string name="athan_selection_subtitle">Select the voice that brings you peace. You can preview and change this later in settings.</string>
+
+    <!-- Muadhdhin location names -->
+    <string name="muadhdhin_makkah">Makkah</string>
+    <string name="muadhdhin_madinah">Madinah</string>
+    <string name="muadhdhin_al_aqsa">Al-Aqsa</string>
+    <string name="muadhdhin_kuwait">Kuwait</string>
+    <string name="muadhdhin_soft_gentle">Soft &amp; Gentle</string>
+
+    <!-- Muadhdhin sheikh names -->
+    <string name="sheikh_ali_ahmad_mulla">Sheikh Ali Ahmad Mulla</string>
+    <string name="sheikh_essam_bukhari">Sheikh Essam Bukhari</string>
+    <string name="sheikh_firas_qazzaz">Sheikh Firas Qazzaz</string>
+    <string name="mishary_alafasy">Mishary Alafasy</string>
+    <string name="yusuf_islam">Yusuf Islam</string>
 </resources>

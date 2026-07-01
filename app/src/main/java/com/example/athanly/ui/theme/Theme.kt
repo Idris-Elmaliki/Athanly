@@ -18,7 +18,12 @@ private val LightColorScheme = lightColorScheme(
     onBackground = TextMuted,      // body and subtitle text
     surface = BackgroundWhite,
     onSurface = TextMuted,
-    outlineVariant = InactiveDot,  // inactive pagination dots and subtle borders
+    outlineVariant = InactiveDot,          // inactive pagination dots and subtle borders
+    outline = InactiveRadioBorder,         // unselected radio button rings
+    surfaceContainerHigh = CardActiveBackground,   // selected muadhdhin card background
+    surfaceContainerLow = CardInactiveBackground,  // unselected muadhdhin card background
+    surfaceVariant = CardInactiveBorder,           // unselected muadhdhin card border
+    scrim = AvatarDarkOverlay,                     // dark overlay on avatar gradient circles
 )
 
 // Dark scheme mirrors light for now — will be refined when dark mode designs are provided
@@ -34,6 +39,11 @@ private val DarkColorScheme = darkColorScheme(
     surface = BackgroundWhite,
     onSurface = TextMuted,
     outlineVariant = InactiveDot,
+    outline = InactiveRadioBorder,
+    surfaceContainerHigh = CardActiveBackground,
+    surfaceContainerLow = CardInactiveBackground,
+    surfaceVariant = CardInactiveBorder,
+    scrim = AvatarDarkOverlay,
 )
 
 @Composable

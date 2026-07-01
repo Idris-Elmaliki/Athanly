@@ -70,7 +70,7 @@ The `ui/` folder is always the **last** folder in the top-level structure. The o
 
 ---
 
-### Inside a Feature Module
+### Inside a Feature Module — NON-NEGOTIABLE
 A feature can have up to 4 possible root folders depending on what it needs:
 
 ```
@@ -110,7 +110,7 @@ Both `local/` and `remote/` can contain the following if needed:
 
 ---
 
-## Window Size Class & Adaptive UI
+## Window Size Class & Adaptive UI 
 
 All UI must adapt to 3 window size classes using `WindowSizeClass`, following the Android standard:
 
@@ -131,7 +131,7 @@ Each size class composable must follow the correct columns and minimum margins a
 
 ---
 
-### The `ui/` Layer
+### The `ui/` Layer — NON-NEGOTIABLE
 Page-level folders live here. Each page folder follows this pattern:
 
 ```
@@ -158,7 +158,7 @@ Shared across all pages:
 
 ---
 
-## Naming Conventions
+## Naming Conventions — NON-NEGOTIABLE
 - **PascalCase** is used for all file and class names
 - **Underscore prefix** on a folder → forced alphabetical ordering only, no architectural meaning
 - **Dot notation** in folder names → scoping clarifier (e.g. `data.local`, `splashScreen.domain`, `navData.homepage`)
@@ -169,9 +169,9 @@ Shared across all pages:
 
 ---
 
-## Resource & Theming Rules
+## Resource & Theming Rules — NON-NEGOTIABLE
 
-### 1. Colors
+### 1. Colors 
 Never hardcode a color anywhere. The strict flow is:
 - Define the color value in `com/example/athanly/ui/theme/Color.kt`
 - Add it to `LightColorScheme` and/or `DarkColorScheme` in `Theme.kt`, referencing the values from `Color.kt`
@@ -200,7 +200,7 @@ Never define a custom text style inline. The strict flow is:
 
 ---
 
-## UI Screen Size Rule
+## UI Screen Size Rule — NON-NEGOTIABLE
 If a screen requires **300+ lines** to fully implement, the subscreen directory lives inside the size class folder:
 
 ```
@@ -223,6 +223,7 @@ screenName/
 ---
 
 ## Tech Stack
+  
 
 ### UI Framework
 Jetpack Compose — all UI is written in Compose, no XML layouts

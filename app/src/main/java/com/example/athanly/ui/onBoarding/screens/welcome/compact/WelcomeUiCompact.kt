@@ -44,52 +44,35 @@ fun WelcomeUiCompact(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.surface
     ) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            // Subtle green gradient glow bleeding down from the top edge
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize(fraction = 0.35f)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                                Color.Transparent
-                            )
-                        )
-                    )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = dimensionResource(R.dimen.welcome_screen_horizontal_padding)),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // Push header content toward the vertical center of the available space
+            Spacer(modifier = Modifier.weight(1f))
+
+            WelcomeHeader()
+
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_header_to_cards_spacing)))
+
+            LanguageCard(
+                label = stringResource(R.string.welcome_language_english),
+                isSelected = state.selectedLanguage is Language.English,
+                onClick = { onLanguageSelected(Language.English) }
             )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = dimensionResource(R.dimen.welcome_screen_horizontal_padding)),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                // Push header content toward the vertical center of the available space
-                Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_card_spacing)))
 
-                WelcomeHeader()
+            LanguageCard(
+                label = stringResource(R.string.welcome_language_arabic),
+                isSelected = state.selectedLanguage is Language.Arabic,
+                onClick = { onLanguageSelected(Language.Arabic) }
+            )
 
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_header_to_cards_spacing)))
-
-                LanguageCard(
-                    label = stringResource(R.string.welcome_language_english),
-                    isSelected = state.selectedLanguage is Language.English,
-                    onClick = { onLanguageSelected(Language.English) }
-                )
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_card_spacing)))
-
-                LanguageCard(
-                    label = stringResource(R.string.welcome_language_arabic),
-                    isSelected = state.selectedLanguage is Language.Arabic,
-                    onClick = { onLanguageSelected(Language.Arabic) }
-                )
-
-                // Mirror the top spacer so the content block sits centered
-                Spacer(modifier = Modifier.weight(1f))
-            }
+            // Mirror the top spacer so the content block sits centered
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
