@@ -11,6 +11,17 @@
     <dimen name="onboarding_bottom_bar_padding">20dp</dimen>
     <dimen name="onboarding_button_vertical_padding">16dp</dimen>
 
+    <!-- Athan selection screen -->
+    <dimen name="athan_selection_avatar_size">48dp</dimen>
+    <dimen name="athan_selection_avatar_content_gap">16dp</dimen>
+    <dimen name="athan_selection_text_gap">4dp</dimen>
+    <dimen name="athan_selection_header_bottom_padding">32dp</dimen>
+    <dimen name="athan_selection_scroll_bottom_padding">120dp</dimen>
+    <dimen name="athan_selection_play_icon_size">20dp</dimen>
+    <dimen name="athan_selection_check_icon_size">14dp</dimen>
+    <dimen name="athan_selection_card_active_elevation">6dp</dimen>
+    <dimen name="athan_selection_card_inactive_elevation">2dp</dimen>
+
     <!-- Welcome screen -->
     <dimen name="welcome_text_gap">8dp</dimen>
     <dimen name="welcome_screen_horizontal_padding">20dp</dimen>
