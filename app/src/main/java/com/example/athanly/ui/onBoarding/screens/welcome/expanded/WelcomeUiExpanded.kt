@@ -42,58 +42,38 @@ fun WelcomeUiExpanded(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         color = MaterialTheme.colorScheme.surface
     ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+        // Content constrained to 55% width — keeps cards/text from stretching on large displays
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .fillMaxWidth(fraction = 0.55f)
+                .padding(horizontal = dimensionResource(R.dimen.welcome_screen_horizontal_padding)),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Subtle green gradient glow bleeding down from the top edge
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .fillMaxSize(fraction = 0.35f)
-                    .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                                Color.Transparent
-                            )
-                        )
-                    )
+            Spacer(modifier = Modifier.weight(1f))
+
+            WelcomeExpandedHeader()
+
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_header_to_cards_spacing)))
+
+            LanguageExpandedCard(
+                label = stringResource(R.string.welcome_language_english),
+                isSelected = state.selectedLanguage is Language.English,
+                onClick = { onLanguageSelected(Language.English) }
             )
 
-            // Content constrained to 55% width — keeps cards/text from stretching on large displays
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .fillMaxWidth(fraction = 0.55f)
-                    .padding(horizontal = dimensionResource(R.dimen.welcome_screen_horizontal_padding)),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_card_spacing)))
 
-                WelcomeExpandedHeader()
+            LanguageExpandedCard(
+                label = stringResource(R.string.welcome_language_arabic),
+                isSelected = state.selectedLanguage is Language.Arabic,
+                onClick = { onLanguageSelected(Language.Arabic) }
+            )
 
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_header_to_cards_spacing)))
-
-                LanguageExpandedCard(
-                    label = stringResource(R.string.welcome_language_english),
-                    isSelected = state.selectedLanguage is Language.English,
-                    onClick = { onLanguageSelected(Language.English) }
-                )
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_card_spacing)))
-
-                LanguageExpandedCard(
-                    label = stringResource(R.string.welcome_language_arabic),
-                    isSelected = state.selectedLanguage is Language.Arabic,
-                    onClick = { onLanguageSelected(Language.Arabic) }
-                )
-
-                Spacer(modifier = Modifier.weight(1f))
-            }
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }

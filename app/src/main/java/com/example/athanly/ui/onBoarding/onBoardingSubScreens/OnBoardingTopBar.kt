@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -25,9 +24,7 @@ fun OnBoardingTopBar(
     totalSteps: Int    // determines how many dots to render
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(dimensionResource(R.dimen.onboarding_top_bar_padding)),
+        modifier = Modifier.padding(dimensionResource(R.dimen.onboarding_top_bar_padding)),
         horizontalArrangement = Arrangement.spacedBy(
             // Gap between each dot as per Figma spec
             dimensionResource(R.dimen.onboarding_dot_spacing)
