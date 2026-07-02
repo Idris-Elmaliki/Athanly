@@ -97,23 +97,6 @@ fun OnBoardingLayout(
         modifier = modifier
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
-            // Gradient lives here so it doesn't inflate innerPadding.calculateTopPadding()
-            // to 35% of screen height. Scaffold content starts at y=0 (behind TopAppBar),
-            // so the gradient still visually covers the bar area from the top.
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight(fraction = 0.35f)
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
-                                    Color.Transparent
-                                )
-                            )
-                        )
-                )
-
             NavHost(
                 modifier = Modifier
                     .fillMaxSize()
@@ -122,7 +105,6 @@ fun OnBoardingLayout(
                 startDestination = OnBoardingRoutes.Welcome
             ) {
                 onBoardingNavGraph(
-                    navController = innerNavController,
                     currentScreen = windowSizeClass,
                     onBoardingIsComplete = onBoardingIsComplete
                 )

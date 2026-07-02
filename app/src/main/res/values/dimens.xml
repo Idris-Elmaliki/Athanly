@@ -22,6 +22,14 @@
     <dimen name="athan_selection_card_active_elevation">6dp</dimen>
     <dimen name="athan_selection_card_inactive_elevation">2dp</dimen>
 
+    <!-- Prayer settings screen -->
+    <dimen name="prayer_settings_card_corner_radius">12dp</dimen>
+    <dimen name="prayer_settings_card_horizontal_padding">17dp</dimen>
+    <dimen name="prayer_settings_card_vertical_padding">17dp</dimen>
+    <dimen name="prayer_settings_header_bottom_spacing">32dp</dimen>
+    <dimen name="prayer_settings_card_text_gap">4dp</dimen>
+    <dimen name="prayer_settings_card_description_end_padding">16dp</dimen>
+
     <!-- Welcome screen -->
     <dimen name="welcome_text_gap">8dp</dimen>
     <dimen name="welcome_screen_horizontal_padding">20dp</dimen>

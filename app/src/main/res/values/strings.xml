@@ -15,6 +15,12 @@
     <string name="athan_selection_title">Choose your Muadhin</string>
     <string name="athan_selection_subtitle">Select the voice that brings you peace. You can preview and change this later in settings.</string>
 
+    <!-- Prayer settings screen -->
+    <string name="prayer_settings_title">Prayer Settings</string>
+    <string name="prayer_settings_subtitle">Customize calculation methods to ensure accurate local times.</string>
+    <string name="hanafi_card_title">Hanafi School</string>
+    <string name="hanafi_card_description">Adjusts the calculation for Asr prayer time based on the Hanafi juristic method.</string>
+
     <!-- Muadhdhin location names -->
     <string name="muadhdhin_makkah">Makkah</string>
     <string name="muadhdhin_madinah">Madinah</string>
