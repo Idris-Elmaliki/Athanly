@@ -1,13 +1,17 @@
 package com.example.athanly.ui.onBoarding.screens.athanSelection.expanded
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,7 +28,7 @@ import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
 import com.example.athanly.athanSelection.domain.modelData.muadhhinList
 import com.example.athanly.ui.onBoarding.screens.athanSelection.athanSelectionSubScreens.MuadhhinCard
 
-// Expanded layout (840dp+) — 12 columns, 32dp min margins, content at 55% width
+// Expanded layout (840dp+) — 12 columns, 32dp min margins, 2-column card grid
 @Composable
 fun AthanSelectionUiExpanded(
     state: AthanSelectionUiState,
@@ -35,41 +39,38 @@ fun AthanSelectionUiExpanded(
         modifier = modifier,
         color = MaterialTheme.colorScheme.background,
     ) {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = dimensionResource(R.dimen.welcome_screen_horizontal_padding)),
-            horizontalAlignment = Alignment.CenterHorizontally,
+        LazyVerticalGrid(
+            columns = GridCells.Fixed(2),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(
+                horizontal = dimensionResource(R.dimen.welcome_screen_horizontal_padding),
+                vertical = dimensionResource(R.dimen.welcome_screen_horizontal_padding),
+            ),
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.welcome_card_spacing)),
+            horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.welcome_card_spacing)),
         ) {
-            item {
-
-                // 55% width prevents content from over-stretching on large landscape screens
+            // Header spans both columns
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Column(
-                    modifier = Modifier.fillMaxWidth(0.55f),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .padding(bottom = dimensionResource(R.dimen.athan_selection_header_bottom_padding))
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     AthanSelectionExpandedHeader()
                 }
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.athan_selection_header_bottom_padding)))
             }
 
-            itemsIndexed(muadhhinList) { index, muadhdhin ->
-                // Cards match the 55% constraint to stay visually aligned with the header
-                Column(modifier = Modifier.fillMaxWidth(0.55f)) {
-                    MuadhhinCard(
-                        muadhdhin = muadhdhin,
-                        isSelected = muadhdhin == state.selectedMuadhdhin,
-                        onClick = { onMuadhhinSelected(muadhdhin) },
-                    )
-
-                    if (index < muadhhinList.lastIndex) {
-                        Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_card_spacing)))
-                    }
-                }
+            items(muadhhinList) { muadhdhin ->
+                MuadhhinCard(
+                    muadhdhin = muadhdhin,
+                    isSelected = muadhdhin == state.selectedMuadhdhin,
+                    onClick = { onMuadhhinSelected(muadhdhin) },
+                )
             }
 
-            item {
+            // Bottom spacer spans both columns to clear the fixed bottom bar
+            item(span = { GridItemSpan(maxLineSpan) }) {
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.athan_selection_scroll_bottom_padding)))
             }
         }
