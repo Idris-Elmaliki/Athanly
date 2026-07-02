@@ -3,6 +3,7 @@ package com.example.athanly.ui.onBoarding.viewModel
 import androidx.lifecycle.ViewModel
 import com.example.athanly.athanSelection.domain.modelData.AthanSelectionUiState
 import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
+import com.example.athanly.calculations.domain.modelData.CalculationsUiState
 import com.example.athanly.language.domain.modelData.Language
 import com.example.athanly.language.domain.modelData.WelcomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -32,6 +33,16 @@ class OnBoardingViewModel @Inject constructor() : ViewModel() {
     fun onMuadhhinSelected(muadhdhin: Muadhdhin) {
         _athanSelectionState.update { current ->
             current.copy(selectedMuadhdhin = muadhdhin)
+        }
+    }
+
+    private val _calculationsState = MutableStateFlow(CalculationsUiState())
+    val calculationsState: StateFlow<CalculationsUiState> = _calculationsState.asStateFlow()
+
+    // Called whenever the user flips the Hanafi mode toggle
+    fun onHanafiModeToggled() {
+        _calculationsState.update { current ->
+            current.copy(isHanafiMode = !current.isHanafiMode)
         }
     }
 }
