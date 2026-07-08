@@ -42,4 +42,8 @@
     <string name="notifications_maybe_later">Maybe Later</string>
     <string name="notifications_illustration_content_description">Mosque illustration</string>
     <string name="notifications_badge_content_description">Notification bell</string>
+
+    <!-- Greeting screen -->
+    <string name="greeting_salam">السلام عليكم</string>
+    <string name="greeting_subtitle">Your journey starts here.</string>
 </resources>

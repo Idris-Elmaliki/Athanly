@@ -17,7 +17,7 @@ import com.example.athanly.ui.onBoarding.viewModel.OnBoardingViewModel
 fun NotificationsUi(
     modifier: Modifier = Modifier,
     windowSizeClass: WindowSizeClass,
-    onBoardingIsComplete: () -> Unit,
+    onNotificationsStepComplete: () -> Unit,
     viewModel: OnBoardingViewModel = hiltViewModel(),
 ) {
     // POST_NOTIFICATIONS is only a runtime-requestable permission on API 33+ —
@@ -26,7 +26,7 @@ fun NotificationsUi(
         contract = ActivityResultContracts.RequestPermission(),
     ) { isGranted ->
         viewModel.onNotificationPermissionResult(isGranted)
-        onBoardingIsComplete()
+        onNotificationsStepComplete()
     }
 
     val onEnableClick: () -> Unit = {
@@ -34,13 +34,13 @@ fun NotificationsUi(
             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         } else {
             viewModel.onNotificationPermissionResult(isGranted = true)
-            onBoardingIsComplete()
+            onNotificationsStepComplete()
         }
     }
 
     val onMaybeLaterClick: () -> Unit = {
         viewModel.onNotificationPermissionResult(isGranted = false)
-        onBoardingIsComplete()
+        onNotificationsStepComplete()
     }
 
     when {

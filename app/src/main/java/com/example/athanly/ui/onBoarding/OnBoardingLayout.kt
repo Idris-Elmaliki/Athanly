@@ -1,6 +1,7 @@
 package com.example.athanly.ui.onBoarding
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -15,6 +16,7 @@ import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -52,10 +54,14 @@ fun OnBoardingLayout(
         currentBackStackEntry?.destination?.hasRoute(route::class) == true
     }.coerceAtLeast(0)
 
+    // Notifications and Greeting are both full-bleed screens — no app bar/bottom bar container at all
+    val isFullBleedStep = currentBackStackEntry?.destination?.let { destination ->
+        destination.hasRoute<OnBoardingRoutes.Notifications>() || destination.hasRoute<OnBoardingRoutes.Greeting>()
+    } == true
+
     Scaffold(
         topBar = {
-            // Notifications is a full-bleed screen — no app bar container at all, not just an empty title
-            if (currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.Notifications>() != true)
+            if (!isFullBleedStep)
                 CenterAlignedTopAppBar(
                     // Back button hidden on the first step — nowhere to go back to
                     navigationIcon = {
@@ -78,7 +84,7 @@ fun OnBoardingLayout(
                 )
         },
         bottomBar = {
-            if (currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.Notifications>() != true)
+            if (!isFullBleedStep)
                 OnBoardingBottomBar(
                     onContinueClick = {
                         when (steps.getOrNull(currentStep + 1)) {
@@ -93,15 +99,25 @@ fun OnBoardingLayout(
         modifier = modifier
     ) { innerPadding ->
         Box(modifier = Modifier.fillMaxSize()) {
+            // Greeting is edge-to-edge — ignore Scaffold's inset padding entirely rather than the (already zero) bar height
+            val contentPadding = if (currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.Greeting>() == true) {
+                PaddingValues(0.dp)
+            } else {
+                innerPadding
+            }
             NavHost(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(contentPadding),
                 navController = innerNavController,
                 startDestination = OnBoardingRoutes.Welcome
             ) {
                 onBoardingNavGraph(
                     currentScreen = windowSizeClass,
+                    // Notifications hands off to the Greeting interstitial, not straight to Home
+                    onNotificationsStepComplete = { 
+                        innerNavController.navigate(OnBoardingRoutes.Greeting) 
+                    },
                     onBoardingIsComplete = onBoardingIsComplete
                 )
             }

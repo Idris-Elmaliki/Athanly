@@ -65,4 +65,7 @@
     <dimen name="notifications_action_area_gap">16dp</dimen>
     <dimen name="notifications_action_area_bottom_padding">16dp</dimen>
 
+    <!-- Greeting screen -->
+    <dimen name="greeting_text_gap">8dp</dimen>
+
 </resources>
