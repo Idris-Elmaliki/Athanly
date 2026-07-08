@@ -18,3 +18,7 @@ val CardActiveBackground = Color(0xCCFFFFFF)   // selected card: 80% white glass
 val CardInactiveBackground = Color(0x99FFFFFF) // unselected card: 60% white glass
 val CardInactiveBorder = Color(0xCCFFFFFF)     // unselected card border: translucent white
 val AvatarDarkOverlay = Color(0x33000000)      // dark scrim layered over avatar gradient
+
+// ── Notifications Screen ──────────────────────────────────────────────────────
+val CreamGold = Color(0xFFFFE088)   // "ENABLE NOTIFICATIONS" button label
+val MintGlow = Color(0xFFB0F0D6)    // decorative glow behind the illustration circle
