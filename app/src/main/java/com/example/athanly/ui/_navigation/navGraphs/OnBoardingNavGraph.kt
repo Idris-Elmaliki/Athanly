@@ -9,6 +9,7 @@ import androidx.window.core.layout.WindowSizeClass
 import com.example.athanly.ui._navigation.routes.OnBoardingRoutes
 import com.example.athanly.ui.onBoarding.screens.athanSelection.AthanSelectionUi
 import com.example.athanly.ui.onBoarding.screens.calculations.CalculationsUi
+import com.example.athanly.ui.onBoarding.screens.notifications.NotificationsUi
 import com.example.athanly.ui.onBoarding.screens.welcome.WelcomeUi
 
 // Extension on NavGraphBuilder so AppRoute stays clean — each feature owns its own graph
@@ -35,5 +36,11 @@ fun NavGraphBuilder.onBoardingNavGraph(
         )
     }
     // After notifications, pop the entire onboarding graph and land on Home
-    composable<OnBoardingRoutes.Notifications> {}
+    composable<OnBoardingRoutes.Notifications> {
+        NotificationsUi(
+            modifier = Modifier.fillMaxSize(),
+            windowSizeClass = currentScreen,
+            onBoardingIsComplete = onBoardingIsComplete,
+        )
+    }
 }

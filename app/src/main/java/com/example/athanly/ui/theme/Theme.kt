@@ -24,6 +24,8 @@ private val LightColorScheme = lightColorScheme(
     surfaceContainerLow = CardInactiveBackground,  // unselected muadhdhin card background
     surfaceVariant = CardInactiveBorder,           // unselected muadhdhin card border
     scrim = AvatarDarkOverlay,                     // dark overlay on avatar gradient circles
+    tertiaryContainer = MintGlow,                  // notifications screen — illustration glow
+    onTertiaryContainer = CreamGold,                // notifications screen — button label
 )
 
 // Dark scheme mirrors light for now — will be refined when dark mode designs are provided
@@ -44,6 +46,8 @@ private val DarkColorScheme = darkColorScheme(
     surfaceContainerLow = CardInactiveBackground,
     surfaceVariant = CardInactiveBorder,
     scrim = AvatarDarkOverlay,
+    tertiaryContainer = MintGlow,
+    onTertiaryContainer = CreamGold,
 )
 
 @Composable
