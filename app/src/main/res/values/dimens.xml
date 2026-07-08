@@ -43,4 +43,26 @@
     <dimen name="welcome_radio_button_inner_size">12dp</dimen>
     <dimen name="welcome_radio_button_border_width">2dp</dimen>
 
+    <!-- Notifications screen -->
+    <dimen name="notifications_illustration_outer_size">256dp</dimen>
+    <dimen name="notifications_illustration_inner_size">192dp</dimen>
+    <dimen name="notifications_illustration_border_width">1dp</dimen>
+    <dimen name="notifications_illustration_bottom_spacing">32dp</dimen>
+    <dimen name="notifications_badge_size">48dp</dimen>
+    <dimen name="notifications_badge_border_width">2dp</dimen>
+    <dimen name="notifications_badge_icon_size">20dp</dimen>
+    <dimen name="notifications_badge_offset_end">-12dp</dimen>
+    <dimen name="notifications_badge_offset_top">36dp</dimen>
+    <dimen name="notifications_text_horizontal_padding">16dp</dimen>
+    <dimen name="notifications_heading_body_gap">8dp</dimen>
+    <dimen name="notifications_body_max_width">300dp</dimen>
+    <dimen name="notifications_button_corner_radius">12dp</dimen>
+    <dimen name="notifications_button_icon_width">16dp</dimen>
+    <dimen name="notifications_button_icon_height">20dp</dimen>
+    <dimen name="notifications_button_icon_gap">8dp</dimen>
+    <dimen name="notifications_button_vertical_padding">18dp</dimen>
+    <dimen name="notifications_maybe_later_vertical_padding">16dp</dimen>
+    <dimen name="notifications_action_area_gap">16dp</dimen>
+    <dimen name="notifications_action_area_bottom_padding">16dp</dimen>
+
 </resources>

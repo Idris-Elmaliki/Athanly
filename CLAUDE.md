@@ -296,7 +296,9 @@ Flow is only used when retrieving/observing data (e.g. reading from Room, DataSt
 **State updates:**
 All StateFlow updates must use `.update { }` — never reassign directly:
 ```kotlin
-_state.update { data -> data.copy("...") }
+_state.update { data -> 
+    data.copy("...") 
+}
 ```
 
 **UI collection:**
@@ -313,7 +315,7 @@ Test-Driven Development (TDD) — the test is always written **before** the impl
 3. Refactor if needed (refactor)
 
 This applies to **all** of the following: ViewModels, UseCases, and Repositories.
-
+    
 ### Libraries
 - **JUnit4** — standard test runner
 - **Mockk** — Kotlin-first mocking library for mocking dependencies

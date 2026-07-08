@@ -6,6 +6,7 @@ import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
 import com.example.athanly.calculations.domain.modelData.CalculationsUiState
 import com.example.athanly.language.domain.modelData.Language
 import com.example.athanly.language.domain.modelData.WelcomeUiState
+import com.example.athanly.notifications.domain.modelData.NotificationsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -43,6 +44,16 @@ class OnBoardingViewModel @Inject constructor() : ViewModel() {
     fun onHanafiModeToggled() {
         _calculationsState.update { current ->
             current.copy(isHanafiMode = !current.isHanafiMode)
+        }
+    }
+
+    private val _notificationsState = MutableStateFlow(NotificationsUiState())
+    val notificationsState: StateFlow<NotificationsUiState> = _notificationsState.asStateFlow()
+
+    // Called with the OS permission dialog result on the final onboarding step
+    fun onNotificationPermissionResult(isGranted: Boolean) {
+        _notificationsState.update { current ->
+            current.copy(isPermissionGranted = isGranted)
         }
     }
 }

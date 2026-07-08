@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Required on API 33+ to show Athan/reminder notifications; requested at runtime on the onboarding Notifications screen -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <application
         android:name=".AthanlyApplication"
         android:allowBackup="true"

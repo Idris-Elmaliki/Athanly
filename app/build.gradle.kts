@@ -56,6 +56,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.navigation.compose)
     testImplementation(libs.junit)
+    // Mockk — mocking dependencies in ViewModel/UseCase/Repository unit tests
+    testImplementation(libs.mockk)
+    // Turbine — asserting StateFlow/Flow emissions in tests
+    testImplementation(libs.turbine)
+    // kotlinx-coroutines-test — runTest/TestDispatchers for coroutine-based tests
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -84,4 +90,7 @@ dependencies {
 
     // currentWindowAdaptiveInfo()
     implementation(libs.material3.adaptive)
+
+    // androidx.datastore:datastore-preferences — persists small preference data (e.g. onboarding completion)
+    implementation(libs.androidx.datastore.preferences)
 }

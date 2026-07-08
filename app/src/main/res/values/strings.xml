@@ -34,4 +34,12 @@
     <string name="sheikh_firas_qazzaz">Sheikh Firas Qazzaz</string>
     <string name="mishary_alafasy">Mishary Alafasy</string>
     <string name="yusuf_islam">Yusuf Islam</string>
+
+    <!-- Notifications screen -->
+    <string name="notifications_heading">Never Miss a Prayer</string>
+    <string name="notifications_body">Enable notifications to receive beautiful Athans and reminders for each prayer time throughout the day.</string>
+    <string name="notifications_enable_button">ENABLE NOTIFICATIONS</string>
+    <string name="notifications_maybe_later">Maybe Later</string>
+    <string name="notifications_illustration_content_description">Mosque illustration</string>
+    <string name="notifications_badge_content_description">Notification bell</string>
 </resources>
