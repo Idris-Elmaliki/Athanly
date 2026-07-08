@@ -18,4 +18,8 @@ sealed interface OnBoardingRoutes {
 
     @Serializable
     data object Notifications : OnBoardingRoutes
+
+    // Final full-bleed interstitial shown after notification permission, before landing on Home
+    @Serializable
+    data object Greeting : OnBoardingRoutes
 }
