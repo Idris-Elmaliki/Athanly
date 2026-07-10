@@ -53,11 +53,10 @@ The exact order of these steps is TBD. After completing onboarding, the user lan
 On every subsequent app open: Splash Screen → Homepage directly, skipping onboarding.
 
 ### 4. Homepage & Navigation
-The Homepage displays the Athan times. A bottom navigation bar provides access to 4 tabs in this exact order:
+The Homepage displays the Athan times. A bottom navigation bar provides access to 3 tabs in this exact order:
 1. Home — Athan times
 2. Qibla — Qibla compass finder
 3. Settings
-4. Profile
 
 ---
 
