@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,6 +23,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.athanly.R
 import com.example.athanly.athanTime.local.domain.modelData.NextPrayerInfo
@@ -50,19 +52,24 @@ fun SacredCountdownCard(
             modifier = Modifier.size(dimensionResource(R.dimen.home_sacred_card_ring_size))
         )
 
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(
+            // Same dimension as the ring itself — text wraps/centers within the ring's
+            // diameter instead of spilling past its circular edge
+            modifier = Modifier.width(dimensionResource(R.dimen.home_sacred_card_ring_size) - 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
                 text = stringResource(
                     R.string.home_next_prayer_label,
                     stringResource(nextPrayerInfo.nextPrayer.displayNameRes)
                 ),
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onSurface
             )
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_label_timer_gap)))
             Text(
                 text = formatCountdown(nextPrayerInfo.remaining),
-                style = MaterialTheme.typography.displayMedium.copy(fontWeight = FontWeight.Bold),
+                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_timer_starts_at_gap)))

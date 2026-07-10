@@ -8,19 +8,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.window.core.layout.WindowSizeClass
 import com.example.athanly.R
 import com.example.athanly.ui._navigation.routes.MainRoutes
+import com.example.athanly.ui.home.screens.home.HomeUi
 
 // Extension on NavGraphBuilder so MainLayout stays clean — each feature owns its own graph
 fun NavGraphBuilder.mainNavGraph(
-    currentScreen: WindowSizeClass
+    currentScreen: WindowSizeClass,
+    topBarPadding: Dp
 ) {
-    // TODO: swap for the real HomeUi once it's built later in this plan
     composable<MainRoutes.Home> {
-        MainTabPlaceholder(textRes = R.string.main_home_placeholder)
+        HomeUi(
+            modifier = Modifier.fillMaxSize(),
+            windowSizeClass = currentScreen,
+            topBarPadding = topBarPadding,
+        )
     }
     // Qibla is a separate future plan — placeholder keeps the bottom nav fully navigable now
     composable<MainRoutes.Qibla> {
