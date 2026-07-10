@@ -25,7 +25,11 @@ fun CityPaginationDots(
 ) {
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.home_pagination_dot_spacing)),
+        // spacedBy's alignment param centers the whole group, not just the gaps between dots
+        horizontalArrangement = Arrangement.spacedBy(
+            space = dimensionResource(R.dimen.home_pagination_dot_spacing),
+            alignment = Alignment.CenterHorizontally
+        ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(totalCities) { index ->

@@ -60,11 +60,17 @@ fun HomeLayout(
             NavHost(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(bottom = innerPadding.calculateBottomPadding()),
                 navController = innerNavController,
                 startDestination = MainRoutes.Home
             ) {
-                mainNavGraph(currentScreen = windowSizeClass)
+                // Only HomeTopBar needs this — applying it to the whole NavHost would push
+                // AtmosphericBackground down from the top, exposing a plain white strip
+                // behind the status bar instead of staying edge-to-edge
+                mainNavGraph(
+                    currentScreen = windowSizeClass,
+                    topBarPadding = (innerPadding.calculateTopPadding() / 2)
+                )
             }
         }
     }
