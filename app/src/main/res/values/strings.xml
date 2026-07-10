@@ -46,4 +46,30 @@
     <!-- Greeting screen -->
     <string name="greeting_salam">السلام عليكم</string>
     <string name="greeting_subtitle">Your journey starts here.</string>
+
+    <!-- Bottom navigation bar -->
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_qibla">Qibla</string>
+    <string name="bottom_nav_settings">Settings</string>
+
+    <!-- Temporary placeholders — Qibla/Settings screens are separate future plans; Home placeholder is swapped for the real screen later in this plan -->
+    <string name="main_home_placeholder">Home — coming soon</string>
+    <string name="main_qibla_placeholder">Qibla — coming soon</string>
+    <string name="main_settings_placeholder">Settings — coming soon</string>
+
+    <!-- Home top bar -->
+    <string name="home_menu_button_description">Open menu</string>
+    <string name="home_add_city_button_description">Add city</string>
+
+    <!-- Prayer names -->
+    <string name="prayer_fajr">Fajr</string>
+    <string name="prayer_sunrise">Sunrise</string>
+    <string name="prayer_dhuhr">Dhuhr</string>
+    <string name="prayer_asr">Asr</string>
+    <string name="prayer_maghrib">Maghrib</string>
+    <string name="prayer_isha">Isha</string>
+
+    <!-- Sacred countdown card -->
+    <string name="home_next_prayer_label">Next Prayer: %1$s</string>
+    <string name="home_starts_at_label">STARTS AT %1$s</string>
 </resources>

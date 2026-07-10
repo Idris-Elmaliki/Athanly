@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.athanly.ui._navigation.routes.AppRoutes
+import com.example.athanly.ui.home.HomeLayout
 import com.example.athanly.ui.onBoarding.OnBoardingLayout
 
 // Single Compose entry point for all navigation — called by MainActivity
@@ -36,6 +37,9 @@ fun AppRoute(
                 }
             )
         }
-        composable<AppRoutes.Home> {}
+        // HomeLayout owns its own inner NavHost + bottom nav for the Home/Qibla/Settings tabs
+        composable<AppRoutes.Home> {
+            HomeLayout(modifier = Modifier.fillMaxSize())
+        }
     }
 }
