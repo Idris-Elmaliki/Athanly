@@ -10,6 +10,7 @@ sealed interface AppRoutes {
     @Serializable
     data object OnBoarding : AppRoutes
 
+    // Post-onboarding app shell — hosts the Home/Qibla/Settings tabs internally (see MainRoutes)
     @Serializable
     data object Home : AppRoutes
 }

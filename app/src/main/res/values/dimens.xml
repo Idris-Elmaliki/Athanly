@@ -68,4 +68,49 @@
     <!-- Greeting screen -->
     <dimen name="greeting_text_gap">8dp</dimen>
 
+    <!-- Bottom navigation bar (Home / Qibla / Settings) -->
+    <dimen name="bottom_nav_height">73dp</dimen>
+    <dimen name="bottom_nav_top_corner_radius">24dp</dimen>
+    <dimen name="bottom_nav_elevation">8dp</dimen>
+    <dimen name="bottom_nav_icon_size">22dp</dimen>
+    <dimen name="bottom_nav_icon_label_gap">4dp</dimen>
+    <dimen name="bottom_nav_item_vertical_padding">12dp</dimen>
+
+    <!-- Home top bar -->
+    <dimen name="home_top_bar_height">68dp</dimen>
+    <dimen name="home_top_bar_horizontal_padding">20dp</dimen>
+    <dimen name="home_top_bar_button_size">40dp</dimen>
+    <dimen name="home_top_bar_icon_size">22dp</dimen>
+    <dimen name="home_top_bar_title_letter_spacing">2sp</dimen>
+
+    <!-- Home city/date header -->
+    <dimen name="home_city_header_vertical_padding">16dp</dimen>
+    <dimen name="home_city_header_pin_icon_size">16dp</dimen>
+    <dimen name="home_city_header_pin_name_gap">8dp</dimen>
+    <dimen name="home_city_header_name_date_gap">8dp</dimen>
+
+    <!-- Sacred countdown card -->
+    <dimen name="home_sacred_card_corner_radius">24dp</dimen>
+    <dimen name="home_sacred_card_padding">16dp</dimen>
+    <dimen name="home_sacred_card_ring_size">192dp</dimen>
+    <dimen name="home_sacred_card_ring_stroke_width">8dp</dimen>
+    <dimen name="home_sacred_card_label_timer_gap">8dp</dimen>
+    <dimen name="home_sacred_card_timer_starts_at_gap">8dp</dimen>
+
+    <!-- Prayer schedule list -->
+    <dimen name="home_prayer_row_height">60dp</dimen>
+    <dimen name="home_prayer_row_corner_radius">16dp</dimen>
+    <dimen name="home_prayer_row_horizontal_padding">17dp</dimen>
+    <dimen name="home_prayer_row_active_start_padding">21dp</dimen>
+    <dimen name="home_prayer_row_spacing">8dp</dimen>
+    <dimen name="home_prayer_row_active_border_width">1dp</dimen>
+    <dimen name="home_prayer_row_active_accent_width">4dp</dimen>
+    <dimen name="home_prayer_row_icon_size">18dp</dimen>
+    <dimen name="home_prayer_row_icon_name_gap">8dp</dimen>
+
+    <!-- City pagination dots -->
+    <dimen name="home_pagination_dot_size">8dp</dimen>
+    <dimen name="home_pagination_active_dot_width">24dp</dimen>
+    <dimen name="home_pagination_dot_spacing">8dp</dimen>
+
 </resources>
