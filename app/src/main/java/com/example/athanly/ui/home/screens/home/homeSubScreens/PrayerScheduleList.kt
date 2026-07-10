@@ -8,14 +8,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -35,8 +36,7 @@ import java.time.format.DateTimeFormatter
 
 private val rowTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-// Fixed 6-row list (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) — a plain Column, not
-// LazyColumn, since the row count is always exactly 6, not a scrollable/dynamic dataset
+// 6-row list (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha)
 @Composable
 fun PrayerScheduleList(
     schedule: PrayerSchedule,
@@ -105,7 +105,7 @@ private fun PrayerRow(
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(
                     start = if (isActive) {
                         dimensionResource(R.dimen.home_prayer_row_active_start_padding)
@@ -118,16 +118,13 @@ private fun PrayerRow(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                if (!prayer.isPrayer) {
-                    // Sunrise isn't a prayer — a small sun icon distinguishes its row from the 5 real prayers
-                    Icon(
-                        imageVector = Icons.Filled.WbSunny,
-                        contentDescription = null,
-                        tint = contentColor,
-                        modifier = Modifier.size(dimensionResource(R.dimen.home_prayer_row_icon_size))
-                    )
-                    Spacer(modifier = Modifier.width(dimensionResource(R.dimen.home_prayer_row_icon_name_gap)))
-                }
+                Icon(
+                    imageVector = prayer.icon,
+                    contentDescription = null,
+                    tint = contentColor,
+                    modifier = Modifier.size(dimensionResource(R.dimen.home_prayer_row_icon_size))
+                )
+                Spacer(modifier = Modifier.width(dimensionResource(R.dimen.home_prayer_row_icon_name_gap)))
                 Text(
                     text = stringResource(prayer.displayNameRes),
                     style = MaterialTheme.typography.titleMedium,

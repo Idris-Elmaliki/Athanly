@@ -113,4 +113,11 @@
     <dimen name="home_pagination_active_dot_width">24dp</dimen>
     <dimen name="home_pagination_dot_spacing">8dp</dimen>
 
+    <!-- Home screen assembly -->
+    <dimen name="home_screen_horizontal_padding">20dp</dimen>
+    <dimen name="home_screen_section_spacing">16dp</dimen>
+    <dimen name="home_screen_pagination_vertical_padding">16dp</dimen>
+    <dimen name="home_screen_medium_content_max_width">560dp</dimen>
+    <dimen name="home_screen_expanded_content_max_width">640dp</dimen>
+
 </resources>
