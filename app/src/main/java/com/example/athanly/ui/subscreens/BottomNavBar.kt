@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,7 +47,9 @@ fun BottomNavBar(
                 BottomNavTab(
                     item = item,
                     isActive = item.route == currentRoute,
-                    onClick = { onTabSelected(item.route) },
+                    onClick = {
+                        onTabSelected(item.route)
+                    },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -61,23 +64,31 @@ private fun BottomNavTab(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // Active/inactive is conveyed by color alone (tertiary = Yellow) — same convention
+    // Active/inactive is conveyed by color alone (secondary = Gold) — same convention
     // already used for active card borders/radio buttons elsewhere in the app
-    val tint = if (isActive) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.onSurface
+    val tint = if (isActive) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface
     val label = stringResource(item.labelRes)
 
     Column(
         modifier = modifier
-            .clickable(onClick = onClick)
             .padding(vertical = dimensionResource(R.dimen.bottom_nav_item_vertical_padding)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Icon(
-            imageVector = item.icon,
-            contentDescription = label,
-            tint = tint,
-            modifier = Modifier.size(dimensionResource(R.dimen.bottom_nav_icon_size))
-        )
+        // Only the IconButton (icon itself) is clickable — the label below is not part of the tap target.
+        // Size is capped to the icon itself, otherwise IconButton's default 48dp min touch target
+        // pushes the label below out of the fixed-height nav bar.
+        IconButton(
+            onClick = onClick,
+            modifier = Modifier
+                .size(dimensionResource(R.dimen.bottom_nav_icon_size))
+        ) {
+            Icon(
+                imageVector = item.icon,
+                contentDescription = label,
+                tint = tint,
+                modifier = Modifier.size(dimensionResource(R.dimen.bottom_nav_icon_size))
+            )
+        }
         Spacer(modifier = Modifier.height(dimensionResource(R.dimen.bottom_nav_icon_label_gap)))
         Text(
             text = label,

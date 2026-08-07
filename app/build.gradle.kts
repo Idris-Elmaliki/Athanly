@@ -91,6 +91,7 @@ dependencies {
     // currentWindowAdaptiveInfo()
     implementation(libs.material3.adaptive)
 
-    // androidx.datastore:datastore-preferences — persists small preference data (e.g. onboarding completion)
+    // datastore-preferences — persists small preference data (e.g. onboarding completion)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.datastore.core)
 }
