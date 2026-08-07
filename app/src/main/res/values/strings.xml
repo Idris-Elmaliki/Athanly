@@ -54,12 +54,40 @@
 
     <!-- Temporary placeholders — Qibla/Settings screens are separate future plans; Home placeholder is swapped for the real screen later in this plan -->
     <string name="main_home_placeholder">Home — coming soon</string>
-    <string name="main_qibla_placeholder">Qibla — coming soon</string>
     <string name="main_settings_placeholder">Settings — coming soon</string>
 
     <!-- Home top bar -->
     <string name="home_menu_button_description">Open menu</string>
     <string name="home_add_city_button_description">Add city</string>
+
+    <!-- Qibla screen: distance unit labels -->
+    <string name="qibla_unit_km">km</string>
+    <string name="qibla_unit_mi">mi</string>
+
+    <!-- Qibla screen: header -->
+    <string name="qibla_header_title">Qibla</string>
+    <string name="qibla_header_subtitle">Calibrate your device by moving it in a figure 8.</string>
+
+    <!-- Qibla compass -->
+    <string name="qibla_compass_north">N</string>
+    <string name="qibla_compass_east">E</string>
+    <string name="qibla_compass_south">S</string>
+    <string name="qibla_compass_west">W</string>
+    <string name="qibla_compass_kaaba_marker_description">Direction of the Kaaba</string>
+
+    <!-- Qibla bearing text: 8-point cardinal abbreviations -->
+    <string name="qibla_cardinal_n">N</string>
+    <string name="qibla_cardinal_ne">NE</string>
+    <string name="qibla_cardinal_e">E</string>
+    <string name="qibla_cardinal_se">SE</string>
+    <string name="qibla_cardinal_s">S</string>
+    <string name="qibla_cardinal_sw">SW</string>
+    <string name="qibla_cardinal_w">W</string>
+    <string name="qibla_cardinal_nw">NW</string>
+
+    <!-- Qibla distance card -->
+    <string name="qibla_distance_card_label">DISTANCE TO MAKKAH</string>
+    <string name="qibla_distance_card_bearing">%1$d° %2$s</string>
 
     <!-- Prayer names -->
     <string name="prayer_fajr">Fajr</string>

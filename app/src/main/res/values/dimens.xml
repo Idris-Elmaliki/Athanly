@@ -83,6 +83,43 @@
     <dimen name="home_top_bar_icon_size">22dp</dimen>
     <dimen name="home_top_bar_title_letter_spacing">2sp</dimen>
 
+    <!-- Qibla compass -->
+    <dimen name="qibla_compass_diameter">288dp</dimen>
+    <dimen name="qibla_compass_cardinal_label_inset">17dp</dimen>
+    <dimen name="qibla_compass_kaaba_icon_size">24dp</dimen>
+    <dimen name="qibla_compass_needle_width">13dp</dimen>
+    <dimen name="qibla_compass_needle_height">189dp</dimen>
+    <dimen name="qibla_compass_needle_pivot_size">16dp</dimen>
+
+    <!-- Qibla top bar -->
+    <dimen name="qibla_top_bar_height">68dp</dimen>
+    <dimen name="qibla_top_bar_horizontal_padding">20dp</dimen>
+    <dimen name="qibla_top_bar_button_size">40dp</dimen>
+    <dimen name="qibla_top_bar_icon_size">22dp</dimen>
+    <dimen name="qibla_top_bar_title_letter_spacing">2sp</dimen>
+
+    <!-- Qibla header text -->
+    <dimen name="qibla_text_gap">8dp</dimen>
+
+    <!-- Qibla distance card -->
+    <dimen name="qibla_distance_card_corner_radius">24dp</dimen>
+    <dimen name="qibla_distance_card_padding">16dp</dimen>
+    <dimen name="qibla_distance_card_label_value_gap">8dp</dimen>
+    <dimen name="qibla_distance_card_value_bearing_gap">4dp</dimen>
+    <dimen name="qibla_distance_card_bearing_toggle_gap">12dp</dimen>
+    <dimen name="qibla_distance_card_label_letter_spacing">1sp</dimen>
+    <dimen name="qibla_distance_card_unit_value_gap">4dp</dimen>
+
+    <!-- Qibla distance unit toggle (km/mi pill) -->
+    <dimen name="qibla_unit_toggle_corner_radius">16dp</dimen>
+    <dimen name="qibla_unit_toggle_border_width">1dp</dimen>
+    <dimen name="qibla_unit_toggle_horizontal_padding">10dp</dimen>
+    <dimen name="qibla_unit_toggle_vertical_padding">4dp</dimen>
+
+    <!-- Qibla screen -->
+    <dimen name="qibla_screen_horizontal_padding">20dp</dimen>
+    <dimen name="qibla_screen_section_spacing">16dp</dimen>
+
     <!-- Home city/date header -->
     <dimen name="home_city_header_vertical_padding">16dp</dimen>
     <dimen name="home_city_header_pin_icon_size">16dp</dimen>

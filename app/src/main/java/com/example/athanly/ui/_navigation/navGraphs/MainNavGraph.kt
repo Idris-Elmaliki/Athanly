@@ -15,6 +15,7 @@ import androidx.window.core.layout.WindowSizeClass
 import com.example.athanly.R
 import com.example.athanly.ui._navigation.routes.MainRoutes
 import com.example.athanly.ui.home.screens.home.HomeUi
+import com.example.athanly.ui.qibla.screens.qibla.QiblaUi
 
 // Extension on NavGraphBuilder so MainLayout stays clean — each feature owns its own graph
 fun NavGraphBuilder.mainNavGraph(
@@ -28,9 +29,12 @@ fun NavGraphBuilder.mainNavGraph(
             topBarPadding = topBarPadding,
         )
     }
-    // Qibla is a separate future plan — placeholder keeps the bottom nav fully navigable now
     composable<MainRoutes.Qibla> {
-        MainTabPlaceholder(textRes = R.string.main_qibla_placeholder)
+        QiblaUi(
+            modifier = Modifier.fillMaxSize(),
+            windowSizeClass = currentScreen,
+            topBarPadding = topBarPadding,
+        )
     }
     // Settings is a separate future plan — placeholder keeps the bottom nav fully navigable now
     composable<MainRoutes.Settings> {
