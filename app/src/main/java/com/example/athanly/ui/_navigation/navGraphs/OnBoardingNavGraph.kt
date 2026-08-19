@@ -8,7 +8,7 @@ import androidx.navigation.compose.composable
 import androidx.window.core.layout.WindowSizeClass
 import com.example.athanly.ui._navigation.routes.OnBoardingRoutes
 import com.example.athanly.ui.onBoarding.screens.athanSelection.AthanSelectionUi
-import com.example.athanly.ui.onBoarding.screens.calculations.CalculationsUi
+import com.example.athanly.ui.onBoarding.screens.athanCalculations.CalculationsUi
 import com.example.athanly.ui.onBoarding.screens.greeting.GreetingUi
 import com.example.athanly.ui.onBoarding.screens.notifications.NotificationsUi
 import com.example.athanly.ui.onBoarding.screens.welcome.WelcomeUi
