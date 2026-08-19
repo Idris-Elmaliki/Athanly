@@ -26,6 +26,10 @@ private val LightColorScheme = lightColorScheme(
     scrim = AvatarDarkOverlay,                     // dark overlay on avatar gradient circles
     tertiaryContainer = MintGlow,                  // notifications screen — illustration glow
     onTertiaryContainer = CreamGold,                // notifications screen — button label
+    primaryContainer = RowIconContainer,           // settings screen — row icon circle background
+    onPrimaryContainer = RowIconTint,              // settings screen — row icon tint
+    onSurfaceVariant = RowTitle,                   // settings screen — row title text
+    secondaryContainer = SwitchActiveBlue,         // settings screen — checked switch track/thumb
 )
 
 // Dark scheme mirrors light for now — will be refined when dark mode designs are provided
@@ -48,6 +52,10 @@ private val DarkColorScheme = darkColorScheme(
     scrim = AvatarDarkOverlay,
     tertiaryContainer = MintGlow,
     onTertiaryContainer = CreamGold,
+    primaryContainer = RowIconContainer,
+    onPrimaryContainer = RowIconTint,
+    onSurfaceVariant = RowTitle,
+    secondaryContainer = SwitchActiveBlue,
 )
 
 @Composable

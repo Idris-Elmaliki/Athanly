@@ -157,4 +157,39 @@
     <dimen name="home_screen_medium_content_max_width">560dp</dimen>
     <dimen name="home_screen_expanded_content_max_width">640dp</dimen>
 
+    <!-- Settings top bar -->
+    <dimen name="settings_top_bar_height">68dp</dimen>
+    <dimen name="settings_top_bar_horizontal_padding">20dp</dimen>
+    <dimen name="settings_top_bar_button_size">40dp</dimen>
+    <dimen name="settings_top_bar_icon_size">22dp</dimen>
+    <dimen name="settings_top_bar_title_letter_spacing">2sp</dimen>
+
+    <!-- Settings screen assembly -->
+    <dimen name="settings_screen_horizontal_padding">20dp</dimen>
+    <dimen name="settings_screen_top_content_padding">8dp</dimen>
+    <dimen name="settings_screen_section_spacing">32dp</dimen>
+
+    <!-- Settings section header -->
+    <dimen name="settings_section_header_start_padding">8dp</dimen>
+    <dimen name="settings_section_header_bottom_gap">8dp</dimen>
+    <dimen name="settings_section_header_letter_spacing">1.2sp</dimen>
+
+    <!-- Settings section card -->
+    <dimen name="settings_card_corner_radius">12dp</dimen>
+    <dimen name="settings_card_border_width">1dp</dimen>
+
+    <!-- Settings row -->
+    <dimen name="settings_row_horizontal_padding">16dp</dimen>
+    <dimen name="settings_row_vertical_padding">16dp</dimen>
+    <dimen name="settings_row_icon_circle_size">40dp</dimen>
+    <dimen name="settings_row_icon_size">20dp</dimen>
+    <dimen name="settings_row_icon_text_gap">16dp</dimen>
+    <dimen name="settings_row_title_subtitle_gap">2dp</dimen>
+    <dimen name="settings_row_subtitle_letter_spacing">0.6sp</dimen>
+    <dimen name="settings_row_chevron_size">20dp</dimen>
+    <dimen name="settings_row_switch_end_padding">8dp</dimen>
+
+    <!-- Settings volume control row -->
+    <dimen name="settings_volume_row_title_slider_gap">16dp</dimen>
+
 </resources>
