@@ -52,10 +52,6 @@
     <string name="bottom_nav_qibla">Qibla</string>
     <string name="bottom_nav_settings">Settings</string>
 
-    <!-- Temporary placeholders — Qibla/Settings screens are separate future plans; Home placeholder is swapped for the real screen later in this plan -->
-    <string name="main_home_placeholder">Home — coming soon</string>
-    <string name="main_settings_placeholder">Settings — coming soon</string>
-
     <!-- Home top bar -->
     <string name="home_menu_button_description">Open menu</string>
     <string name="home_add_city_button_description">Add city</string>
@@ -100,4 +96,27 @@
     <!-- Sacred countdown card -->
     <string name="home_next_prayer_label">Next Prayer: %1$s</string>
     <string name="home_starts_at_label">STARTS AT %1$s</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">Settings</string>
+
+    <!-- Settings screen: section headers -->
+    <string name="settings_section_general">General</string>
+    <string name="settings_section_prayer_settings">Prayer Settings</string>
+    <string name="settings_section_athan_alerts">Athan &amp; Alerts</string>
+
+    <!-- Settings screen: General section -->
+    <string name="settings_language_title">Language</string>
+    <string name="settings_time_format_title">Time Format</string>
+    <string name="settings_time_format_subtitle">24h Format</string>
+
+    <!-- Settings screen: Prayer Settings section -->
+    <string name="settings_asr_calculation_title">Asr Calculation (Hanafi)</string>
+    <string name="settings_asr_calculation_subtitle">Later time</string>
+
+    <!-- Settings screen: Athan &amp; Alerts section -->
+    <string name="settings_selected_muadhdhin_title">Selected Muadhin</string>
+    <string name="settings_volume_control_title">Volume Control</string>
+    <string name="settings_notification_settings_title">Notification Settings</string>
+    <string name="settings_notification_settings_subtitle">Manage alerts &amp; reminders</string>
 </resources>

@@ -22,3 +22,9 @@ val AvatarDarkOverlay = Color(0x33000000)      // dark scrim layered over avatar
 // ── Notifications Screen ──────────────────────────────────────────────────────
 val CreamGold = Color(0xFFFFE088)   // "ENABLE NOTIFICATIONS" button label
 val MintGlow = Color(0xFFB0F0D6)    // decorative glow behind the illustration circle
+
+// ── Settings Screen ────────────────────────────────────────────────────────────
+val RowIconContainer = Color(0xFFE7EEFF)   // circular background behind each settings row icon
+val RowIconTint = Color(0xFF4A5578)         // icon color inside the row icon circle
+val RowTitle = Color(0xFF111C2D)            // settings row title text (darker than body/subtitle text)
+val SwitchActiveBlue = Color(0xFF2563EB)    // checked track/thumb color for settings toggles
