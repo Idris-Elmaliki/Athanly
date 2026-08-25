@@ -2,6 +2,7 @@ package com.example.athanly.ui.home.screens.settings.settingsSubScreens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -32,7 +33,6 @@ fun SettingsTopBar(
             .fillMaxWidth()
             .height(dimensionResource(R.dimen.settings_top_bar_height))
             .padding(horizontal = dimensionResource(R.dimen.settings_top_bar_horizontal_padding)),
-        verticalAlignment = Alignment.CenterVertically
     ) {
         IconButton(
             onClick = onMenuClick,
@@ -47,15 +47,10 @@ fun SettingsTopBar(
             )
         }
 
-        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            Text(
-                text = stringResource(R.string.settings_title).uppercase(),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    letterSpacing = dimensionResource(R.dimen.settings_top_bar_title_letter_spacing).value.sp
-                ),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+        )
 
         // Balances the hamburger button on the left so the title stays visually centered
         Box(modifier = Modifier

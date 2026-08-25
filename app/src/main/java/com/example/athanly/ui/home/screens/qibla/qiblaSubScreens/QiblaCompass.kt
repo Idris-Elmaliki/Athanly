@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +34,11 @@ fun QiblaCompass(
 ) {
     Box(
         modifier = modifier
+            .shadow(
+                elevation = dimensionResource(R.dimen.qibla_compass_needle_pivot_size),
+                shape = CircleShape,
+                ambientColor = MaterialTheme.colorScheme.onSurface
+            )
             .clip(CircleShape)
             .size(dimensionResource(R.dimen.qibla_compass_diameter)),
         contentAlignment = Alignment.Center
