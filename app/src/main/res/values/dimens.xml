@@ -77,7 +77,7 @@
     <dimen name="bottom_nav_item_vertical_padding">12dp</dimen>
 
     <!-- Home top bar -->
-    <dimen name="home_top_bar_height">68dp</dimen>
+    <dimen name="home_top_bar_height">56dp</dimen>
     <dimen name="home_top_bar_horizontal_padding">20dp</dimen>
     <dimen name="home_top_bar_button_size">40dp</dimen>
     <dimen name="home_top_bar_icon_size">22dp</dimen>
@@ -92,7 +92,7 @@
     <dimen name="qibla_compass_needle_pivot_size">16dp</dimen>
 
     <!-- Qibla top bar -->
-    <dimen name="qibla_top_bar_height">68dp</dimen>
+    <dimen name="qibla_top_bar_height">56dp</dimen>
     <dimen name="qibla_top_bar_horizontal_padding">20dp</dimen>
     <dimen name="qibla_top_bar_button_size">40dp</dimen>
     <dimen name="qibla_top_bar_icon_size">22dp</dimen>
@@ -118,7 +118,7 @@
 
     <!-- Qibla screen -->
     <dimen name="qibla_screen_horizontal_padding">20dp</dimen>
-    <dimen name="qibla_screen_section_spacing">16dp</dimen>
+    <dimen name="qibla_screen_section_spacing">32dp</dimen>
 
     <!-- Home city/date header -->
     <dimen name="home_city_header_vertical_padding">16dp</dimen>
@@ -158,7 +158,7 @@
     <dimen name="home_screen_expanded_content_max_width">640dp</dimen>
 
     <!-- Settings top bar -->
-    <dimen name="settings_top_bar_height">68dp</dimen>
+    <dimen name="settings_top_bar_height">56dp</dimen>
     <dimen name="settings_top_bar_horizontal_padding">20dp</dimen>
     <dimen name="settings_top_bar_button_size">40dp</dimen>
     <dimen name="settings_top_bar_icon_size">22dp</dimen>

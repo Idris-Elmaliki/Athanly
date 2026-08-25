@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.screens.qibla.expanded
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,8 +34,6 @@ fun QiblaUiExpanded(
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
-        AtmosphericBackground()
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -48,14 +47,11 @@ fun QiblaUiExpanded(
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = dimensionResource(R.dimen.qibla_screen_horizontal_padding))
             ) {
-                QiblaHeaderText()
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_screen_section_spacing)))
-
                 QiblaCompass(
                     needleRotationDegrees = state.needleRotationDegrees,
                     kaabaMarkerDegrees = state.qiblaDegrees.toFloat()

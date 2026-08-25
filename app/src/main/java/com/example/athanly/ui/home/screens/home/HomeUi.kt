@@ -17,6 +17,7 @@ fun HomeUi(
     modifier: Modifier,
     windowSizeClass: WindowSizeClass,
     topBarPadding: Dp,
+    bottomBarPadding: Dp,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.homeState.collectAsStateWithLifecycle()
@@ -57,6 +58,7 @@ fun HomeUi(
                 onAddCityClick = onAddCityClick,
                 onCitySelected = viewModel::onCitySelected,
                 topBarPadding = topBarPadding,
+                bottomBarPadding = bottomBarPadding,
                 modifier = modifier
             )
         }

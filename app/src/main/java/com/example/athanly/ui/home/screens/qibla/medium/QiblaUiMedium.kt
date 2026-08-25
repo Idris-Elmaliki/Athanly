@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.screens.qibla.medium
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,8 +34,6 @@ fun QiblaUiMedium(
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
-        AtmosphericBackground()
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -47,15 +46,12 @@ fun QiblaUiMedium(
 
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(horizontal = dimensionResource(R.dimen.qibla_screen_horizontal_padding))
             ) {
-                QiblaHeaderText()
-
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_screen_section_spacing)))
-
                 QiblaCompass(
                     needleRotationDegrees = state.needleRotationDegrees,
                     kaabaMarkerDegrees = state.qiblaDegrees.toFloat()

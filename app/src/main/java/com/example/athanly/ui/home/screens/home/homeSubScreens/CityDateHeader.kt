@@ -31,7 +31,7 @@ fun CityDateHeader(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = dimensionResource(R.dimen.home_city_header_vertical_padding)),
+            .padding(bottom = dimensionResource(R.dimen.home_city_header_vertical_padding)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
