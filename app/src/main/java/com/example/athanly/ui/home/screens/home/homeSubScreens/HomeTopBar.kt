@@ -2,6 +2,7 @@ package com.example.athanly.ui.home.screens.home.homeSubScreens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -44,25 +45,20 @@ fun HomeTopBar(
                 imageVector = Icons.Filled.Menu,
                 contentDescription = stringResource(R.string.home_menu_button_description),
                 tint = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.size(dimensionResource(R.dimen.home_top_bar_icon_size))
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.home_top_bar_icon_size))
             )
         }
 
-        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-            // .uppercase() transforms the app_name resource for display — the resource
-            // itself stays in proper case for use elsewhere (e.g. accessibility, launcher label)
-            Text(
-                text = stringResource(R.string.app_name).uppercase(),
-                style = MaterialTheme.typography.titleMedium.copy(
-                    letterSpacing = dimensionResource(R.dimen.home_top_bar_title_letter_spacing).value.sp
-                ),
-                color = MaterialTheme.colorScheme.primary
-            )
-        }
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+        )
 
         IconButton(
             onClick = onAddCityClick,
-            modifier = Modifier.size(dimensionResource(R.dimen.home_top_bar_button_size))
+            modifier = Modifier
+                .size(dimensionResource(R.dimen.home_top_bar_button_size))
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,7 +43,10 @@ fun BottomNavBar(
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = dimensionResource(R.dimen.bottom_nav_elevation)
     ) {
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
             bottomNavItems.forEach { item ->
                 BottomNavTab(
                     item = item,
@@ -83,7 +87,12 @@ private fun BottomNavTab(
                 .size(dimensionResource(R.dimen.bottom_nav_icon_size))
         ) {
             Icon(
-                imageVector = item.icon,
+                imageVector = if(isActive) {
+                    item.filledIcon
+                }
+                else {
+                    item.outlinedIcon
+                },
                 contentDescription = label,
                 tint = tint,
                 modifier = Modifier.size(dimensionResource(R.dimen.bottom_nav_icon_size))

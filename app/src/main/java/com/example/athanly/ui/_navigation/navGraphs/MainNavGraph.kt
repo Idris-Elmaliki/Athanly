@@ -14,13 +14,15 @@ import com.example.athanly.ui.home.screens.settings.SettingsUi
 // Extension on NavGraphBuilder so MainLayout stays clean — each feature owns its own graph
 fun NavGraphBuilder.mainNavGraph(
     currentScreen: WindowSizeClass,
-    topBarPadding: Dp
+    topBarPadding: Dp,
+    bottomBarPadding: Dp
 ) {
     composable<MainRoutes.Home> {
         HomeUi(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
             topBarPadding = topBarPadding,
+            bottomBarPadding = bottomBarPadding,
         )
     }
     composable<MainRoutes.Qibla> {
@@ -28,6 +30,7 @@ fun NavGraphBuilder.mainNavGraph(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
             topBarPadding = topBarPadding,
+//            bottomBarPadding = bottomBarPadding,
         )
     }
     composable<MainRoutes.Settings> {
@@ -35,6 +38,7 @@ fun NavGraphBuilder.mainNavGraph(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
             topBarPadding = topBarPadding,
+//            bottomBarPadding = bottomBarPadding,
         )
     }
 }

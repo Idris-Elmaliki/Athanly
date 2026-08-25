@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.screens.home.compact
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,6 +11,7 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,6 +29,8 @@ import com.example.athanly.ui.subscreens.AtmosphericBackground
 
 // Compact (< 600dp): single-column, full-bleed. HomeTopBar is fixed above the pager (per
 // design it doesn't swipe with city content); everything below it swipes per-city.
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeUiCompact(
     state: HomeUiState,
@@ -34,14 +38,20 @@ fun HomeUiCompact(
     onAddCityClick: () -> Unit,
     onCitySelected: (Int) -> Unit,
     topBarPadding: Dp,
+    bottomBarPadding: Dp,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
+        // Unpadded — stays full-bleed behind the floating BottomNavBar instead of stopping
+        // above it, so the bar's rounded corners reveal real content instead of dead space
         AtmosphericBackground()
 
+        // Real, interactive content gets bottomBarPadding so it stops above the nav bar
+        // instead of rendering underneath it
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(bottom = bottomBarPadding)
         ) {
             HomeTopBar(
                 onMenuClick = onMenuClick,
