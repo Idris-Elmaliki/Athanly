@@ -1,6 +1,5 @@
-package com.example.athanly.ui.subscreens
+package com.example.athanly.ui.home.subscreens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -35,17 +34,18 @@ fun BottomNavBar(
     Surface(
         modifier = modifier
             .fillMaxWidth()
+            .navigationBarsPadding()
             .height(dimensionResource(R.dimen.bottom_nav_height)),
         shape = RoundedCornerShape(
-            topStart = dimensionResource(R.dimen.bottom_nav_top_corner_radius),
-            topEnd = dimensionResource(R.dimen.bottom_nav_top_corner_radius)
+            dimensionResource(R.dimen.bottom_nav_top_corner_radius)
         ),
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = dimensionResource(R.dimen.bottom_nav_elevation)
     ) {
         Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             bottomNavItems.forEach { item ->
                 BottomNavTab(

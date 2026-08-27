@@ -21,8 +21,6 @@ fun SettingsUi(
 ) {
     val state by viewModel.settingsState.collectAsStateWithLifecycle()
 
-    // TODO: wire to the nav drawer once it's built (separate future plan, same as HomeUi/QiblaUi)
-    val onMenuClick = {}
     // TODO: wire to a language picker screen once it's built (separate future plan)
     val onLanguageRowClick = {}
     // TODO: wire to a Muadhdhin picker screen once it's built (separate future plan)
@@ -35,7 +33,6 @@ fun SettingsUi(
         windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
             SettingsUiExpanded(
                 state = state,
-                onMenuClick = onMenuClick,
                 onLanguageRowClick = onLanguageRowClick,
                 onTimeFormatToggled = viewModel::onTimeFormatToggled,
                 onAsrCalculationToggled = viewModel::onHanafiModeToggled,
@@ -50,7 +47,6 @@ fun SettingsUi(
         windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
             SettingsUiMedium(
                 state = state,
-                onMenuClick = onMenuClick,
                 onLanguageRowClick = onLanguageRowClick,
                 onTimeFormatToggled = viewModel::onTimeFormatToggled,
                 onAsrCalculationToggled = viewModel::onHanafiModeToggled,
@@ -65,7 +61,6 @@ fun SettingsUi(
         else -> {
             SettingsUiCompact(
                 state = state,
-                onMenuClick = onMenuClick,
                 onLanguageRowClick = onLanguageRowClick,
                 onTimeFormatToggled = viewModel::onTimeFormatToggled,
                 onAsrCalculationToggled = viewModel::onHanafiModeToggled,

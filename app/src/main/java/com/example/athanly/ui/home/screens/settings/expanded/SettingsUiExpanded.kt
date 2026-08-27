@@ -26,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -36,23 +35,21 @@ import com.example.athanly.R
 import com.example.athanly.settings.domain.local.modelData.SettingsUiState
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsRow
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsSectionHeader
-import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsTopBar
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.VolumeControlRow
 
 // Expanded (840dp+) — 12 columns, 32dp min margins. Same structure as Compact/Medium, content
 // capped at 55% width to keep it readable on large displays, mirroring HomeUiExpanded/QiblaUiExpanded.
 @Composable
 fun SettingsUiExpanded(
+    modifier: Modifier = Modifier,
     state: SettingsUiState,
-    onMenuClick: () -> Unit,
     onLanguageRowClick: () -> Unit,
     onTimeFormatToggled: () -> Unit,
     onAsrCalculationToggled: () -> Unit,
     onMuadhdhinRowClick: () -> Unit,
     onVolumeChanged: (Float) -> Unit,
     onNotificationSettingsRowClick: () -> Unit,
-    topBarPadding: Dp,
-    modifier: Modifier = Modifier
+    topBarPadding: Dp
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -63,9 +60,10 @@ fun SettingsUiExpanded(
                 .fillMaxSize()
                 .fillMaxWidth(fraction = 0.55f)
         ) {
-            SettingsTopBar(
-                onMenuClick = onMenuClick,
-                modifier = Modifier.padding(top = topBarPadding)
+            Spacer(
+                modifier = Modifier
+                    .padding(top = topBarPadding)
+                    .height(dimensionResource(R.dimen.settings_top_bar_height))
             )
 
             Column(

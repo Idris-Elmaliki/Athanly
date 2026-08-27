@@ -18,7 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.athanly.R
 import com.example.athanly.ui._navigation.navGraphs.mainNavGraph
 import com.example.athanly.ui._navigation.routes.MainRoutes
-import com.example.athanly.ui.subscreens.BottomNavBar
+import com.example.athanly.ui.home.subscreens.BottomNavBar
 
 // Persistent scaffold for the post-onboarding app shell — owns the inner NavHost so the
 // bottom nav bar doesn't recompose when switching between Home/Qibla/Settings

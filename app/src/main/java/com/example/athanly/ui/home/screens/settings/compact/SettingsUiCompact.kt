@@ -17,8 +17,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -26,7 +26,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
@@ -36,7 +35,6 @@ import com.example.athanly.R
 import com.example.athanly.settings.domain.local.modelData.SettingsUiState
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsRow
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsSectionHeader
-import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsTopBar
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.VolumeControlRow
 
 // Compact (< 600dp): single-column, full-bleed — same shell shape as HomeUiCompact/QiblaUiCompact.
@@ -44,25 +42,25 @@ import com.example.athanly.ui.home.screens.settings.settingsSubScreens.VolumeCon
 // sky/mosque scene behind Home and Qibla.
 @Composable
 fun SettingsUiCompact(
+    modifier: Modifier = Modifier,
     state: SettingsUiState,
-    onMenuClick: () -> Unit,
     onLanguageRowClick: () -> Unit,
     onTimeFormatToggled: () -> Unit,
     onAsrCalculationToggled: () -> Unit,
     onMuadhdhinRowClick: () -> Unit,
     onVolumeChanged: (Float) -> Unit,
     onNotificationSettingsRowClick: () -> Unit,
-    topBarPadding: Dp,
-    modifier: Modifier = Modifier
+    topBarPadding: Dp
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            SettingsTopBar(
-                onMenuClick = onMenuClick,
-                modifier = Modifier.padding(top = topBarPadding)
+            Spacer(
+                modifier = Modifier
+                    .padding(top = topBarPadding)
+                    .height(dimensionResource(R.dimen.settings_top_bar_height))
             )
 
             Column(
