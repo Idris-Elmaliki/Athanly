@@ -14,13 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
-import androidx.compose.ui.unit.Dp
 import com.example.athanly.R
 import com.example.athanly.qibla.domain.local.modelData.QiblaUiState
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.DistanceCard
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaCompass
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaHeaderText
-import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaTopBar
 import com.example.athanly.ui.subscreens.AtmosphericBackground
 
 // Medium (600–839dp) — 12 columns, 12dp min margins. Same structure as Compact, content
@@ -28,45 +26,33 @@ import com.example.athanly.ui.subscreens.AtmosphericBackground
 @Composable
 fun QiblaUiMedium(
     state: QiblaUiState,
-    onMenuClick: () -> Unit,
     onUnitToggled: () -> Unit,
-    topBarPadding: Dp,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
                 .fillMaxWidth(fraction = 0.75f)
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = dimensionResource(R.dimen.qibla_screen_horizontal_padding))
         ) {
-            QiblaTopBar(
-                onMenuClick = onMenuClick,
-                modifier = Modifier.padding(top = topBarPadding)
+            QiblaCompass(
+                needleRotationDegrees = state.needleRotationDegrees,
+                kaabaMarkerDegrees = state.qiblaDegrees.toFloat()
             )
 
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(horizontal = dimensionResource(R.dimen.qibla_screen_horizontal_padding))
-            ) {
-                QiblaCompass(
-                    needleRotationDegrees = state.needleRotationDegrees,
-                    kaabaMarkerDegrees = state.qiblaDegrees.toFloat()
-                )
+            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_screen_section_spacing)))
 
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_screen_section_spacing)))
-
-                DistanceCard(
-                    distanceValue = state.distanceValue,
-                    distanceUnit = state.distanceUnit,
-                    qiblaDegrees = state.qiblaDegrees,
-                    qiblaDirection = state.qiblaDirection,
-                    onUnitToggled = onUnitToggled
-                )
-            }
+            DistanceCard(
+                distanceValue = state.distanceValue,
+                distanceUnit = state.distanceUnit,
+                qiblaDegrees = state.qiblaDegrees,
+                qiblaDirection = state.qiblaDirection,
+                onUnitToggled = onUnitToggled
+            )
         }
     }
 }

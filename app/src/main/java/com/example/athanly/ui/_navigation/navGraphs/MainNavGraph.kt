@@ -29,8 +29,6 @@ fun NavGraphBuilder.mainNavGraph(
         QiblaUi(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
-            topBarPadding = topBarPadding,
-//            bottomBarPadding = bottomBarPadding,
         )
     }
     composable<MainRoutes.Settings> {
