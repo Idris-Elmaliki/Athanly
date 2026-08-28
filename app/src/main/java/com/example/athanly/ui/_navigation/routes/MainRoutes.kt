@@ -15,4 +15,11 @@ sealed interface MainRoutes {
 
     @Serializable
     data object Settings : MainRoutes
+
+    // Pushed on top of Settings, not a bottom nav tab — no BottomNavItem entry for either
+    @Serializable
+    data object LanguagePicker : MainRoutes
+
+    @Serializable
+    data object MuadhdhinPicker : MainRoutes
 }

@@ -1,8 +1,11 @@
 package com.example.athanly.ui.home.screens.settings
 
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -17,16 +20,22 @@ fun SettingsUi(
     modifier: Modifier,
     windowSizeClass: WindowSizeClass,
     topBarPadding: Dp,
+    onLanguageRowClick: () -> Unit,
+    onMuadhdhinRowClick: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val state by viewModel.settingsState.collectAsStateWithLifecycle()
 
-    // TODO: wire to a language picker screen once it's built (separate future plan)
-    val onLanguageRowClick = {}
-    // TODO: wire to a Muadhdhin picker screen once it's built (separate future plan)
-    val onMuadhdhinRowClick = {}
-    // TODO: wire to a notification settings screen once it's built (separate future plan)
-    val onNotificationSettingsRowClick = {}
+    // App-specific notification settings live in the OS, not this app — no in-app screen
+    // or DataStore state needed, just hand off to Android's own settings UI.
+    val context = LocalContext.current
+    val onNotificationSettingsRowClick = {
+        context.startActivity(
+            Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+            }
+        )
+    }
 
     when {
         // 840dp+ — expanded (large tablets, landscape)
