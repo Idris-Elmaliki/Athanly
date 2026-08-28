@@ -1,5 +1,9 @@
 package com.example.athanly.ui.home
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +20,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.athanly.R
+import com.example.athanly.ui._navigation.navGraphs.SettingsDetailTransitionDurationMillis
 import com.example.athanly.ui._navigation.navGraphs.mainNavGraph
 import com.example.athanly.ui._navigation.routes.MainRoutes
 import com.example.athanly.ui.home.subscreens.BottomNavBar
@@ -39,6 +44,12 @@ fun HomeLayout(
         currentBackStackEntry?.destination?.hasRoute<MainRoutes.Settings>() == true -> MainRoutes.Settings
         else -> MainRoutes.Home
     }
+
+    // Screens pushed on top of Settings (Language/Muadhdhin pickers) have their own DetailTopBar
+    // and shouldn't show the tab bar over them
+    val isOnDetailScreen = currentBackStackEntry?.destination?.let { destination ->
+        destination.hasRoute<MainRoutes.LanguagePicker>() || destination.hasRoute<MainRoutes.MuadhdhinPicker>()
+    } == true
 
     Scaffold(
         modifier = modifier
@@ -64,29 +75,40 @@ fun HomeLayout(
                 mainNavGraph(
                     currentScreen = windowSizeClass,
                     topBarPadding = (innerPadding.calculateTopPadding() / 2),
-                    bottomBarPadding = bottomDp
+                    bottomBarPadding = bottomDp,
+                    navController = innerNavController
                 )
             }
 
             // Floats over the content instead of living in Scaffold's bottomBar slot, so there's
-            // no opaque rectangular slot background exposed behind its rounded top corners
-            BottomNavBar(
-                currentRoute = currentRoute,
-                onTabSelected = { route ->
-                    // Standard bottom-nav pattern: avoid piling up duplicate destinations on the
-                    // back stack, and restore each tab's own state when switching back to it
-                    innerNavController.navigate(route) {
-                        popUpTo(innerNavController.graph.findStartDestination().id) {
-                            saveState = true
-                        }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
+            // no opaque rectangular slot background exposed behind its rounded top corners.
+            // AnimatedVisibility instead of a plain if-check so it fades out in step with the
+            // picker screen's own slide-in (same duration) rather than snapping away the instant
+            // navigate() is called — the bar floats over content rather than reserving layout
+            // space, so there's no reflow to also guard against, unlike OnBoardingLayout's bars.
+            AnimatedVisibility(
+                visible = !isOnDetailScreen,
+                enter = fadeIn(tween(SettingsDetailTransitionDurationMillis)),
+                exit = fadeOut(tween(SettingsDetailTransitionDurationMillis)),
                 modifier = Modifier
                     .padding(top = innerPadding.calculateBottomPadding())
                     .align(Alignment.BottomCenter)
-            )
+            ) {
+                BottomNavBar(
+                    currentRoute = currentRoute,
+                    onTabSelected = { route ->
+                        // Standard bottom-nav pattern: avoid piling up duplicate destinations on the
+                        // back stack, and restore each tab's own state when switching back to it
+                        innerNavController.navigate(route) {
+                            popUpTo(innerNavController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
+            }
         }
     }
 }
