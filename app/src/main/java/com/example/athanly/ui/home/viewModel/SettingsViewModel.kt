@@ -2,10 +2,10 @@ package com.example.athanly.ui.home.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
-import com.example.athanly.language.domain.modelData.Language
-import com.example.athanly.settings.data.SettingsPreferencesDataStore
-import com.example.athanly.settings.domain.local.modelData.SettingsUiState
+import com.example.athanly.appData.domain.modelData.Muadhdhin
+import com.example.athanly.appData.domain.modelData.Language
+import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
+import com.example.athanly.appData.domain.modelData.AppDataUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,10 +18,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val preferencesDataStore: SettingsPreferencesDataStore
+    private val preferencesDataStore: AppDataPreferencesDataStore
 ) : ViewModel() {
-    private val _settingsState = MutableStateFlow(SettingsUiState())
-    val settingsState: StateFlow<SettingsUiState> = _settingsState.asStateFlow()
+    private val _settingsState = MutableStateFlow(AppDataUiState())
+    val settingsState: StateFlow<AppDataUiState> = _settingsState.asStateFlow()
 
     init {
         // combine()'s 5-flow overload — every preference is independent, so any single
@@ -36,7 +36,7 @@ class SettingsViewModel @Inject constructor(
                     preferencesDataStore.observedLanguage(),
                     preferencesDataStore.observedSelectedMuadhdhin(),
                 ) { is24HourFormat, isHanafiMode, athanVolume, language, selectedMuadhdhin ->
-                    SettingsUiState(
+                    AppDataUiState(
                         is24HourFormat = is24HourFormat,
                         isHanafiMode = isHanafiMode,
                         athanVolume = athanVolume,
@@ -47,7 +47,12 @@ class SettingsViewModel @Inject constructor(
                     _settingsState.update { combinedState }
                 }
             } catch (e: Exception) {
-                _settingsState.update { it.copy(isLoading = false, error = e.message) }
+                _settingsState.update { data ->
+                    data.copy(
+                        isLoading = false,
+                        error = e.message
+                    )
+                }
             }
         }
     }
@@ -59,7 +64,11 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesDataStore.setIs24HourFormat(!_settingsState.value.is24HourFormat)
             } catch (e: Exception) {
-                _settingsState.update { it.copy(error = e.message) }
+                _settingsState.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
             }
         }
     }
@@ -69,7 +78,11 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesDataStore.setIsHanafiMode(!_settingsState.value.isHanafiMode)
             } catch (e: Exception) {
-                _settingsState.update { it.copy(error = e.message) }
+                _settingsState.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
             }
         }
     }
@@ -79,7 +92,11 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesDataStore.setAthanVolume(volume)
             } catch (e: Exception) {
-                _settingsState.update { it.copy(error = e.message) }
+                _settingsState.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
             }
         }
     }
@@ -89,7 +106,11 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesDataStore.setLanguage(language)
             } catch (e: Exception) {
-                _settingsState.update { it.copy(error = e.message) }
+                _settingsState.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
             }
         }
     }
@@ -99,7 +120,11 @@ class SettingsViewModel @Inject constructor(
             try {
                 preferencesDataStore.setSelectedMuadhdhin(muadhdhin)
             } catch (e: Exception) {
-                _settingsState.update { it.copy(error = e.message) }
+                _settingsState.update { data ->
+                    data.copy(
+                        error = e.message
+                    )
+                }
             }
         }
     }

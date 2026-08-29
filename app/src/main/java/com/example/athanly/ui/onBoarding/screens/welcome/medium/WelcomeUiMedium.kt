@@ -29,15 +29,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.athanly.language.domain.modelData.Language
-import com.example.athanly.language.domain.modelData.WelcomeUiState
+import com.example.athanly.appData.domain.modelData.AppDataUiState
+import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.R
 
 // Medium layout (600–839dp) — 12 columns, 12dp min margins
 // Content is centered and capped at 75% of available width to avoid excessive stretching
 @Composable
 fun WelcomeUiMedium(
-    state: WelcomeUiState,
+    state: AppDataUiState,
     onLanguageSelected: (Language) -> Unit,
     modifier: Modifier = Modifier
 ) {

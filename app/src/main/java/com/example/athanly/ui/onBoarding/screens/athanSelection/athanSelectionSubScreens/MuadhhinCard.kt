@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.athanly.R
-import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
+import com.example.athanly.appData.domain.modelData.Muadhdhin
 
 @Composable
 fun MuadhhinCard(

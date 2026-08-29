@@ -1,4 +1,4 @@
-package com.example.athanly.language.domain.modelData
+package com.example.athanly.appData.domain.modelData
 
 import androidx.annotation.StringRes
 import com.example.athanly.R

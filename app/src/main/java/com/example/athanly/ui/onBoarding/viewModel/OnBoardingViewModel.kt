@@ -2,67 +2,104 @@ package com.example.athanly.ui.onBoarding.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.athanly.athanSelection.domain.modelData.AthanSelectionUiState
-import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
-import com.example.athanly.calculations.domain.modelData.CalculationsUiState
-import com.example.athanly.language.domain.modelData.Language
-import com.example.athanly.language.domain.modelData.WelcomeUiState
+import com.example.athanly.appData.domain.modelData.AppDataUiState
+import com.example.athanly.appData.domain.modelData.Language
+import com.example.athanly.appData.domain.modelData.Muadhdhin
+import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import com.example.athanly.notifications.domain.modelData.NotificationsUiState
-import com.example.athanly.settings.data.SettingsPreferencesDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class OnBoardingViewModel @Inject constructor(
-    private val preferencesDataStore: SettingsPreferencesDataStore
+    private val preferencesDataStore: AppDataPreferencesDataStore
 ) : ViewModel() {
 
-    private val _welcomeState = MutableStateFlow(WelcomeUiState())
-    val welcomeState: StateFlow<WelcomeUiState> = _welcomeState.asStateFlow()
+    // Welcome, AthanSelection, and Calculations used to each hold their own local
+    // UiState (WelcomeUiState/AthanSelectionUiState/CalculationsUiState) that duplicated
+    // a single field AppDataUiState already carries. Reading/writing straight off
+    // AppDataUiState here removes that duplication and matches how SettingsViewModel
+    // already drives the same three values on the Settings screen.
+    private val _appDataState = MutableStateFlow(AppDataUiState())
+    val appDataState: StateFlow<AppDataUiState> = _appDataState.asStateFlow()
 
-    // Called whenever the user taps a language card
-    fun onLanguageSelected(language: Language) {
-        _welcomeState.update { current ->
-            current.copy(selectedLanguage = language)
-        }
-    }
-
-    private val _athanSelectionState = MutableStateFlow(AthanSelectionUiState())
-    val athanSelectionState: StateFlow<AthanSelectionUiState> = _athanSelectionState.asStateFlow()
-
-    // Called whenever the user taps a Muadhdhin card
-    fun onMuadhhinSelected(muadhdhin: Muadhdhin) {
-        _athanSelectionState.update { current ->
-            current.copy(selectedMuadhdhin = muadhdhin)
-        }
-    }
-
-    private val _calculationsState = MutableStateFlow(CalculationsUiState())
-    val calculationsState: StateFlow<CalculationsUiState> = _calculationsState.asStateFlow()
-
-    // Called whenever the user flips the Hanafi mode toggle. Updates in-memory state
-    // immediately for the UI, and separately writes through to SettingsPreferencesDataStore
-    // so the choice survives past onboarding instead of being lost once this ViewModel dies.
-    fun onHanafiModeToggled() {
-        _calculationsState.update { current ->
-            current.copy(isHanafiMode = !current.isHanafiMode)
-        }
-
-        viewModelScope.launch(Dispatchers.IO) {
+    init {
+        viewModelScope.launch {
             try {
-                preferencesDataStore.setIsHanafiMode(_calculationsState.value.isHanafiMode)
+                combine(
+                    preferencesDataStore.observedLanguage(),
+                    preferencesDataStore.observedSelectedMuadhdhin(),
+                    preferencesDataStore.observedIsHanafiMode(),
+                ) { language, selectedMuadhdhin, isHanafiMode ->
+                    AppDataUiState(
+                        selectedLanguage = language,
+                        selectedMuadhdhin = selectedMuadhdhin,
+                        isHanafiMode = isHanafiMode,
+                    )
+                }.collect { combinedState ->
+                    _appDataState.update { combinedState }
+                }
             } catch (e: Exception) {
-                _calculationsState.update { it.copy(error = e.message) }
+                _appDataState.update { it.copy(isLoading = false, error = e.message) }
             }
         }
     }
 
+    // Called whenever the user taps a language card
+    fun onLanguageSelected(language: Language) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                preferencesDataStore.setLanguage(language)
+            } catch (e: Exception) {
+                _appDataState.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    // Called whenever the user taps a Muadhdhin card
+    fun onMuadhhinSelected(muadhdhin: Muadhdhin) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                preferencesDataStore.setSelectedMuadhdhin(muadhdhin)
+            } catch (e: Exception) {
+                _appDataState.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    // Called whenever the user flips the Hanafi mode toggle — reads the last known
+    // value straight off appDataState (sourced from the DataStore) and writes the flip.
+    fun onHanafiModeToggled() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                preferencesDataStore.setIsHanafiMode(!_appDataState.value.isHanafiMode)
+            } catch (e: Exception) {
+                _appDataState.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    // Called once the Greeting screen's fade sequence finishes — persists that onboarding
+    // is done so AppViewModel routes straight to Home on every later launch.
+    fun onOnboardingComplete() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                preferencesDataStore.setHasCompletedOnboarding(true)
+            } catch (e: Exception) {
+                _appDataState.update { it.copy(error = e.message) }
+            }
+        }
+    }
+
+    // Notification permission result isn't persisted (see AppDataPreferencesDataStore) —
+    // it's read live from Android's own permission APIs, so this stays local-only state.
     private val _notificationsState = MutableStateFlow(NotificationsUiState())
     val notificationsState: StateFlow<NotificationsUiState> = _notificationsState.asStateFlow()
 
