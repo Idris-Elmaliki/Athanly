@@ -1,10 +1,10 @@
 package com.example.athanly.ui.home.screens.settings.viewModel
 
 import app.cash.turbine.test
-import com.example.athanly.athanSelection.domain.modelData.enums.MuadhdhinId
-import com.example.athanly.athanSelection.domain.modelData.muadhhinList
-import com.example.athanly.language.domain.modelData.Language
-import com.example.athanly.settings.data.SettingsPreferencesDataStore
+import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
+import com.example.athanly.appData.domain.modelData.muadhhinList
+import com.example.athanly.appData.domain.modelData.Language
+import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import com.example.athanly.ui.home.viewModel.SettingsViewModel
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -44,10 +44,10 @@ class SettingsViewModelTest {
     fun `settingsState combines all five preference flows from the DataStore`() = runTest {
         val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
 
-        // mockk<T> { every { ... } returns ... } builds a fake SettingsPreferencesDataStore
+        // mockk<T> { every { ... } returns ... } builds a fake AppDataPreferencesDataStore
         // where every observed-preference call returns a hardcoded flow we control,
         // instead of running a real DataStore file.
-        val preferencesDataStore = mockk<SettingsPreferencesDataStore> {
+        val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(true)
             every { observedIsHanafiMode() } returns flowOf(true)
             every { observedAthanVolume() } returns flowOf(0.5f)
@@ -73,7 +73,7 @@ class SettingsViewModelTest {
         // coEvery { ... } just Runs stubs a suspend function that returns Unit (setIs24HourFormat
         // is `suspend fun ... : Unit`) — without this, calling it on a strict mockk would throw,
         // since only the observed*() getters below are stubbed with `every`.
-        val preferencesDataStore = mockk<SettingsPreferencesDataStore> {
+        val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
             every { observedAthanVolume() } returns flowOf(1f)
@@ -96,7 +96,7 @@ class SettingsViewModelTest {
 
     @Test
     fun `onHanafiModeToggled writes the flipped Hanafi-mode value through to the DataStore`() = runTest {
-        val preferencesDataStore = mockk<SettingsPreferencesDataStore> {
+        val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
             every { observedAthanVolume() } returns flowOf(1f)
@@ -114,7 +114,7 @@ class SettingsViewModelTest {
 
     @Test
     fun `onAthanVolumeChanged writes the given volume through to the DataStore`() = runTest {
-        val preferencesDataStore = mockk<SettingsPreferencesDataStore> {
+        val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
             every { observedAthanVolume() } returns flowOf(1f)
@@ -134,7 +134,7 @@ class SettingsViewModelTest {
 
     @Test
     fun `onLanguageSelected writes the given language through to the DataStore`() = runTest {
-        val preferencesDataStore = mockk<SettingsPreferencesDataStore> {
+        val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
             every { observedAthanVolume() } returns flowOf(1f)
@@ -155,7 +155,7 @@ class SettingsViewModelTest {
     fun `onMuadhdhinSelected writes the given Muadhdhin through to the DataStore`() = runTest {
         val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
 
-        val preferencesDataStore = mockk<SettingsPreferencesDataStore> {
+        val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
             every { observedAthanVolume() } returns flowOf(1f)

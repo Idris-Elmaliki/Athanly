@@ -25,12 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.athanly.R
-import com.example.athanly.calculations.domain.modelData.CalculationsUiState
+import com.example.athanly.appData.domain.modelData.AppDataUiState
 
 // Medium layout (600–839dp) — 12 columns, 12dp min margins
 @Composable
 fun CalculationsUiMedium(
-    state: CalculationsUiState,
+    state: AppDataUiState,
     onHanafiModeToggled: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

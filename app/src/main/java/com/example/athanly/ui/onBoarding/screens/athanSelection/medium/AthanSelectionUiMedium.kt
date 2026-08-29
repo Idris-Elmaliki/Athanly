@@ -19,15 +19,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.athanly.R
-import com.example.athanly.athanSelection.domain.modelData.AthanSelectionUiState
-import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
-import com.example.athanly.athanSelection.domain.modelData.muadhhinList
+import com.example.athanly.appData.domain.modelData.AppDataUiState
+import com.example.athanly.appData.domain.modelData.Muadhdhin
+import com.example.athanly.appData.domain.modelData.muadhhinList
 import com.example.athanly.ui.onBoarding.screens.athanSelection.athanSelectionSubScreens.MuadhhinCard
 
 // Medium layout (600–839dp) — 12 columns, 12dp min margins, content at 75% width
 @Composable
 fun AthanSelectionUiMedium(
-    state: AthanSelectionUiState,
+    state: AppDataUiState,
     onMuadhhinSelected: (Muadhdhin) -> Unit,
     modifier: Modifier = Modifier,
 ) {

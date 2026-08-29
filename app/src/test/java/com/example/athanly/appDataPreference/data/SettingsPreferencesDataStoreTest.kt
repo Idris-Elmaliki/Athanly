@@ -1,10 +1,10 @@
-package com.example.athanly.settings.data
+package com.example.athanly.appDataPreference.data
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import app.cash.turbine.test
-import com.example.athanly.athanSelection.domain.modelData.enums.MuadhdhinId
-import com.example.athanly.athanSelection.domain.modelData.muadhhinList
-import com.example.athanly.language.domain.modelData.Language
+import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
+import com.example.athanly.appData.domain.modelData.muadhhinList
+import com.example.athanly.appData.domain.modelData.Language
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule
@@ -16,7 +16,7 @@ import org.junit.rules.TemporaryFolder
 // touching real app storage or leaking state between tests.
 //
 // PreferenceDataStoreFactory.create(produceFile = ...) builds a real DataStore<Preferences>
-// backed by that temp file — same factory the real DI module (SettingsModule) will use,
+// backed by that temp file — same factory the real DI module (AppDataModule) will use,
 // just pointed at a test file instead of the app's real preferences file.
 //
 // Turbine's `.test { }` on a Flow lets us call awaitItem() to pull the next emission and
@@ -27,11 +27,11 @@ class SettingsPreferencesDataStoreTest {
     @get:Rule
     val temporaryFolder = TemporaryFolder()
 
-    private fun settingsPreferencesDataStore(): SettingsPreferencesDataStore {
+    private fun settingsPreferencesDataStore(): AppDataPreferencesDataStore {
         val dataStore = PreferenceDataStoreFactory.create(
             produceFile = { temporaryFolder.newFile("test_settings_preferences.preferences_pb") }
         )
-        return SettingsPreferencesDataStore(dataStore = dataStore)
+        return AppDataPreferencesDataStore(dataStore = dataStore)
     }
 
     // --- Time Format ---
@@ -85,7 +85,7 @@ class SettingsPreferencesDataStoreTest {
     }
 
     // --- Volume Control (Athan playback volume) ---
-    // Float in the 0f-1f range, same default as SettingsUiState.athanVolume (full volume).
+    // Float in the 0f-1f range, same default as AppDataUiState.athanVolume (full volume).
 
     @Test
     fun `observedAthanVolume defaults to 1f when nothing has been stored yet`() = runTest {
@@ -159,6 +159,32 @@ class SettingsPreferencesDataStoreTest {
             preferencesDataStore.setSelectedMuadhdhin(kuwait)
 
             assertEquals(kuwait, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    // --- Onboarding Complete ---
+    // Gates AppRoute's start destination — false means the app hasn't finished
+    // onboarding yet, so it should be shown again on the next launch.
+
+    @Test
+    fun `observedHasCompletedOnboarding defaults to false when nothing has been stored yet`() = runTest {
+        settingsPreferencesDataStore().observedHasCompletedOnboarding().test {
+            assertEquals(false, awaitItem())
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `setHasCompletedOnboarding persists true and observedHasCompletedOnboarding reflects it on the next emission`() = runTest {
+        val preferencesDataStore = settingsPreferencesDataStore()
+
+        preferencesDataStore.observedHasCompletedOnboarding().test {
+            assertEquals(false, awaitItem()) // initial default, file is still empty
+
+            preferencesDataStore.setHasCompletedOnboarding(true)
+
+            assertEquals(true, awaitItem())
             cancelAndIgnoreRemainingEvents()
         }
     }

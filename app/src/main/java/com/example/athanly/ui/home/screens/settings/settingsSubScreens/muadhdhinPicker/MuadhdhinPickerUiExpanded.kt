@@ -35,8 +35,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import com.example.athanly.R
-import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
-import com.example.athanly.athanSelection.domain.modelData.muadhhinList
+import com.example.athanly.appData.domain.modelData.Muadhdhin
+import com.example.athanly.appData.domain.modelData.muadhhinList
 import com.example.athanly.ui.subscreens.DetailTopBar
 
 // Expanded (840dp+) — 12 columns, 32dp min margins. Same structure as Compact/Medium, content

@@ -29,15 +29,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.athanly.language.domain.modelData.Language
-import com.example.athanly.language.domain.modelData.WelcomeUiState
+import com.example.athanly.appData.domain.modelData.AppDataUiState
+import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.R
 
 // Expanded layout (840+dp) — 12 columns, 32dp min margins
 // Content is constrained to 55% width to keep it readable on large landscape displays
 @Composable
 fun WelcomeUiExpanded(
-    state: WelcomeUiState,
+    state: AppDataUiState,
     onLanguageSelected: (Language) -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -1,4 +1,4 @@
-package com.example.athanly.settings.data
+package com.example.athanly.appDataPreference.data
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -6,17 +6,17 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.athanly.athanSelection.domain.modelData.Muadhdhin
-import com.example.athanly.athanSelection.domain.modelData.enums.MuadhdhinId
-import com.example.athanly.athanSelection.domain.modelData.muadhhinList
-import com.example.athanly.language.domain.modelData.Language
+import com.example.athanly.appData.domain.modelData.Muadhdhin
+import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
+import com.example.athanly.appData.domain.modelData.muadhhinList
+import com.example.athanly.appData.domain.modelData.Language
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 // Takes DataStore<Preferences> directly (not a Context it builds one from) so tests
-// can hand it a real temp-file-backed instance — SettingsModule wires up the actual
+// can hand it a real temp-file-backed instance — AppDataModule wires up the actual
 // Context-bound DataStore for the running app.
-class SettingsPreferencesDataStore(
+class AppDataPreferencesDataStore(
     private val dataStore: DataStore<Preferences>
 ) {
     // Defaults to false (12h format) when the key is missing, i.e. first launch.
@@ -96,11 +96,26 @@ class SettingsPreferencesDataStore(
         }
     }
 
+    // Gates AppRoute's start destination — false means onboarding hasn't been
+    // completed yet, so it should be shown again the next time the app launches.
+    fun observedHasCompletedOnboarding(): Flow<Boolean> {
+        return dataStore.data.map { preferences ->
+            preferences[HAS_COMPLETED_ONBOARDING_KEY] ?: false
+        }
+    }
+
+    suspend fun setHasCompletedOnboarding(hasCompletedOnboarding: Boolean) {
+        dataStore.edit { preferences ->
+            preferences[HAS_COMPLETED_ONBOARDING_KEY] = hasCompletedOnboarding
+        }
+    }
+
     companion object {
         private val IS_24_HOUR_FORMAT_KEY = booleanPreferencesKey("is_24_hour_format")
         private val IS_HANAFI_MODE_KEY = booleanPreferencesKey("is_hanafi_mode")
         private val ATHAN_VOLUME_KEY = floatPreferencesKey("athan_volume")
         private val LANGUAGE_KEY = stringPreferencesKey("language")
         private val SELECTED_MUADHDHIN_ID_KEY = stringPreferencesKey("selected_muadhdhin_id")
+        private val HAS_COMPLETED_ONBOARDING_KEY = booleanPreferencesKey("has_completed_onboarding")
     }
 }

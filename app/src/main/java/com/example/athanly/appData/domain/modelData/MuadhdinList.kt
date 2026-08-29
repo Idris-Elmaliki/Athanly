@@ -1,7 +1,7 @@
-package com.example.athanly.athanSelection.domain.modelData
+package com.example.athanly.appData.domain.modelData
 
 import com.example.athanly.R
-import com.example.athanly.athanSelection.domain.modelData.enums.MuadhdhinId
+import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
 
 // All selectable Muadhdhin options, in display order
 val muadhhinList = listOf(

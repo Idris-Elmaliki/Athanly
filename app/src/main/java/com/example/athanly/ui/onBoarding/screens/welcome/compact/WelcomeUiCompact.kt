@@ -29,14 +29,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
-import com.example.athanly.language.domain.modelData.Language
-import com.example.athanly.language.domain.modelData.WelcomeUiState
+import com.example.athanly.appData.domain.modelData.AppDataUiState
+import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.R
 
 // Compact layout (0–599dp) — 4 columns, 8dp min margins
 @Composable
 fun WelcomeUiCompact(
-    state: WelcomeUiState,
+    state: AppDataUiState,
     onLanguageSelected: (Language) -> Unit,
     modifier: Modifier = Modifier
 ) {
