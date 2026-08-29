@@ -32,7 +32,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.example.athanly.R
-import com.example.athanly.settings.domain.local.modelData.SettingsUiState
+import com.example.athanly.appData.domain.modelData.AppDataUiState
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsRow
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsSectionHeader
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.VolumeControlRow
@@ -43,7 +43,7 @@ import com.example.athanly.ui.home.screens.settings.settingsSubScreens.VolumeCon
 @Composable
 fun SettingsUiCompact(
     modifier: Modifier = Modifier,
-    state: SettingsUiState,
+    state: AppDataUiState,
     onLanguageRowClick: () -> Unit,
     onTimeFormatToggled: () -> Unit,
     onAsrCalculationToggled: () -> Unit,

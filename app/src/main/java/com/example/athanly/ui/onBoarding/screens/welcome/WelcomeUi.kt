@@ -17,7 +17,7 @@ fun WelcomeUi(
     windowSizeClass: WindowSizeClass,
     viewModel: OnBoardingViewModel = hiltViewModel()
 ) {
-    val state by viewModel.welcomeState.collectAsStateWithLifecycle()
+    val state by viewModel.appDataState.collectAsStateWithLifecycle()
 
     when {
         // 840dp+ — expanded (large tablets, landscape)

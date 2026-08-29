@@ -25,12 +25,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import com.example.athanly.R
-import com.example.athanly.calculations.domain.modelData.CalculationsUiState
+import com.example.athanly.appData.domain.modelData.AppDataUiState
 
 // Compact layout (0–599dp) — 4 columns, 8dp min margins
 @Composable
 fun CalculationsUiCompact(
-    state: CalculationsUiState,
+    state: AppDataUiState,
     onHanafiModeToggled: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

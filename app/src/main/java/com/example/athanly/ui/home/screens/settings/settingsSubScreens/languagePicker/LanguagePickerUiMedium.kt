@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import com.example.athanly.R
-import com.example.athanly.language.domain.modelData.Language
+import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.ui.subscreens.DetailTopBar
 
 // Medium (600–839dp) — 12 columns, 12dp min margins. Same structure as Compact, content
