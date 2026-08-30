@@ -1,7 +1,7 @@
 package com.example.athanly.athanTime.local.domain.repository
 
 import com.example.athanly.athanTime.local.domain.modelData.City
-import com.example.athanly.athanTime.local.domain.modelData.PrayerSchedule
+import com.example.athanly.athanTime.domain.PrayerSchedule
 import kotlinx.coroutines.flow.Flow
 
 // Only domain types cross this boundary — Room entities never leak past the data layer.
