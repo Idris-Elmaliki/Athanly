@@ -4,11 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.athanly.athanTime.local.domain.modelData.HomeUiState
 import com.example.athanly.athanTime.local.domain.modelData.NextPrayerInfo
-import com.example.athanly.athanTime.local.domain.modelData.PrayerSchedule
+import com.example.athanly.athanTime.domain.PrayerSchedule
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import com.example.athanly.athanTime.local.domain.modelData.mockCities
 import com.example.athanly.athanTime.local.domain.modelData.mockSchedulesByCityId
-import com.example.athanly.athanTime.local.domain.modelData.timeFor
+import com.example.athanly.athanTime.domain.timeFor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,12 +20,12 @@ import java.time.Clock
 import java.time.Duration
 import java.time.LocalTime
 import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val clock: Clock
 ) : ViewModel() {
-
     // Seeded from mock data for now — real prayer-time calculation + city persistence
     // is a separate future plan, swapped in here without touching any UI file
     private val _homeState = MutableStateFlow(
@@ -42,7 +42,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             while (true) {
                 tick()
-                delay(1000)
+                delay(1000.milliseconds)
             }
         }
     }

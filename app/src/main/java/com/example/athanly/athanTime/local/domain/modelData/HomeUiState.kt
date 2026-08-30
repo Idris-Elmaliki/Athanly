@@ -1,5 +1,7 @@
 package com.example.athanly.athanTime.local.domain.modelData
 
+import com.example.athanly.athanTime.domain.PrayerSchedule
+
 // Lives alongside City/PrayerSchedule in athanTime — the Home screen's state is built
 // entirely from athan data, so it belongs with the rest of the athan domain models.
 data class HomeUiState(

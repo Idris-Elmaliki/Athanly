@@ -4,7 +4,7 @@ import com.example.athanly.athanTime.local.data.dao.AthanTimeDao
 import com.example.athanly.athanTime.local.data.entity.CityEntity
 import com.example.athanly.athanTime.local.data.entity.PrayerScheduleEntity
 import com.example.athanly.athanTime.local.domain.modelData.City
-import com.example.athanly.athanTime.local.domain.modelData.PrayerSchedule
+import com.example.athanly.athanTime.domain.PrayerSchedule
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
 import com.example.athanly.userInfoCalculations.toIsoString
 import com.example.athanly.userInfoCalculations.toLocalDate
