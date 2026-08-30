@@ -94,4 +94,11 @@ dependencies {
     // datastore-preferences — persists small preference data (e.g. onboarding completion)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.datastore.core)
+
+    // Room — persists cached prayer schedules per city (androidx.room)
+    implementation(libs.androidx.room.runtime)
+    // Room coroutines/Flow support for suspend DAO functions (androidx.room)
+    implementation(libs.androidx.room.ktx)
+    // Room annotation processor, run via KSP like the Hilt compiler (androidx.room)
+    ksp(libs.androidx.room.compiler)
 }

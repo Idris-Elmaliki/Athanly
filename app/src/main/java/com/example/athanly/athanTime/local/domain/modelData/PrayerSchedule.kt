@@ -1,11 +1,16 @@
 package com.example.athanly.athanTime.local.domain.modelData
 
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
+import java.time.LocalDate
 import java.time.LocalTime
 
 // The 5 daily prayer times + Sunrise for one City, for one day. LocalTime (not a formatted
 // String) so the ViewModel can do real countdown/next-prayer math against the current time.
+// `date` records which calendar day these times are for — the future "only call the Athan API
+// once per city per day" check compares this against today's date to decide staleness.
 data class PrayerSchedule(
+    val date: LocalDate = LocalDate.now(),
+
     val fajr: LocalTime,
     val sunrise: LocalTime,
     val dhuhr: LocalTime,
