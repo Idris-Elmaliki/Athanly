@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 // Room-persisted mirror of the City domain model — kept separate so the domain layer
 // never depends on Room annotations.
-@Entity(tableName = "City")
+@Entity(tableName = "cities")
 data class CityEntity(
     @PrimaryKey val id: String,
 
