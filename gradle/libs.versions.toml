@@ -25,6 +25,7 @@ mockk = "1.14.9"
 turbine = "1.2.1"
 kotlinxCoroutinesTest = "1.11.0"
 datastoreCore = "1.2.1"
+room = "2.7.2"
 
 [libraries]
 androidx-navigation3-runtime = { group = "androidx.navigation", name = "navigation3-runtime", version.ref = "navigation3" }
@@ -61,6 +62,9 @@ mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 turbine = { group = "app.cash.turbine", name = "turbine", version.ref = "turbine" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 androidx-datastore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "datastoreCore" }
+androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
