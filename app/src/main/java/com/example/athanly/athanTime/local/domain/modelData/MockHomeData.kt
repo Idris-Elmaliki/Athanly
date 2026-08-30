@@ -1,5 +1,6 @@
 package com.example.athanly.athanTime.local.domain.modelData
 
+import java.time.LocalDate
 import java.time.LocalTime
 
 // Hardcoded stand-in for the real prayer-time calculation + city persistence layer (a
