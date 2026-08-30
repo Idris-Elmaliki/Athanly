@@ -100,4 +100,15 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     // Room annotation processor, run via KSP like the Hilt compiler (androidx.room)
     ksp(libs.androidx.room.compiler)
+
+    // Ktor Client — core HTTP client used to call the Athan prayer-times API (io.ktor)
+    implementation(libs.ktor.client.core)
+    // Ktor Client — OkHttp engine, the standard HTTP engine choice on Android (io.ktor)
+    implementation(libs.ktor.client.okhttp)
+    // Ktor Client — negotiates JSON content type for requests/responses (io.ktor)
+    implementation(libs.ktor.client.content.negotiation)
+    // Ktor Client — logs outgoing requests/responses for debugging network calls (io.ktor)
+    implementation(libs.ktor.client.logging)
+    // Ktor Client — kotlinx.serialization JSON converter, reuses the existing kotlinx-serialization-json dependency (io.ktor)
+    implementation(libs.ktor.serialization.kotlinx.json)
 }

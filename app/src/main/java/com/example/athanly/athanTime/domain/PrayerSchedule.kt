@@ -1,4 +1,4 @@
-package com.example.athanly.athanTime.local.domain.modelData
+package com.example.athanly.athanTime.domain
 
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import java.time.LocalDate

@@ -5,7 +5,7 @@ import com.example.athanly.athanTime.local.data.dao.AthanTimeDao
 import com.example.athanly.athanTime.local.data.entity.CityEntity
 import com.example.athanly.athanTime.local.data.entity.PrayerScheduleEntity
 import com.example.athanly.athanTime.local.domain.modelData.City
-import com.example.athanly.athanTime.local.domain.modelData.PrayerSchedule
+import com.example.athanly.athanTime.domain.PrayerSchedule
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
