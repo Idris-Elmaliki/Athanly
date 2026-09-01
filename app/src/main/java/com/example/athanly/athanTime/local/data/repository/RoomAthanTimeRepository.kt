@@ -13,29 +13,33 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
+// The domain City has no id (there's only ever one) — this constant is the Room-only
+// primary key that lets the single row still satisfy @PrimaryKey/@ForeignKey, without
+// leaking past this data-layer mapper.
+private const val CURRENT_LOCATION_ID = "current_location"
+
 class RoomAthanTimeRepository @Inject constructor(
     private val dao: AthanTimeDao
 ) : AthanTimeRepository {
 
-    override fun observeCities(): Flow<List<City>> {
-        return dao.observeCities().map { entities -> entities.map { it.toDomain() } }
+    override fun observeCity(): Flow<City?> {
+        return dao.observeCity().map { it?.toDomain() }
     }
 
-    override fun observeSchedule(cityId: String): Flow<PrayerSchedule?> {
-        return dao.observeScheduleForCity(cityId).map { it?.toDomain() }
+    override fun observeSchedule(): Flow<PrayerSchedule?> {
+        return dao.observeSchedule().map { it?.toDomain() }
+    }
+
+    override suspend fun saveCity(city: City) {
+        dao.upsertCity(city.toEntity())
     }
 
     override suspend fun saveCityWithSchedule(city: City, schedule: PrayerSchedule) {
-        dao.upsertCityWithSchedule(city.toEntity(), schedule.toEntity(cityId = city.id))
-    }
-
-    override suspend fun deleteCity(cityId: String) {
-        dao.deleteCity(cityId)
+        dao.upsertCityWithSchedule(city.toEntity(), schedule.toEntity())
     }
 }
 
 private fun CityEntity.toDomain() = City(
-    id = id,
     name = name,
     hijriDate = hijriDate,
     latitude = latitude,
@@ -43,7 +47,7 @@ private fun CityEntity.toDomain() = City(
 )
 
 private fun City.toEntity() = CityEntity(
-    id = id,
+    id = CURRENT_LOCATION_ID,
     name = name,
     hijriDate = hijriDate,
     latitude = latitude,
@@ -60,8 +64,8 @@ private fun PrayerScheduleEntity.toDomain() = PrayerSchedule(
     isha = isha.toLocalTime()
 )
 
-private fun PrayerSchedule.toEntity(cityId: String) = PrayerScheduleEntity(
-    cityId = cityId,
+private fun PrayerSchedule.toEntity() = PrayerScheduleEntity(
+    cityId = CURRENT_LOCATION_ID,
     date = date.toIsoString(),
     fajr = fajr.toIsoString(),
     sunrise = sunrise.toIsoString(),

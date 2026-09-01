@@ -8,9 +8,10 @@ data class HomeUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
 
-    val cities: List<City> = emptyList(),
-    val schedulesByCityId: Map<String, PrayerSchedule> = emptyMap(),
-    val selectedCityIndex: Int = 0,
+    // Both null until the Location onboarding step saves a city and HomeViewModel's
+    // refresh flow fetches its schedule
+    val city: City? = null,
+    val schedule: PrayerSchedule? = null,
 
     // Null until the first tick computes it — recalculated every second by HomeViewModel
     val nextPrayerInfo: NextPrayerInfo? = null
