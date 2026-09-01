@@ -111,4 +111,7 @@ dependencies {
     implementation(libs.ktor.client.logging)
     // Ktor Client — kotlinx.serialization JSON converter, reuses the existing kotlinx-serialization-json dependency (io.ktor)
     implementation(libs.ktor.serialization.kotlinx.json)
+
+    // FusedLocationProviderClient — fetches the user's current location for the Location onboarding step (com.google.android.gms)
+    implementation(libs.play.services.location)
 }

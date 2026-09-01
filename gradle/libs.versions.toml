@@ -27,6 +27,7 @@ kotlinxCoroutinesTest = "1.11.0"
 datastoreCore = "1.2.1"
 room = "2.7.2"
 ktor = "3.5.2"
+playServicesLocation = "21.3.0"
 
 [libraries]
 androidx-navigation3-runtime = { group = "androidx.navigation", name = "navigation3-runtime", version.ref = "navigation3" }
@@ -71,6 +72,7 @@ ktor-client-okhttp = { group = "io.ktor", name = "ktor-client-okhttp", version.r
 ktor-client-content-negotiation = { group = "io.ktor", name = "ktor-client-content-negotiation", version.ref = "ktor" }
 ktor-client-logging = { group = "io.ktor", name = "ktor-client-logging", version.ref = "ktor" }
 ktor-serialization-kotlinx-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

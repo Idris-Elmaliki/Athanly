@@ -54,7 +54,6 @@
 
     <!-- Home top bar -->
     <string name="home_menu_button_description">Open menu</string>
-    <string name="home_add_city_button_description">Add city</string>
 
     <!-- Qibla screen: distance unit labels -->
     <string name="qibla_unit_km">km</string>

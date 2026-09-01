@@ -24,8 +24,6 @@ fun HomeUi(
 
     // TODO: wire to the nav drawer once it's built (separate future plan)
     val onMenuClick = {}
-    // TODO: wire to the add-city flow once it's built (separate future plan)
-    val onAddCityClick = {}
 
     when {
         // 840dp+ — expanded (large tablets, landscape)
@@ -33,8 +31,6 @@ fun HomeUi(
             HomeUiExpanded(
                 state = state,
                 onMenuClick = onMenuClick,
-                onAddCityClick = onAddCityClick,
-                onCitySelected = viewModel::onCitySelected,
                 topBarPadding = topBarPadding,
                 modifier = modifier
             )
@@ -44,8 +40,6 @@ fun HomeUi(
             HomeUiMedium(
                 state = state,
                 onMenuClick = onMenuClick,
-                onAddCityClick = onAddCityClick,
-                onCitySelected = viewModel::onCitySelected,
                 topBarPadding = topBarPadding,
                 modifier = modifier
             )
@@ -55,8 +49,6 @@ fun HomeUi(
             HomeUiCompact(
                 state = state,
                 onMenuClick = onMenuClick,
-                onAddCityClick = onAddCityClick,
-                onCitySelected = viewModel::onCitySelected,
                 topBarPadding = topBarPadding,
                 bottomBarPadding = bottomBarPadding,
                 modifier = modifier
