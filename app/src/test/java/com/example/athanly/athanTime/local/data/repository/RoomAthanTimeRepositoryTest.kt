@@ -41,22 +41,19 @@ class RoomAthanTimeRepositoryTest {
     // collecting a Flow requires a coroutine, but we don't want the test waiting on a real
     // clock/dispatcher.
     @Test
-    fun `observeCities emits mapped domain Cities when DAO emits CityEntities`() = runTest {
-        // Arrange: stub the DAO's non-suspend Flow-returning function with `every { } returns`
-        // (use `coEvery` instead for suspend functions — observeCities() isn't suspend, so
-        // `every` is correct here). flowOf(...) builds a Flow that emits this one list, then
-        // completes.
+    fun `observeCity emits the mapped domain City when the DAO emits a CityEntity`() = runTest {
+        // Arrange: the domain City has no id (there's only ever one) — the DAO row's id is
+        // a Room-only concern this repository hides, so it never appears in expectedCity.
         val cityEntity = CityEntity(
-            id = "istanbul",
+            id = "current_location",
             name = "Istanbul",
             hijriDate = "12 Rabi' al-Awwal, 1445 AH",
             latitude = 41.0082,
             longitude = 28.9784
         )
-        every { dao.observeCities() } returns flowOf(listOf(cityEntity))
+        every { dao.observeCity() } returns flowOf(cityEntity)
 
         val expectedCity = City(
-            id = "istanbul",
             name = "Istanbul",
             hijriDate = "12 Rabi' al-Awwal, 1445 AH",
             latitude = 41.0082,
@@ -66,32 +63,31 @@ class RoomAthanTimeRepositoryTest {
         // Act + Assert: Turbine's `.test { }` collects the Flow inside the block. awaitItem()
         // suspends until the next emission arrives and returns it; awaitComplete() asserts the
         // Flow finishes with no further emissions — both fail the test if they don't happen.
-        repository.observeCities().test {
-            assert(awaitItem() == listOf(expectedCity))
+        repository.observeCity().test {
+            assert(awaitItem() == expectedCity)
             awaitComplete()
         }
     }
 
     @Test
-    fun `observeCities emits empty list when DAO has no cached cities`() = runTest {
-        // Arrange: an empty cache is a normal, expected state (e.g. before any city has ever
-        // been saved) — not an error — so the DAO just emits an empty list, not null/an
-        // exception.
-        every { dao.observeCities() } returns flowOf(emptyList())
+    fun `observeCity emits null when no city has been saved yet`() = runTest {
+        // Arrange: no city saved yet is a normal, expected state (e.g. before onboarding's
+        // Location step runs) — not an error — so the DAO just emits null, not an exception.
+        every { dao.observeCity() } returns flowOf(null)
 
-        repository.observeCities().test {
-            assert(awaitItem() == emptyList<City>())
+        repository.observeCity().test {
+            assert(awaitItem() == null)
             awaitComplete()
         }
     }
 
     @Test
-    fun `observeSchedule emits mapped domain PrayerSchedule for an existing cityId`() = runTest {
+    fun `observeSchedule emits the mapped domain PrayerSchedule when one is cached`() = runTest {
         // Arrange: the entity stores times/date as ISO-8601 Strings (per the "Room columns are
         // String, converted explicitly" decision) — the repository's mapper is what turns
         // these back into java.time types for the domain model.
         val scheduleEntity = PrayerScheduleEntity(
-            cityId = "istanbul",
+            cityId = "current_location",
             date = "2026-08-29",
             fajr = "04:30:00",
             sunrise = "06:05:00",
@@ -100,7 +96,7 @@ class RoomAthanTimeRepositoryTest {
             maghrib = "18:20:00",
             isha = "19:45:00"
         )
-        every { dao.observeScheduleForCity("istanbul") } returns flowOf(scheduleEntity)
+        every { dao.observeSchedule() } returns flowOf(scheduleEntity)
 
         val expectedSchedule = PrayerSchedule(
             date = LocalDate.of(2026, 8, 29),
@@ -112,32 +108,57 @@ class RoomAthanTimeRepositoryTest {
             isha = LocalTime.of(19, 45)
         )
 
-        repository.observeSchedule("istanbul").test {
+        repository.observeSchedule().test {
             assert(awaitItem() == expectedSchedule)
             awaitComplete()
         }
     }
 
     @Test
-    fun `observeSchedule emits null when no schedule is cached for that cityId`() = runTest {
-        // Arrange: a city can exist with no schedule cached yet (e.g. the city was just added
-        // but the Athan API hasn't been called for it) — the DAO's nullable return type models
-        // that directly, so the mapper must pass null through rather than crashing on it.
-        every { dao.observeScheduleForCity("new-york") } returns flowOf(null)
+    fun `observeSchedule emits null when no schedule is cached`() = runTest {
+        // Arrange: a city can exist with no schedule cached yet (e.g. onboarding just saved
+        // the city but the Athan API hasn't been called yet) — the DAO's nullable return type
+        // models that directly, so the mapper must pass null through rather than crashing on it.
+        every { dao.observeSchedule() } returns flowOf(null)
 
-        repository.observeSchedule("new-york").test {
+        repository.observeSchedule().test {
             assert(awaitItem() == null)
             awaitComplete()
         }
     }
 
     @Test
-    fun `saveCityWithSchedule delegates to dao upsertCityWithSchedule with the mapped entities`() = runTest {
-        // Arrange: `coEvery` (not `every`) is required here because upsertCityWithSchedule is a
-        // suspend function on the DAO. `just Runs` stubs it to complete successfully with no
-        // return value (Unit) and no real work — we only care that it was CALLED correctly.
+    fun `saveCity delegates to dao upsertCity with the mapped entity`() = runTest {
+        // Arrange: `coEvery` (not `every`) is required here because upsertCity is a suspend
+        // function on the DAO. `just Runs` stubs it to complete successfully with no return
+        // value (Unit) and no real work — we only care that it was CALLED correctly.
         val city = City(
-            id = "istanbul",
+            name = "Istanbul",
+            hijriDate = "12 Rabi' al-Awwal, 1445 AH",
+            latitude = 41.0082,
+            longitude = 28.9784
+        )
+        val expectedCityEntity = CityEntity(
+            id = "current_location",
+            name = "Istanbul",
+            hijriDate = "12 Rabi' al-Awwal, 1445 AH",
+            latitude = 41.0082,
+            longitude = 28.9784
+        )
+        coEvery { dao.upsertCity(any()) } just Runs
+
+        // Act
+        repository.saveCity(city)
+
+        // Assert: `coVerify` checks the suspend function was actually called with these exact
+        // argument values — since CityEntity is a data class, MockK compares it by structural
+        // equals(), so this fails if the mapping (including the hardcoded id) is wrong.
+        coVerify { dao.upsertCity(expectedCityEntity) }
+    }
+
+    @Test
+    fun `saveCityWithSchedule delegates to dao upsertCityWithSchedule with the mapped entities`() = runTest {
+        val city = City(
             name = "Istanbul",
             hijriDate = "12 Rabi' al-Awwal, 1445 AH",
             latitude = 41.0082,
@@ -153,14 +174,14 @@ class RoomAthanTimeRepositoryTest {
             isha = LocalTime.of(19, 45)
         )
         val expectedCityEntity = CityEntity(
-            id = "istanbul",
+            id = "current_location",
             name = "Istanbul",
             hijriDate = "12 Rabi' al-Awwal, 1445 AH",
             latitude = 41.0082,
             longitude = 28.9784
         )
         val expectedScheduleEntity = PrayerScheduleEntity(
-            cityId = "istanbul",
+            cityId = "current_location",
             date = "2026-08-29",
             fajr = "04:30:00",
             sunrise = "06:05:00",
@@ -174,25 +195,7 @@ class RoomAthanTimeRepositoryTest {
         // Act
         repository.saveCityWithSchedule(city, schedule)
 
-        // Assert: `coVerify` checks the suspend function was actually called with these exact
-        // argument values — since both entity types are data classes, MockK compares them by
-        // structural equals(), so this fails if the mapping produced the wrong fields.
+        // Assert
         coVerify { dao.upsertCityWithSchedule(expectedCityEntity, expectedScheduleEntity) }
     }
-
-    @Test
-    fun `deleteCity delegates to dao deleteCity with the given cityId`() = runTest {
-        // No mapping involved here — cityId is a plain String passed straight through, so
-        // this test only needs to confirm the repository doesn't drop or alter the argument.
-        coEvery { dao.deleteCity("istanbul") } just Runs
-
-        repository.deleteCity("istanbul")
-
-        coVerify { dao.deleteCity("istanbul") }
-    }
-
-    // Known gap: PrayerScheduleEntity's ON DELETE CASCADE (deleting a city removes its
-    // schedule) is enforced by real SQLite, not by this mocked DAO — mocking never touches
-    // actual SQL, so that behavior isn't covered here. Revisit with an in-memory-Room
-    // instrumented test if/when that infra is worth adding to the project.
 }

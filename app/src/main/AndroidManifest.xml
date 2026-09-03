@@ -8,6 +8,12 @@
     <!-- Needed to call the Athan prayer-times API over Ktor -->
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Coarse is enough for prayer-time calculation accuracy; fine is requested alongside it
+         since FusedLocationProviderClient returns a better fix when both are granted. Requested
+         at runtime on the onboarding Location screen -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".AthanlyApplication"
         android:allowBackup="true"

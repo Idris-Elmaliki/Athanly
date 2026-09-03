@@ -65,6 +65,18 @@
     <dimen name="notifications_action_area_gap">16dp</dimen>
     <dimen name="notifications_action_area_bottom_padding">16dp</dimen>
 
+    <!-- Location screen -->
+    <dimen name="location_card_icon_circle_size">48dp</dimen>
+    <dimen name="location_card_icon_size">24dp</dimen>
+    <dimen name="location_card_button_corner_radius">12dp</dimen>
+    <dimen name="location_card_button_vertical_padding">14dp</dimen>
+    <dimen name="location_card_button_icon_size">18dp</dimen>
+    <dimen name="location_card_button_icon_gap">8dp</dimen>
+    <dimen name="location_card_button_spinner_size">18dp</dimen>
+    <dimen name="location_card_button_spinner_stroke_width">2dp</dimen>
+    <dimen name="location_card_success_icon_size">24dp</dimen>
+    <dimen name="location_card_success_gap">8dp</dimen>
+
     <!-- Greeting screen -->
     <dimen name="greeting_text_gap">8dp</dimen>
 
@@ -134,6 +146,15 @@
     <dimen name="home_sacred_card_label_timer_gap">8dp</dimen>
     <dimen name="home_sacred_card_timer_starts_at_gap">8dp</dimen>
 
+    <!-- Skeleton loading bars — corner radius is generic (SkeletonBar, ui/subscreens), sizes below are Home-specific -->
+    <dimen name="skeleton_bar_corner_radius">4dp</dimen>
+    <dimen name="home_skeleton_label_bar_width">120dp</dimen>
+    <dimen name="home_skeleton_label_bar_height">16dp</dimen>
+    <dimen name="home_skeleton_timer_bar_width">180dp</dimen>
+    <dimen name="home_skeleton_timer_bar_height">40dp</dimen>
+    <dimen name="home_skeleton_starts_at_bar_width">96dp</dimen>
+    <dimen name="home_skeleton_starts_at_bar_height">12dp</dimen>
+
     <!-- Prayer schedule list -->
     <dimen name="home_prayer_row_height">60dp</dimen>
     <dimen name="home_prayer_row_corner_radius">16dp</dimen>
@@ -144,16 +165,12 @@
     <dimen name="home_prayer_row_active_accent_width">4dp</dimen>
     <dimen name="home_prayer_row_icon_size">18dp</dimen>
     <dimen name="home_prayer_row_icon_name_gap">8dp</dimen>
-
-    <!-- City pagination dots -->
-    <dimen name="home_pagination_dot_size">8dp</dimen>
-    <dimen name="home_pagination_active_dot_width">24dp</dimen>
-    <dimen name="home_pagination_dot_spacing">8dp</dimen>
+    <dimen name="home_skeleton_prayer_time_bar_width">56dp</dimen>
+    <dimen name="home_skeleton_prayer_time_bar_height">20dp</dimen>
 
     <!-- Home screen assembly -->
     <dimen name="home_screen_horizontal_padding">20dp</dimen>
     <dimen name="home_screen_section_spacing">16dp</dimen>
-    <dimen name="home_screen_pagination_vertical_padding">16dp</dimen>
     <dimen name="home_screen_medium_content_max_width">560dp</dimen>
     <dimen name="home_screen_expanded_content_max_width">640dp</dimen>
 

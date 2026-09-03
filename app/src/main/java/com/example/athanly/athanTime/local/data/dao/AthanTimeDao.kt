@@ -18,22 +18,20 @@ interface AthanTimeDao {
     @Upsert
     suspend fun upsertSchedule(schedule: PrayerScheduleEntity)
 
-    @Query("SELECT * FROM cities")
-    fun observeCities(): Flow<List<CityEntity>>
+    // LIMIT 1 — there's only ever one row now (see City.kt); no id needed to select it.
+    @Query("SELECT * FROM cities LIMIT 1")
+    fun observeCity(): Flow<CityEntity?>
 
-    @Query("SELECT * FROM prayer_schedules WHERE cityId = :cityId")
-    fun observeScheduleForCity(cityId: String): Flow<PrayerScheduleEntity?>
+    @Query("SELECT * FROM prayer_schedules LIMIT 1")
+    fun observeSchedule(): Flow<PrayerScheduleEntity?>
 
     // Default method so both writes commit as one real SQL transaction, not two round-trips.
     @Transaction
     suspend fun upsertCityWithSchedule(
-        city: CityEntity, 
+        city: CityEntity,
         schedule: PrayerScheduleEntity
     ) {
         upsertCity(city)
         upsertSchedule(schedule)
     }
-
-    @Query("DELETE FROM cities WHERE id = :cityId")
-    suspend fun deleteCity(cityId: String)
 }

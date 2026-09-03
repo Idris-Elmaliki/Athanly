@@ -35,6 +35,15 @@
     <string name="mishary_alafasy">Mishary Alafasy</string>
     <string name="yusuf_islam">Yusuf Islam</string>
 
+    <!-- Location screen -->
+    <string name="location_title">Your Location</string>
+    <string name="location_subtitle">We need your location to calculate accurate prayer times.</string>
+    <string name="location_choose_city_heading">Or Choose Your City</string>
+    <string name="location_card_title">Share Your Location</string>
+    <string name="location_card_description">We use it to calculate accurate prayer times for you.</string>
+    <string name="location_card_button">SHARE LOCATION</string>
+    <string name="location_card_saved">Location Set</string>
+
     <!-- Notifications screen -->
     <string name="notifications_heading">Never Miss a Prayer</string>
     <string name="notifications_body">Enable notifications to receive beautiful Athans and reminders for each prayer time throughout the day.</string>
@@ -54,7 +63,6 @@
 
     <!-- Home top bar -->
     <string name="home_menu_button_description">Open menu</string>
-    <string name="home_add_city_button_description">Add city</string>
 
     <!-- Qibla screen: distance unit labels -->
     <string name="qibla_unit_km">km</string>

@@ -22,6 +22,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -30,6 +32,7 @@ import com.example.athanly.ui._navigation.navGraphs.onBoardingNavGraph
 import com.example.athanly.ui._navigation.routes.OnBoardingRoutes
 import com.example.athanly.ui.onBoarding.onBoardingSubScreens.OnBoardingBottomBar
 import com.example.athanly.ui.onBoarding.onBoardingSubScreens.OnBoardingTopBar
+import com.example.athanly.ui.onBoarding.viewModel.OnBoardingViewModel
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 
@@ -50,10 +53,18 @@ fun OnBoardingLayout(
     // Resolves the current window size class reactively — updates on rotation or multi-window resize
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
+    // Separate instance from whatever the Location screen itself holds (hiltViewModel() is
+    // scoped per nav destination) — only used here to gate Continue below, reading
+    // hasSavedCity off Room via observeCity() so both instances agree regardless of which
+    // one actually performed the save (see OnBoardingViewModel)
+    val viewModel: OnBoardingViewModel = hiltViewModel()
+    val locationState by viewModel.locationState.collectAsStateWithLifecycle()
+
     // Ordered list used to derive the current step index from the active destination
     val steps = listOf(
         OnBoardingRoutes.Welcome,
         OnBoardingRoutes.AthanSelection,
+        OnBoardingRoutes.Location,
         OnBoardingRoutes.Calculations,
         OnBoardingRoutes.Notifications
     )
@@ -133,11 +144,16 @@ fun OnBoardingLayout(
                         onContinueClick = {
                             when (steps.getOrNull(currentStep + 1)) {
                                 OnBoardingRoutes.AthanSelection -> innerNavController.navigate(OnBoardingRoutes.AthanSelection)
+                                OnBoardingRoutes.Location -> innerNavController.navigate(OnBoardingRoutes.Location)
                                 OnBoardingRoutes.Calculations -> innerNavController.navigate(OnBoardingRoutes.Calculations)
                                 OnBoardingRoutes.Notifications -> innerNavController.navigate(OnBoardingRoutes.Notifications)
                                 else -> onBoardingIsComplete()
                             }
-                        }
+                        },
+                        // Only the Location step requires state before advancing — every
+                        // other step's Continue stays enabled as before
+                        enabled = currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.Location>() != true ||
+                            locationState.hasSavedCity
                     )
                 }
         },

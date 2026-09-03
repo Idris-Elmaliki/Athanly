@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,16 +28,24 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.athanly.R
 import com.example.athanly.athanTime.local.domain.modelData.NextPrayerInfo
+import com.example.athanly.ui.subscreens.SkeletonBar
+import com.example.athanly.ui.subscreens.shimmerEffect
 import java.time.Duration
 import java.time.format.DateTimeFormatter
 
 private val startsAtFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
 // The "Sacred Card" — next-prayer label, live countdown timer, and progress ring, all
-// centered over each other since the ring sits behind the text in the design
+// centered over each other since the ring sits behind the text in the design.
+//
+// The outer Box (shape/background/padding/ring footprint) always renders, whether
+// nextPrayerInfo is null or not — only the ring and the three text lines inside it swap
+// between shimmering placeholders and real content. Keeping this composable's structure the
+// same across that transition means Compose never tears the card down and rebuilds it, so
+// loading -> loaded reads as content settling in rather than the card popping in fresh.
 @Composable
 fun SacredCountdownCard(
-    nextPrayerInfo: NextPrayerInfo,
+    nextPrayerInfo: NextPrayerInfo?,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -47,42 +56,71 @@ fun SacredCountdownCard(
             .padding(dimensionResource(R.dimen.home_sacred_card_padding)),
         contentAlignment = Alignment.Center
     ) {
-        ProgressRing(
-            progressFraction = nextPrayerInfo.progressFraction,
-            modifier = Modifier.size(dimensionResource(R.dimen.home_sacred_card_ring_size))
-        )
+        if (nextPrayerInfo != null) {
+            ProgressRing(
+                progressFraction = nextPrayerInfo.progressFraction,
+                modifier = Modifier.size(dimensionResource(R.dimen.home_sacred_card_ring_size))
+            )
 
-        Column(
-            // Same dimension as the ring itself — text wraps/centers within the ring's
-            // diameter instead of spilling past its circular edge
-            modifier = Modifier.width(dimensionResource(R.dimen.home_sacred_card_ring_size) - 10.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(
-                    R.string.home_next_prayer_label,
-                    stringResource(nextPrayerInfo.nextPrayer.displayNameRes)
-                ),
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onSurface
+            Column(
+                // Same dimension as the ring itself — text wraps/centers within the ring's
+                // diameter instead of spilling past its circular edge
+                modifier = Modifier.width(dimensionResource(R.dimen.home_sacred_card_ring_size) - 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(
+                        R.string.home_next_prayer_label,
+                        stringResource(nextPrayerInfo.nextPrayer.displayNameRes)
+                    ),
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_label_timer_gap)))
+                Text(
+                    text = formatCountdown(nextPrayerInfo.remaining),
+                    style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_timer_starts_at_gap)))
+                Text(
+                    text = stringResource(
+                        R.string.home_starts_at_label,
+                        nextPrayerInfo.startsAt.format(startsAtFormatter)
+                    ),
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        letterSpacing = dimensionResource(R.dimen.home_top_bar_title_letter_spacing).value.sp
+                    ),
+                    color = MaterialTheme.colorScheme.secondary
+                )
+            }
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(dimensionResource(R.dimen.home_sacred_card_ring_size))
+                    .clip(CircleShape)
+                    .shimmerEffect()
             )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_label_timer_gap)))
-            Text(
-                text = formatCountdown(nextPrayerInfo.remaining),
-                style = MaterialTheme.typography.displaySmall.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.primary
-            )
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_timer_starts_at_gap)))
-            Text(
-                text = stringResource(
-                    R.string.home_starts_at_label,
-                    nextPrayerInfo.startsAt.format(startsAtFormatter)
-                ),
-                style = MaterialTheme.typography.labelSmall.copy(
-                    letterSpacing = dimensionResource(R.dimen.home_top_bar_title_letter_spacing).value.sp
-                ),
-                color = MaterialTheme.colorScheme.secondary
-            )
+
+            Column(
+                modifier = Modifier.width(dimensionResource(R.dimen.home_sacred_card_ring_size) - 10.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SkeletonBar(
+                    width = dimensionResource(R.dimen.home_skeleton_label_bar_width),
+                    height = dimensionResource(R.dimen.home_skeleton_label_bar_height)
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_label_timer_gap)))
+                SkeletonBar(
+                    width = dimensionResource(R.dimen.home_skeleton_timer_bar_width),
+                    height = dimensionResource(R.dimen.home_skeleton_timer_bar_height)
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_sacred_card_timer_starts_at_gap)))
+                SkeletonBar(
+                    width = dimensionResource(R.dimen.home_skeleton_starts_at_bar_width),
+                    height = dimensionResource(R.dimen.home_skeleton_starts_at_bar_height)
+                )
+            }
         }
     }
 }

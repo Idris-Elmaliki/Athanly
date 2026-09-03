@@ -6,6 +6,10 @@ import com.example.athanly.appData.domain.modelData.AppDataUiState
 import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.appData.domain.modelData.Muadhdhin
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
+import com.example.athanly.athanTime.local.domain.modelData.City
+import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
+import com.example.athanly.location.domain.modelData.LocationUiState
+import com.example.athanly.location.domain.repository.LocationProvider
 import com.example.athanly.notifications.domain.modelData.NotificationsUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OnBoardingViewModel @Inject constructor(
-    private val preferencesDataStore: AppDataPreferencesDataStore
+    private val preferencesDataStore: AppDataPreferencesDataStore,
+    private val athanTimeRepository: AthanTimeRepository,
+    private val locationProvider: LocationProvider
 ) : ViewModel() {
 
     // Welcome, AthanSelection, and Calculations used to each hold their own local
@@ -107,6 +113,72 @@ class OnBoardingViewModel @Inject constructor(
     fun onNotificationPermissionResult(isGranted: Boolean) {
         _notificationsState.update { current ->
             current.copy(isPermissionGranted = isGranted)
+        }
+    }
+
+    // hasSavedCity is sourced from Room (via observeCity()), not set manually — the
+    // OnBoardingLayout scaffold needs to gate its shared Continue button on this too, and it
+    // holds its own separate OnBoardingViewModel instance (hiltViewModel() is scoped per nav
+    // destination, same as appDataState above). Reading it off the persisted city, same as
+    // appDataState reads off DataStore, means every instance agrees regardless of which
+    // screen actually performed the save.
+    private val _locationState = MutableStateFlow(LocationUiState())
+    val locationState: StateFlow<LocationUiState> = _locationState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            athanTimeRepository.observeCity().collect { city ->
+                _locationState.update { current -> current.copy(hasSavedCity = city != null) }
+            }
+        }
+    }
+
+    // Called with the OS permission dialog result on the Location onboarding step. Granted
+    // kicks off the GPS fetch-and-save; denied leaves hasSavedCity false so the screen falls
+    // back to forcing a PresetCityPicker choice.
+    fun onLocationPermissionResult(isGranted: Boolean) {
+        _locationState.update { current ->
+            current.copy(
+                isPermissionGranted = isGranted
+            )
+        }
+
+        if (isGranted) {
+            fetchAndSaveCurrentLocation()
+        }
+    }
+
+    private fun fetchAndSaveCurrentLocation() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _locationState.update { current -> current.copy(isLoading = true) }
+            try {
+                val city = locationProvider.getCurrentCity()
+                if (city != null) {
+                    athanTimeRepository.saveCity(city)
+                }
+                // city == null (no fix obtained despite permission) leaves hasSavedCity false —
+                // the observeCity() collector above never sees a save, so the screen's forced
+                // fallback to PresetCityPicker handles it, same as an outright permission denial.
+            } catch (e: Exception) {
+                _locationState.update { current -> current.copy(error = e.message) }
+            } finally {
+                _locationState.update { current -> current.copy(isLoading = false) }
+            }
+        }
+    }
+
+    // Called when the user picks a city from PresetCityPicker (permission denied/skipped path)
+    fun onPresetCitySelected(city: City) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                athanTimeRepository.saveCity(city)
+            } catch (e: Exception) {
+                _locationState.update { current ->
+                    current.copy(
+                        error = e.message
+                    )
+                }
+            }
         }
     }
 }
