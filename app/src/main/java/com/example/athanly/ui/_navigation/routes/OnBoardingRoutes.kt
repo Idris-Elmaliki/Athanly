@@ -13,6 +13,11 @@ sealed interface OnBoardingRoutes {
     @Serializable
     data object AthanSelection : OnBoardingRoutes
 
+    // Comes before Calculations — Hanafi/Shafi Asr timing only means something once a
+    // location is known, so location has to be settled first
+    @Serializable
+    data object Location : OnBoardingRoutes
+
     @Serializable
     data object Calculations : OnBoardingRoutes
 

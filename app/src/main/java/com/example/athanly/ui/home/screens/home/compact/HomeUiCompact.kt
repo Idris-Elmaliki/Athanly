@@ -24,7 +24,6 @@ import com.example.athanly.ui.subscreens.AtmosphericBackground
 
 // Compact (< 600dp): single-column, full-bleed. One location only — no more per-city pager.
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeUiCompact(
     state: HomeUiState,
@@ -62,25 +61,30 @@ fun HomeUiCompact(
                 // city is null until onboarding's Location step (or the manual fallback
                 // picker) saves one — nothing to head the screen with until then
                 if (city != null) {
-                    CityDateHeader(cityName = city.name, hijriDate = city.hijriDate)
-                }
-
-                // schedule/nextPrayerInfo are only both non-null once the fetch-and-cache
-                // flow in HomeViewModel has actually run for the saved city
-                if (schedule != null && state.nextPrayerInfo != null) {
-                    SacredCountdownCard(
-                        nextPrayerInfo = state.nextPrayerInfo
-                    )
-
-                    Spacer(modifier = Modifier
-                        .height(dimensionResource(R.dimen.home_screen_section_spacing))
-                    )
-
-                    PrayerScheduleList(
-                        schedule = schedule,
-                        nextPrayer = state.nextPrayerInfo.nextPrayer
+                    CityDateHeader(
+                        cityName = city.name,
+                        hijriDate = city.hijriDate
                     )
                 }
+
+                // Mounted once there's anything to show — real data or a loading state — and
+                // never unmounted between those two, so SacredCountdownCard/PrayerScheduleList
+                // keep their own shells stable and only swap their internal content (see those
+                // composables). isLoading covers an active network fetch; isInitializing covers
+                // the brief window before Room's first emission.
+
+                SacredCountdownCard(
+                    nextPrayerInfo = state.nextPrayerInfo
+                )
+
+                Spacer(modifier = Modifier
+                    .height(dimensionResource(R.dimen.home_screen_section_spacing))
+                )
+
+                PrayerScheduleList(
+                    schedule = schedule,
+                    nextPrayer = state.nextPrayerInfo?.nextPrayer
+                )
             }
         }
     }

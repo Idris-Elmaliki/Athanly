@@ -29,15 +29,17 @@ import com.example.athanly.R
 import com.example.athanly.athanTime.domain.PrayerSchedule
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import com.example.athanly.athanTime.domain.timeFor
+import com.example.athanly.ui.subscreens.SkeletonBar
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 private val rowTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
 
-// 6-row list (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha)
+// 6-row list (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) — always renders all 6 row shells,
+// schedule null or not, so loading never tears rows down/rebuilds them (see PrayerRow)
 @Composable
 fun PrayerScheduleList(
-    schedule: PrayerSchedule,
+    schedule: PrayerSchedule?,
     nextPrayer: Prayer?,
     modifier: Modifier = Modifier
 ) {
@@ -50,17 +52,21 @@ fun PrayerScheduleList(
         Prayer.entries.forEach { prayer ->
             PrayerRow(
                 prayer = prayer,
-                time = schedule.timeFor(prayer),
+                time = schedule?.timeFor(prayer),
                 isActive = prayer == nextPrayer
             )
         }
     }
 }
 
+// The icon and prayer name are static per-Prayer data (not fetched), so they always render
+// for real — only the time on the right is genuinely unknown until schedule loads, so that's
+// the only piece that swaps to a shimmer placeholder. The row's own shell (shape/background/
+// border/accent) is unconditional either way, same reasoning as SacredCountdownCard.
 @Composable
 private fun PrayerRow(
     prayer: Prayer,
-    time: LocalTime,
+    time: LocalTime?,
     isActive: Boolean,
     modifier: Modifier = Modifier
 ) {
@@ -129,11 +135,18 @@ private fun PrayerRow(
                     color = contentColor
                 )
             }
-            Text(
-                text = time.format(rowTimeFormatter),
-                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                color = contentColor
-            )
+            if (time != null) {
+                Text(
+                    text = time.format(rowTimeFormatter),
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    color = contentColor
+                )
+            } else {
+                SkeletonBar(
+                    width = dimensionResource(R.dimen.home_skeleton_prayer_time_bar_width),
+                    height = dimensionResource(R.dimen.home_skeleton_prayer_time_bar_height)
+                )
+            }
         }
     }
 }
