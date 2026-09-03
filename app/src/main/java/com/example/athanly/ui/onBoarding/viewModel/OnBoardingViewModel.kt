@@ -116,21 +116,33 @@ class OnBoardingViewModel @Inject constructor(
         }
     }
 
-    // Local-only, same reasoning as _notificationsState above — the permission grant itself
-    // is re-read live from Android's APIs, not persisted here.
+    // hasSavedCity is sourced from Room (via observeCity()), not set manually — the
+    // OnBoardingLayout scaffold needs to gate its shared Continue button on this too, and it
+    // holds its own separate OnBoardingViewModel instance (hiltViewModel() is scoped per nav
+    // destination, same as appDataState above). Reading it off the persisted city, same as
+    // appDataState reads off DataStore, means every instance agrees regardless of which
+    // screen actually performed the save.
     private val _locationState = MutableStateFlow(LocationUiState())
     val locationState: StateFlow<LocationUiState> = _locationState.asStateFlow()
 
+    init {
+        viewModelScope.launch {
+            athanTimeRepository.observeCity().collect { city ->
+                _locationState.update { current -> current.copy(hasSavedCity = city != null) }
+            }
+        }
+    }
+
     // Called with the OS permission dialog result on the Location onboarding step. Granted
     // kicks off the GPS fetch-and-save; denied leaves hasSavedCity false so the screen falls
-    // back to showing PresetCityPicker.
+    // back to forcing a PresetCityPicker choice.
     fun onLocationPermissionResult(isGranted: Boolean) {
-        _locationState.update { current -> 
+        _locationState.update { current ->
             current.copy(
                 isPermissionGranted = isGranted
-            ) 
+            )
         }
-        
+
         if (isGranted) {
             fetchAndSaveCurrentLocation()
         }
@@ -143,11 +155,10 @@ class OnBoardingViewModel @Inject constructor(
                 val city = locationProvider.getCurrentCity()
                 if (city != null) {
                     athanTimeRepository.saveCity(city)
-                    _locationState.update { current -> current.copy(hasSavedCity = true) }
                 }
-                // city == null (no fix obtained despite permission) leaves hasSavedCity
-                // false — the screen's own fallback to PresetCityPicker handles that case,
-                // same as an outright permission denial.
+                // city == null (no fix obtained despite permission) leaves hasSavedCity false —
+                // the observeCity() collector above never sees a save, so the screen's forced
+                // fallback to PresetCityPicker handles it, same as an outright permission denial.
             } catch (e: Exception) {
                 _locationState.update { current -> current.copy(error = e.message) }
             } finally {
@@ -161,16 +172,11 @@ class OnBoardingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 athanTimeRepository.saveCity(city)
-                _locationState.update { current -> 
-                    current.copy(
-                        hasSavedCity = true
-                    ) 
-                }
             } catch (e: Exception) {
-                _locationState.update { current -> 
+                _locationState.update { current ->
                     current.copy(
                         error = e.message
-                    ) 
+                    )
                 }
             }
         }

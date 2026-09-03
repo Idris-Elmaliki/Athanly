@@ -31,7 +31,11 @@ import com.example.athanly.R
 // Lives in bottomBar so it persists across all steps without recomposing.
 @Composable
 fun OnBoardingBottomBar(
-    onContinueClick: () -> Unit
+    onContinueClick: () -> Unit,
+    // Location is the only step so far that requires state before advancing — a saved city,
+    // either from GPS or the forced preset picker. Defaults to true so every other step's
+    // call site is unaffected.
+    enabled: Boolean = true,
 ) {
     // Gradient fade gives the button a floating appearance over scrollable content
     Row(
@@ -51,6 +55,7 @@ fun OnBoardingBottomBar(
     ) {
         Button(
             onClick = onContinueClick,
+            enabled = enabled,
             modifier = Modifier.fillMaxWidth(),
             // Full pill shape as per Figma spec
             shape = RoundedCornerShape(9999.dp),
@@ -69,7 +74,9 @@ fun OnBoardingBottomBar(
                 ),
                 color = MaterialTheme.colorScheme.onPrimary
             )
+
             Spacer(modifier = Modifier.width(8.dp))
+
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,

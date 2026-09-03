@@ -50,8 +50,24 @@ class HomeViewModel @Inject constructor(
                 athanTimeRepository.observeSchedule(),
                 ::Pair
             ).collect { (city, schedule) ->
+                // isInitializing only ever gets cleared here, on Room's own emissions — never
+                // touched by refreshIfStale below, so there's no race between "Room hasn't
+                // reported back yet" and "a network fetch is in progress"
+                //
+                // nextPrayerInfo is computed right here too, not left for the tick() loop below
+                // to fill in — that loop runs as its own independent coroutine with no ordering
+                // guarantee against this one, so its first tick() can easily run before schedule
+                // is even set here, leaving nextPrayerInfo null for up to a second after schedule
+                // arrives. That gap made both the real-content check (schedule != null &&
+                // nextPrayerInfo != null) AND the skeleton check (isLoading || isInitializing)
+                // false at once — a real blank flash between them, regardless of whether the
+                // schedule came from a warm cache or a fresh fetch.
                 _homeState.update { current ->
-                    current.copy(city = city, schedule = schedule)
+                    current.copy(
+                        city = city,
+                        schedule = schedule,
+                        isInitializing = false
+                    )
                 }
             }
         }
@@ -69,9 +85,9 @@ class HomeViewModel @Inject constructor(
             ).collect { (city, isHanafiMode) ->
                 if (city != null) {
                     refreshIfStale(
-                        city,
-                        LocalDate.now(clock),
-                        isHanafiMode
+                        city = city,
+                        today = LocalDate.now(clock),
+                        isHanafiMode = isHanafiMode
                     )
                 }
             }
@@ -92,6 +108,10 @@ class HomeViewModel @Inject constructor(
     // cached value off the Flow rather than subscribing to it, since this only needs a
     // one-time check, not an ongoing observation (the render collector above already
     // handles staying subscribed for rendering).
+    //
+    // isLoading only flips true around the actual network call — a fresh same-day cache hit
+    // returns before it's ever set, so the Home skeleton only shows during a real fetch, not
+    // on every cold start.
     private suspend fun refreshIfStale(
         city: City,
         today: LocalDate,
@@ -100,6 +120,12 @@ class HomeViewModel @Inject constructor(
         val cachedSchedule = athanTimeRepository.observeSchedule().first()
         if (cachedSchedule != null && cachedSchedule.date == today) return
 
+        _homeState.update { current ->
+            current.copy(
+                isLoading = true
+            ) 
+        }
+        
         try {
             val fresh = athanApiRepository.fetchPrayerSchedule(
                 latitude = city.latitude,
@@ -108,14 +134,30 @@ class HomeViewModel @Inject constructor(
                 useHanafiAsr = isHanafiMode
             )
             athanTimeRepository.saveCityWithSchedule(city, fresh)
-        } catch (e: Exception) {
-            _homeState.update { current -> current.copy(error = e.message) }
+        }
+        catch (e: Exception) {
+            _homeState.update { current ->
+                current.copy(
+                    error = e.message
+                )
+            }
+        }
+        finally {
+            _homeState.update { current ->
+                current.copy(
+                    isLoading = false
+                )
+            }
         }
     }
 
     private fun tick() {
         _homeState.update { current ->
-            current.copy(nextPrayerInfo = current.schedule?.let { schedule -> computeNextPrayerInfo(schedule, LocalTime.now(clock)) })
+            current.copy(
+                nextPrayerInfo = current.schedule?.let { schedule ->
+                    computeNextPrayerInfo(schedule, LocalTime.now(clock))
+                }
+            )
         }
     }
 
@@ -180,6 +222,7 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+
         return withRemainingAndProgress(info, schedule, now)
     }
 
@@ -197,7 +240,9 @@ class HomeViewModel @Inject constructor(
 
         return info.copy(
             remaining = Duration.ofSeconds(secondsUntilNext),
-            progressFraction = if (windowSeconds == 0L) 0f else elapsedSeconds.toFloat() / windowSeconds
+            progressFraction =
+                if (windowSeconds == 0L) 0f
+                else elapsedSeconds.toFloat() / windowSeconds
         )
     }
 

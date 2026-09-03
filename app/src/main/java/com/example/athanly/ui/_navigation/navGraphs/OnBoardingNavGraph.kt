@@ -16,6 +16,7 @@ import com.example.athanly.ui.onBoarding.OnBoardingBarTransitionDurationMillis
 import com.example.athanly.ui.onBoarding.screens.athanSelection.AthanSelectionUi
 import com.example.athanly.ui.onBoarding.screens.athanCalculations.CalculationsUi
 import com.example.athanly.ui.onBoarding.screens.greeting.GreetingUi
+import com.example.athanly.ui.onBoarding.screens.location.LocationUi
 import com.example.athanly.ui.onBoarding.screens.notifications.NotificationsUi
 import com.example.athanly.ui.onBoarding.screens.welcome.WelcomeUi
 
@@ -44,6 +45,14 @@ fun NavGraphBuilder.onBoardingNavGraph(
     }
     composable<OnBoardingRoutes.AthanSelection> {
         AthanSelectionUi(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(barPadding),
+            windowSizeClass = currentScreen,
+        )
+    }
+    composable<OnBoardingRoutes.Location> {
+        LocationUi(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(barPadding),
