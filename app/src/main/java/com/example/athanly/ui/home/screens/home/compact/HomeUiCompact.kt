@@ -74,7 +74,8 @@ fun HomeUiCompact(
                 // the brief window before Room's first emission.
 
                 SacredCountdownCard(
-                    nextPrayerInfo = state.nextPrayerInfo
+                    nextPrayerInfo = state.nextPrayerInfo,
+                    is24HourFormat = state.is24HourFormat
                 )
 
                 Spacer(modifier = Modifier
@@ -83,7 +84,8 @@ fun HomeUiCompact(
 
                 PrayerScheduleList(
                     schedule = schedule,
-                    nextPrayer = state.nextPrayerInfo?.nextPrayer
+                    nextPrayer = state.nextPrayerInfo?.nextPrayer,
+                    is24HourFormat = state.is24HourFormat
                 )
             }
         }

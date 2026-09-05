@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,8 +34,6 @@ import com.example.athanly.ui.subscreens.shimmerEffect
 import java.time.Duration
 import java.time.format.DateTimeFormatter
 
-private val startsAtFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
 // The "Sacred Card" — next-prayer label, live countdown timer, and progress ring, all
 // centered over each other since the ring sits behind the text in the design.
 //
@@ -46,8 +45,13 @@ private val startsAtFormatter = DateTimeFormatter.ofPattern("HH:mm")
 @Composable
 fun SacredCountdownCard(
     nextPrayerInfo: NextPrayerInfo?,
+    is24HourFormat : Boolean,
     modifier: Modifier = Modifier
 ) {
+    val startsAtFormatter = remember(is24HourFormat) {
+        DateTimeFormatter.ofPattern(if (is24HourFormat) "HH:mm" else "h:mm a")
+    }
+
     Box(
         modifier = modifier
             .fillMaxWidth()

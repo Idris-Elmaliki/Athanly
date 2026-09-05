@@ -65,14 +65,16 @@ fun HomeUiExpanded(
                 // composables). isLoading covers an active network fetch; isInitializing covers
                 // the brief window before Room's first emission.
                 SacredCountdownCard(
-                    nextPrayerInfo = state.nextPrayerInfo
+                    nextPrayerInfo = state.nextPrayerInfo,
+                    is24HourFormat = state.is24HourFormat
                 )
 
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.home_screen_section_spacing)))
 
                 PrayerScheduleList(
                     schedule = schedule,
-                    nextPrayer = state.nextPrayerInfo?.nextPrayer
+                    nextPrayer = state.nextPrayerInfo?.nextPrayer,
+                    is24HourFormat = state.is24HourFormat
                 )
             }
         }

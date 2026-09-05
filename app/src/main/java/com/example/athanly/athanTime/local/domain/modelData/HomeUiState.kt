@@ -18,6 +18,10 @@ data class HomeUiState(
     val city: City? = null,
     val schedule: PrayerSchedule? = null,
 
+    // Mirrors Settings' time format toggle — false (the DataStore default) means 12-hour,
+    // true means 24-hour. PrayerScheduleList is what actually reads this.
+    val is24HourFormat: Boolean = false,
+
     // Null until the first tick computes it — recalculated every second by HomeViewModel
     val nextPrayerInfo: NextPrayerInfo? = null
 )

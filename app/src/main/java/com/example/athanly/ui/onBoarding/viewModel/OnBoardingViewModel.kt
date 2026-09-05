@@ -11,7 +11,14 @@ import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
 import com.example.athanly.location.domain.modelData.LocationUiState
 import com.example.athanly.location.domain.repository.LocationProvider
 import com.example.athanly.notifications.domain.modelData.NotificationsUiState
+import com.example.athanly.notifications.worker.PRAYER_SYNC_WORK_NAME
+import com.example.athanly.notifications.worker.PrayerScheduleSyncWorker
+import android.content.Context
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -25,7 +32,8 @@ import javax.inject.Inject
 class OnBoardingViewModel @Inject constructor(
     private val preferencesDataStore: AppDataPreferencesDataStore,
     private val athanTimeRepository: AthanTimeRepository,
-    private val locationProvider: LocationProvider
+    private val locationProvider: LocationProvider,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
     // Welcome, AthanSelection, and Calculations used to each hold their own local
@@ -155,6 +163,7 @@ class OnBoardingViewModel @Inject constructor(
                 val city = locationProvider.getCurrentCity()
                 if (city != null) {
                     athanTimeRepository.saveCity(city)
+                    enqueueImmediateScheduleSync()
                 }
                 // city == null (no fix obtained despite permission) leaves hasSavedCity false —
                 // the observeCity() collector above never sees a save, so the screen's forced
@@ -172,6 +181,7 @@ class OnBoardingViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 athanTimeRepository.saveCity(city)
+                enqueueImmediateScheduleSync()
             } catch (e: Exception) {
                 _locationState.update { current ->
                     current.copy(
@@ -180,5 +190,18 @@ class OnBoardingViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    // Both saveCity call sites above land here right after a successful save. REPLACE (not
+    // KEEP, which AthanlyApplication's app-start enqueue uses) is deliberate: onboarding just
+    // saved the FIRST city this install has ever had, so the existing city-less chain
+    // (scheduled with nothing to do until now) needs to be superseded with a real run right
+    // away, rather than waiting for its already-scheduled midnight fire.
+    private fun enqueueImmediateScheduleSync() {
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            PRAYER_SYNC_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            OneTimeWorkRequestBuilder<PrayerScheduleSyncWorker>().build()
+        )
     }
 }

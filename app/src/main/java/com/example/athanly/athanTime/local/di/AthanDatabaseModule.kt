@@ -33,6 +33,9 @@ abstract class AthanDatabaseModule {
                         klass = AthanDatabase::class.java,
                         name = "athan_database"
                     )
+                    // No real migration written for v1 -> v2 — pre-release, no user data
+                    // worth preserving, so the DB is just recreated on a version bump
+                    .fallbackToDestructiveMigration(dropAllTables = true)
                     .build()
         }
 

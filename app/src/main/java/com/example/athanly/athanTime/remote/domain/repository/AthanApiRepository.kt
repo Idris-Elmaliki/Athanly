@@ -7,7 +7,7 @@ import java.time.LocalDate
 // another source for it, not a separate concept. useHanafiAsr is passed in by the caller
 // since this repository doesn't own user preference state.
 interface AthanApiRepository {
-    suspend fun fetchPrayerSchedule(
+    suspend fun fetchNewPrayerSchedule(
         latitude: Double,
         longitude: Double,
         date: LocalDate,
