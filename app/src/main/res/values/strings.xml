@@ -52,6 +52,15 @@
     <string name="notifications_illustration_content_description">Mosque illustration</string>
     <string name="notifications_badge_content_description">Notification bell</string>
 
+    <!-- Notification channel shown in system Settings, not in-app UI -->
+    <string name="prayer_notification_channel_name">Prayer Times</string>
+    <string name="prayer_notification_channel_description">Athan alerts for each of the 5 daily prayers</string>
+
+    <!-- Title for each of the 5 daily prayer notifications. %s is the prayer's name,
+         e.g. "It's time for Fajr" -->
+    <string name="prayer_notification_title">It\'s time for %s</string>
+    <string name="prayer_notification_body">Tap to view today\'s prayer schedule</string>
+
     <!-- Greeting screen -->
     <string name="greeting_salam">السلام عليكم</string>
     <string name="greeting_subtitle">Your journey starts here.</string>

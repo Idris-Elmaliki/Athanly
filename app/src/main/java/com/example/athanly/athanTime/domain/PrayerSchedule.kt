@@ -16,7 +16,12 @@ data class PrayerSchedule(
     val dhuhr: LocalTime,
     val asr: LocalTime,
     val maghrib: LocalTime,
-    val isha: LocalTime
+    val isha: LocalTime,
+
+    // Which Asr calculation mode this Asr time was actually computed with — lets a later
+    // staleness check catch "the user flipped Hanafi mode but Asr is still the old value"
+    // independently of whether the date itself is still today
+    val isHanafiMode: Boolean = false
 )
 
 // Looks up this schedule's time for a given Prayer — keeps callers (e.g. next-prayer math)

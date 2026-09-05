@@ -9,7 +9,7 @@ import com.example.athanly.athanTime.local.domain.modelData.NextPrayerInfo
 import com.example.athanly.athanTime.domain.PrayerSchedule
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
-import com.example.athanly.athanTime.remote.domain.repository.AthanApiRepository
+import com.example.athanly.athanTime.domain.RefreshPrayerScheduleUseCase
 import com.example.athanly.athanTime.domain.timeFor
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +32,7 @@ import kotlin.time.Duration.Companion.milliseconds
 class HomeViewModel @Inject constructor(
     private val clock: Clock,
     private val athanTimeRepository: AthanTimeRepository,
-    private val athanApiRepository: AthanApiRepository,
+    private val refreshPrayerScheduleUseCase: RefreshPrayerScheduleUseCase,
     private val preferencesDataStore: AppDataPreferencesDataStore
 ) : ViewModel() {
     // Real city/schedule stream in from the local repository's Flows below — both start
@@ -48,28 +48,18 @@ class HomeViewModel @Inject constructor(
             combine(
                 athanTimeRepository.observeCity(),
                 athanTimeRepository.observeSchedule(),
-                ::Pair
-            ).collect { (city, schedule) ->
-                // isInitializing only ever gets cleared here, on Room's own emissions — never
-                // touched by refreshIfStale below, so there's no race between "Room hasn't
-                // reported back yet" and "a network fetch is in progress"
-                //
-                // nextPrayerInfo is computed right here too, not left for the tick() loop below
-                // to fill in — that loop runs as its own independent coroutine with no ordering
-                // guarantee against this one, so its first tick() can easily run before schedule
-                // is even set here, leaving nextPrayerInfo null for up to a second after schedule
-                // arrives. That gap made both the real-content check (schedule != null &&
-                // nextPrayerInfo != null) AND the skeleton check (isLoading || isInitializing)
-                // false at once — a real blank flash between them, regardless of whether the
-                // schedule came from a warm cache or a fresh fetch.
-                _homeState.update { current ->
-                    current.copy(
-                        city = city,
-                        schedule = schedule,
-                        isInitializing = false
-                    )
+                preferencesDataStore.observedIs24HourFormat()
+            ) { city, schedule, is24HourFormat -> Triple(city, schedule, is24HourFormat) }
+                .collect { (city, schedule, is24HourFormat) ->
+                    _homeState.update { current ->
+                        current.copy(
+                            city = city,
+                            schedule = schedule,
+                            isInitializing = false,
+                            is24HourFormat = is24HourFormat
+                        )
+                    }
                 }
-            }
         }
 
         // Fetches-and-caches a fresh schedule whenever the local DB is missing one or holds
@@ -103,37 +93,29 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // Fetches a fresh schedule from the Athan API and saves it locally only when the
-    // cached one is missing or dated for a previous day — first() reads just the current
-    // cached value off the Flow rather than subscribing to it, since this only needs a
-    // one-time check, not an ongoing observation (the render collector above already
-    // handles staying subscribed for rendering).
-    //
-    // isLoading only flips true around the actual network call — a fresh same-day cache hit
-    // returns before it's ever set, so the Home skeleton only shows during a real fetch, not
-    // on every cold start.
+    // Delegates the actual "is it stale, and if so fetch+save" logic to
+    // RefreshPrayerScheduleUseCase, shared with PrayerScheduleSyncWorker's daily background
+    // run. onFetchStarted only fires once the use case has confirmed a real network call is
+    // about to happen, so isLoading (and the Home skeleton it drives) never flips true for a
+    // warm cache hit — only for an actual fetch.
     private suspend fun refreshIfStale(
         city: City,
         today: LocalDate,
         isHanafiMode: Boolean
     ) {
-        val cachedSchedule = athanTimeRepository.observeSchedule().first()
-        if (cachedSchedule != null && cachedSchedule.date == today) return
-
-        _homeState.update { current ->
-            current.copy(
-                isLoading = true
-            ) 
-        }
-        
         try {
-            val fresh = athanApiRepository.fetchPrayerSchedule(
-                latitude = city.latitude,
-                longitude = city.longitude,
-                date = today,
-                useHanafiAsr = isHanafiMode
+            refreshPrayerScheduleUseCase(
+                city = city,
+                today = today,
+                isHanafiMode = isHanafiMode,
+                onFetchStarted = {
+                    _homeState.update { current -> 
+                        current.copy(
+                            isLoading = true
+                        ) 
+                    }
+                }
             )
-            athanTimeRepository.saveCityWithSchedule(city, fresh)
         }
         catch (e: Exception) {
             _homeState.update { current ->

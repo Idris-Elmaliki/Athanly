@@ -30,5 +30,9 @@ data class PrayerScheduleEntity(
     val dhuhr: String,
     val asr: String,
     val maghrib: String,
-    val isha: String
+    val isha: String,
+
+    // Which Asr calculation mode this row was computed with — compared against DataStore's
+    // live Hanafi setting to catch a mode flip as its own staleness signal
+    val isHanafiMode: Boolean
 )

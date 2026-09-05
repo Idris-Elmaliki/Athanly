@@ -6,7 +6,7 @@ import com.example.athanly.athanTime.domain.PrayerSchedule
 import com.example.athanly.athanTime.local.domain.modelData.City
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
-import com.example.athanly.athanTime.remote.domain.repository.AthanApiRepository
+import com.example.athanly.athanTime.domain.RefreshPrayerScheduleUseCase
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -14,6 +14,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -38,8 +39,10 @@ class HomeViewModelTest {
     // loop still runs eagerly up to its first delay(1000) — i.e. one tick() happens
     // synchronously when the ViewModel is constructed, so tests see a freshly computed
     // nextPrayerInfo immediately without manually advancing virtual time.
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val mainDispatcher = UnconfinedTestDispatcher()
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Before
     fun setup() {
         // viewModelScope uses Dispatchers.Main internally; it isn't available by default in
@@ -48,6 +51,7 @@ class HomeViewModelTest {
         Dispatchers.setMain(mainDispatcher)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @After
     fun tearDown() {
         Dispatchers.resetMain()
@@ -67,14 +71,22 @@ class HomeViewModelTest {
             every { observeCity() } returns flowOf(null)
             every { observeSchedule() } returns flowOf(null)
         },
-        athanApiRepository: AthanApiRepository = mockk(),
+        // .also { } (not the mockk<T> { } block-receiver form) because stubbing an operator
+        // fun invoke() reads clearest as a plain call on a captured variable — `it(...)` —
+        // rather than fighting receiver shadowing between the mockk{} and coEvery{} blocks
+        refreshPrayerScheduleUseCase: RefreshPrayerScheduleUseCase = mockk<RefreshPrayerScheduleUseCase>().also {
+            coEvery { it(any(), any(), any(), any()) } just Runs
+        },
         preferencesDataStore: AppDataPreferencesDataStore = mockk {
             every { observedIsHanafiMode() } returns flowOf(false)
+            // The render collector now reads this unconditionally alongside city/schedule —
+            // false matches AppDataUiState's own 12-hour default
+            every { observedIs24HourFormat() } returns flowOf(false)
         },
     ) = HomeViewModel(
         clock = clock,
         athanTimeRepository = athanTimeRepository,
-        athanApiRepository = athanApiRepository,
+        refreshPrayerScheduleUseCase = refreshPrayerScheduleUseCase,
         preferencesDataStore = preferencesDataStore,
     )
 
@@ -168,8 +180,7 @@ class HomeViewModelTest {
         return Clock.fixed(instant, zone)
     }
 
-    // Reused by the sync/staleness tests below — same city every time, only its
-    // cached schedule (or lack of one) changes per test
+    // Reused by the delegation/error tests below
     private val istanbul = City(
         name = "Istanbul",
         hijriDate = "12 Rabi' al-Awwal, 1445 AH",
@@ -177,112 +188,45 @@ class HomeViewModelTest {
         longitude = 28.9,
     )
 
-    private fun scheduleOn(date: LocalDate) = PrayerSchedule(
-        date = date,
-        fajr = LocalTime.of(4, 30),
-        sunrise = LocalTime.of(6, 5),
-        dhuhr = LocalTime.of(12, 15),
-        asr = LocalTime.of(15, 45),
-        maghrib = LocalTime.of(18, 20),
-        isha = LocalTime.of(19, 45),
-    )
-
     @Test
-    fun `a city with no cached schedule triggers a fetch from the API and a save to the local repository`() = runTest {
+    fun `a city with no cached schedule delegates to RefreshPrayerScheduleUseCase with the right arguments`() = runTest {
         val today = LocalDate.now()
-        val fetchedSchedule = scheduleOn(today)
-
         val athanTimeRepository = mockk<AthanTimeRepository> {
             every { observeCity() } returns flowOf(istanbul)
             every { observeSchedule() } returns flowOf(null) // nothing cached yet
-            // saveCityWithSchedule is `suspend fun ... : Unit` — coEvery { ... } just Runs
-            // stubs it to do nothing and return Unit, same as SettingsViewModelTest's
-            // coEvery {...} just Runs for its DataStore setters
-            coEvery { saveCityWithSchedule(any(), any()) } just Runs
         }
-        val athanApiRepository = mockk<AthanApiRepository> {
-            coEvery {
-                fetchPrayerSchedule(
-                    latitude = 41.0,
-                    longitude = 28.9,
-                    date = today,
-                    useHanafiAsr = false
-                )
-            } returns fetchedSchedule
+        // RefreshPrayerScheduleUseCase's own tests already cover what happens INSIDE the use
+        // case (staleness checks, the actual fetch+save) — HomeViewModel's job is just to call
+        // it with the right city/date/mode, which is all this test verifies
+        val refreshPrayerScheduleUseCase = mockk<RefreshPrayerScheduleUseCase>().also {
+            coEvery { it(any(), any(), any(), any()) } just Runs
         }
 
         homeViewModel(
             athanTimeRepository = athanTimeRepository,
-            athanApiRepository = athanApiRepository,
+            refreshPrayerScheduleUseCase = refreshPrayerScheduleUseCase,
         )
 
-        // coVerify confirms these two suspend calls actually happened with these exact
-        // arguments. There's nothing to assert on homeState here — the mocked
-        // observeSchedule() Flow doesn't change after the save the way a real Room
-        // Flow would, so the fetch+save calls themselves are what this test is about.
         coVerify {
-            athanApiRepository.fetchPrayerSchedule(
-                latitude = 41.0,
-                longitude = 28.9,
-                date = today,
-                useHanafiAsr = false
+            refreshPrayerScheduleUseCase(
+                city = istanbul,
+                today = today,
+                isHanafiMode = false,
+                onFetchStarted = any()
             )
-            athanTimeRepository.saveCityWithSchedule(istanbul, fetchedSchedule)
         }
     }
 
     @Test
-    fun `a schedule cached for a previous day is treated as stale and refetched`() = runTest {
-        val today = LocalDate.now()
-        val staleSchedule = scheduleOn(today.minusDays(1))
-        val freshSchedule = scheduleOn(today)
-
-        val athanTimeRepository = mockk<AthanTimeRepository> {
-            every { observeCity() } returns flowOf(istanbul)
-            every { observeSchedule() } returns flowOf(staleSchedule)
-            coEvery { saveCityWithSchedule(any(), any()) } just Runs
-        }
-        val athanApiRepository = mockk<AthanApiRepository> {
-            coEvery { fetchPrayerSchedule(any(), any(), any(), any()) } returns freshSchedule
-        }
-
-        homeViewModel(
-            athanTimeRepository = athanTimeRepository,
-            athanApiRepository = athanApiRepository,
-        )
-
-        coVerify { athanTimeRepository.saveCityWithSchedule(istanbul, freshSchedule) }
-    }
-
-    @Test
-    fun `a schedule already cached for today is left alone — no fetch happens`() = runTest {
-        val today = LocalDate.now()
-        val athanTimeRepository = mockk<AthanTimeRepository> {
-            every { observeCity() } returns flowOf(istanbul)
-            every { observeSchedule() } returns flowOf(scheduleOn(today))
-        }
-        // Left unstubbed on purpose: coVerify below asserts it's never called at all,
-        // so there's nothing that needs a return value stubbed.
-        val athanApiRepository = mockk<AthanApiRepository>()
-
-        homeViewModel(
-            athanTimeRepository = athanTimeRepository,
-            athanApiRepository = athanApiRepository,
-        )
-
-        coVerify(exactly = 0) { athanApiRepository.fetchPrayerSchedule(any(), any(), any(), any()) }
-    }
-
-    @Test
-    fun `no city saved yet means no fetch is attempted`() = runTest {
+    fun `no city saved yet means RefreshPrayerScheduleUseCase is never invoked`() = runTest {
         // Default homeViewModel() dependencies already describe observeCity() emitting null —
         // this just makes the "why" explicit as its own named test rather than only being
         // implied by the homeState-stays-empty test above
-        val athanApiRepository = mockk<AthanApiRepository>()
+        val refreshPrayerScheduleUseCase = mockk<RefreshPrayerScheduleUseCase>()
 
-        homeViewModel(athanApiRepository = athanApiRepository)
+        homeViewModel(refreshPrayerScheduleUseCase = refreshPrayerScheduleUseCase)
 
-        coVerify(exactly = 0) { athanApiRepository.fetchPrayerSchedule(any(), any(), any(), any()) }
+        coVerify(exactly = 0) { refreshPrayerScheduleUseCase(any(), any(), any(), any()) }
     }
 
     @Test
@@ -291,13 +235,16 @@ class HomeViewModelTest {
             every { observeCity() } returns flowOf(istanbul)
             every { observeSchedule() } returns flowOf(null)
         }
-        val athanApiRepository = mockk<AthanApiRepository> {
-            coEvery { fetchPrayerSchedule(any(), any(), any(), any()) } throws RuntimeException("network down")
+        // HomeViewModel's own try/catch is what's under test here — RefreshPrayerScheduleUseCase
+        // itself never catches anything (see its own "propagates as an exception" test), so
+        // this just needs the mock to throw the same way the real use case would on failure
+        val refreshPrayerScheduleUseCase = mockk<RefreshPrayerScheduleUseCase>().also {
+            coEvery { it(any(), any(), any(), any()) } throws RuntimeException("network down")
         }
 
         homeViewModel(
             athanTimeRepository = athanTimeRepository,
-            athanApiRepository = athanApiRepository,
+            refreshPrayerScheduleUseCase = refreshPrayerScheduleUseCase,
         ).homeState.test {
             assertEquals("network down", awaitItem().error)
         }

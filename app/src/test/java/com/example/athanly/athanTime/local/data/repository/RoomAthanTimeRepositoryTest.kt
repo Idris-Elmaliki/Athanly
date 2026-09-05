@@ -86,6 +86,8 @@ class RoomAthanTimeRepositoryTest {
         // Arrange: the entity stores times/date as ISO-8601 Strings (per the "Room columns are
         // String, converted explicitly" decision) — the repository's mapper is what turns
         // these back into java.time types for the domain model.
+        // isHanafiMode is set to true (not the field's own false default) so this test would
+        // fail if the mapper ever silently dropped it instead of actually passing it through
         val scheduleEntity = PrayerScheduleEntity(
             cityId = "current_location",
             date = "2026-08-29",
@@ -94,7 +96,8 @@ class RoomAthanTimeRepositoryTest {
             dhuhr = "12:15:00",
             asr = "15:45:00",
             maghrib = "18:20:00",
-            isha = "19:45:00"
+            isha = "19:45:00",
+            isHanafiMode = true
         )
         every { dao.observeSchedule() } returns flowOf(scheduleEntity)
 
@@ -105,7 +108,8 @@ class RoomAthanTimeRepositoryTest {
             dhuhr = LocalTime.of(12, 15),
             asr = LocalTime.of(15, 45),
             maghrib = LocalTime.of(18, 20),
-            isha = LocalTime.of(19, 45)
+            isha = LocalTime.of(19, 45),
+            isHanafiMode = true
         )
 
         repository.observeSchedule().test {
@@ -171,7 +175,8 @@ class RoomAthanTimeRepositoryTest {
             dhuhr = LocalTime.of(12, 15),
             asr = LocalTime.of(15, 45),
             maghrib = LocalTime.of(18, 20),
-            isha = LocalTime.of(19, 45)
+            isha = LocalTime.of(19, 45),
+            isHanafiMode = true
         )
         val expectedCityEntity = CityEntity(
             id = "current_location",
@@ -188,7 +193,8 @@ class RoomAthanTimeRepositoryTest {
             dhuhr = "12:15:00",
             asr = "15:45:00",
             maghrib = "18:20:00",
-            isha = "19:45:00"
+            isha = "19:45:00",
+            isHanafiMode = true
         )
         coEvery { dao.upsertCityWithSchedule(any(), any()) } just Runs
 
