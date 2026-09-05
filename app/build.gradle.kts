@@ -114,4 +114,11 @@ dependencies {
 
     // FusedLocationProviderClient — fetches the user's current location for the Location onboarding step (com.google.android.gms)
     implementation(libs.play.services.location)
+
+    // WorkManager — schedules the daily worker that refreshes prayer schedules and re-arms alarms (androidx.work)
+    implementation(libs.androidx.work.runtime.ktx)
+    // Hilt WorkManager integration — lets HiltWorker classes receive @Inject dependencies (androidx.hilt)
+    implementation(libs.androidx.hilt.work)
+    // Annotation processor for @HiltWorker, run via KSP like the other Hilt/Room processors (androidx.hilt)
+    ksp(libs.androidx.hilt.compiler)
 }

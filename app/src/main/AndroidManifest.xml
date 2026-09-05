@@ -14,6 +14,14 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
+    <!-- User-grantable special permission (API 31+) needed to schedule exact prayer-time alarms;
+         AlarmSchedulerImpl checks canScheduleExactAlarms() and falls back to inexact if not granted -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+
+    <!-- Lets BootCompletedReceiver re-enqueue the sync worker after a device reboot, since
+         AlarmManager alarms don't survive a reboot on their own -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
     <application
         android:name=".AthanlyApplication"
         android:allowBackup="true"
@@ -35,6 +43,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Not exported — only AlarmManager (same app, via the PendingIntent AlarmSchedulerImpl
+             built) ever needs to deliver this broadcast -->
+        <receiver
+            android:name=".notifications.worker.PrayerNotificationReceiver"
+            android:exported="false" />
+
+        <!-- Exported=true is required for the system to deliver an implicit BOOT_COMPLETED
+             broadcast; the intent-filter restricts it to only that one action -->
+        <receiver
+            android:name=".notifications.worker.BootCompletedReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- WorkManager's default androidx-startup initializer is removed because
+             AthanlyApplication implements Configuration.Provider to supply HiltWorkerFactory
+             instead, so WorkManager self-initializes with Hilt-injected workers -->
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
     </application>
 
 </manifest>

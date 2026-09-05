@@ -11,7 +11,7 @@ import javax.inject.Inject
 class AthanApiRepositoryImpl @Inject constructor(
     private val apiService: AlAdhanApiService
 ) : AthanApiRepository {
-    override suspend fun fetchPrayerSchedule(
+    override suspend fun fetchNewPrayerSchedule(
         latitude: Double,
         longitude: Double,
         date: LocalDate,
@@ -29,7 +29,7 @@ class AthanApiRepositoryImpl @Inject constructor(
             school
         )
         
-        return response.data.timings.toDomain(date)
+        return response.data.timings.toDomain(date, useHanafiAsr)
     }
 
     private companion object {
@@ -38,12 +38,16 @@ class AthanApiRepositoryImpl @Inject constructor(
     }
 }
 
-private fun AlAdhanTimingsDto.toDomain(date: LocalDate) = PrayerSchedule(
+private fun AlAdhanTimingsDto.toDomain(
+    date: LocalDate, 
+    isHanafiMode: Boolean
+) = PrayerSchedule(
     date = date,
     fajr = fajr.toLocalTime(),
     sunrise = sunrise.toLocalTime(),
     dhuhr = dhuhr.toLocalTime(),
     asr = asr.toLocalTime(),
     maghrib = maghrib.toLocalTime(),
-    isha = isha.toLocalTime()
+    isha = isha.toLocalTime(),
+    isHanafiMode = isHanafiMode
 )

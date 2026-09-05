@@ -19,6 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -33,16 +34,22 @@ import com.example.athanly.ui.subscreens.SkeletonBar
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
-private val rowTimeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-
 // 6-row list (Fajr, Sunrise, Dhuhr, Asr, Maghrib, Isha) — always renders all 6 row shells,
 // schedule null or not, so loading never tears rows down/rebuilds them (see PrayerRow)
 @Composable
 fun PrayerScheduleList(
     schedule: PrayerSchedule?,
     nextPrayer: Prayer?,
+    is24HourFormat: Boolean,
     modifier: Modifier = Modifier
 ) {
+    // Settings' time format toggle drives this — "HH:mm" (24hr) vs "h:mm a" (12hr, e.g. "4:30 PM").
+    // remember(is24HourFormat) avoids rebuilding the formatter on every recomposition, only
+    // when the toggle itself actually changes.
+    val rowTimeFormatter = remember(is24HourFormat) {
+        DateTimeFormatter.ofPattern(if (is24HourFormat) "HH:mm" else "h:mm a")
+    }
+
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(
@@ -53,7 +60,8 @@ fun PrayerScheduleList(
             PrayerRow(
                 prayer = prayer,
                 time = schedule?.timeFor(prayer),
-                isActive = prayer == nextPrayer
+                isActive = prayer == nextPrayer,
+                timeFormatter = rowTimeFormatter
             )
         }
     }
@@ -68,6 +76,7 @@ private fun PrayerRow(
     prayer: Prayer,
     time: LocalTime?,
     isActive: Boolean,
+    timeFormatter: DateTimeFormatter,
     modifier: Modifier = Modifier
 ) {
     val backgroundColor = if (isActive) {
@@ -137,7 +146,7 @@ private fun PrayerRow(
             }
             if (time != null) {
                 Text(
-                    text = time.format(rowTimeFormatter),
+                    text = time.format(timeFormatter),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                     color = contentColor
                 )

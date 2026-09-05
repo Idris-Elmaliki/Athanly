@@ -1,10 +1,13 @@
 package com.example.athanly.ui.onBoarding.viewModel
 
+import android.content.Context
 import app.cash.turbine.test
 import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
 import com.example.athanly.appData.domain.modelData.muadhhinList
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
+import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
+import com.example.athanly.location.domain.repository.LocationProvider
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -23,7 +26,6 @@ import org.junit.Before
 import org.junit.Test
 
 class OnBoardingViewModelTest {
-
     // Same reasoning as SettingsViewModelTest: viewModelScope needs Dispatchers.Main
     // substituted before construction, and Unconfined so the init{} coroutine's
     // combine() runs eagerly instead of needing manual time-advancement.
@@ -39,6 +41,29 @@ class OnBoardingViewModelTest {
         Dispatchers.resetMain()
     }
 
+    // athanTimeRepository defaults to observeCity() emitting null — the ViewModel's own
+    // init{} collects that Flow unconditionally, so every construction needs at least this
+    // much stubbed or it NPEs on a null Flow. locationProvider/context default to plain
+    // mockk() since none of the tests below exercise the location-saving functions that
+    // actually use them.
+    private fun onBoardingViewModel(
+        preferencesDataStore: AppDataPreferencesDataStore = mockk {
+            every { observedLanguage() } returns flowOf(Language.English)
+            every { observedSelectedMuadhdhin() } returns flowOf(muadhhinList.first())
+            every { observedIsHanafiMode() } returns flowOf(false)
+        },
+        athanTimeRepository: AthanTimeRepository = mockk {
+            every { observeCity() } returns flowOf(null)
+        },
+        locationProvider: LocationProvider = mockk(),
+        context: Context = mockk(),
+    ) = OnBoardingViewModel(
+        preferencesDataStore = preferencesDataStore,
+        athanTimeRepository = athanTimeRepository,
+        locationProvider = locationProvider,
+        context = context,
+    )
+
     @Test
     fun `appDataState combines language, selectedMuadhdhin, and isHanafiMode from the DataStore`() = runTest {
         val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
@@ -52,7 +77,7 @@ class OnBoardingViewModelTest {
             every { observedIsHanafiMode() } returns flowOf(true)
         }
 
-        val viewModel = OnBoardingViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = onBoardingViewModel(preferencesDataStore = preferencesDataStore)
 
         viewModel.appDataState.test {
             val state = awaitItem()
@@ -72,7 +97,7 @@ class OnBoardingViewModelTest {
             coEvery { setLanguage(any()) } just Runs
         }
 
-        val viewModel = OnBoardingViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = onBoardingViewModel(preferencesDataStore = preferencesDataStore)
 
         viewModel.onLanguageSelected(language = Language.Arabic)
 
@@ -90,7 +115,7 @@ class OnBoardingViewModelTest {
             coEvery { setSelectedMuadhdhin(any()) } just Runs
         }
 
-        val viewModel = OnBoardingViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = onBoardingViewModel(preferencesDataStore = preferencesDataStore)
 
         viewModel.onMuadhhinSelected(muadhdhin = kuwait)
 
@@ -107,7 +132,7 @@ class OnBoardingViewModelTest {
             coEvery { setIsHanafiMode(any()) } just Runs
         }
 
-        val viewModel = OnBoardingViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = onBoardingViewModel(preferencesDataStore = preferencesDataStore)
 
         viewModel.onHanafiModeToggled()
 
@@ -123,7 +148,7 @@ class OnBoardingViewModelTest {
             coEvery { setHasCompletedOnboarding(any()) } just Runs
         }
 
-        val viewModel = OnBoardingViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = onBoardingViewModel(preferencesDataStore = preferencesDataStore)
 
         viewModel.onOnboardingComplete()
 
@@ -138,7 +163,7 @@ class OnBoardingViewModelTest {
             every { observedIsHanafiMode() } returns flowOf(false)
         }
 
-        val viewModel = OnBoardingViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = onBoardingViewModel(preferencesDataStore = preferencesDataStore)
 
         // Turbine's .test {} subscribes to the StateFlow and lets us step through
         // its emissions one at a time via awaitItem(), instead of manually collecting
@@ -156,7 +181,7 @@ class OnBoardingViewModelTest {
             every { observedIsHanafiMode() } returns flowOf(false)
         }
 
-        val viewModel = OnBoardingViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = onBoardingViewModel(preferencesDataStore = preferencesDataStore)
 
         viewModel.notificationsState.test {
             awaitItem() // consume the initial default state first
