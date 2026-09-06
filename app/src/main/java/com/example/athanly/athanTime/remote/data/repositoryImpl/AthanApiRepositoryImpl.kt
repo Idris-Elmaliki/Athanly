@@ -1,5 +1,6 @@
 package com.example.athanly.athanTime.remote.data.repositoryImpl
 
+import android.util.Log
 import com.example.athanly.athanTime.domain.PrayerSchedule
 import com.example.athanly.athanTime.remote.domain.api.AlAdhanApiService
 import com.example.athanly.athanTime.remote.data.dto.AlAdhanTimingsDto
@@ -17,19 +18,22 @@ class AthanApiRepositoryImpl @Inject constructor(
         date: LocalDate,
         useHanafiAsr: Boolean
     ): PrayerSchedule {
-        val school = if (useHanafiAsr) 
-                        HANAFI_SCHOOL 
-                    else 
-                        SHAFI_SCHOOL
-        
+        val school =
+            if(useHanafiAsr) {
+                HANAFI_SCHOOL
+            }
+            else {
+                SHAFI_SCHOOL
+            }
+
         val response = apiService.getTimings(
-            date, 
-            latitude, 
-            longitude, 
-            school
+            date = date,
+            latitude = latitude,
+            longitude = longitude,
+            school = school
         )
-        
-        return response.data.timings.toDomain(date, useHanafiAsr)
+
+        return response.data.timings.toDomain(date, useHanafiAsr, latitude, longitude)
     }
 
     private companion object {
@@ -39,8 +43,10 @@ class AthanApiRepositoryImpl @Inject constructor(
 }
 
 private fun AlAdhanTimingsDto.toDomain(
-    date: LocalDate, 
-    isHanafiMode: Boolean
+    date: LocalDate,
+    isHanafiMode: Boolean,
+    latitude: Double,
+    longitude: Double
 ) = PrayerSchedule(
     date = date,
     fajr = fajr.toLocalTime(),
@@ -49,5 +55,7 @@ private fun AlAdhanTimingsDto.toDomain(
     asr = asr.toLocalTime(),
     maghrib = maghrib.toLocalTime(),
     isha = isha.toLocalTime(),
-    isHanafiMode = isHanafiMode
+    isHanafiMode = isHanafiMode,
+    latitude = latitude,
+    longitude = longitude
 )

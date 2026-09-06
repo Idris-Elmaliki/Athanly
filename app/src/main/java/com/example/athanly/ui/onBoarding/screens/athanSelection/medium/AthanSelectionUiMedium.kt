@@ -21,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.example.athanly.R
 import com.example.athanly.appData.domain.modelData.AppDataUiState
 import com.example.athanly.appData.domain.modelData.Muadhdhin
+import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
 import com.example.athanly.appData.domain.modelData.muadhhinList
 import com.example.athanly.ui.onBoarding.screens.athanSelection.athanSelectionSubScreens.MuadhhinCard
 
@@ -28,6 +29,7 @@ import com.example.athanly.ui.onBoarding.screens.athanSelection.athanSelectionSu
 @Composable
 fun AthanSelectionUiMedium(
     state: AppDataUiState,
+    previewingMuadhdhinId: MuadhdhinId?,
     onMuadhhinSelected: (Muadhdhin) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -59,7 +61,8 @@ fun AthanSelectionUiMedium(
                 Column(modifier = Modifier.fillMaxWidth(0.75f)) {
                     MuadhhinCard(
                         muadhdhin = muadhdhin,
-                        isSelected = muadhdhin == state.selectedMuadhdhin,
+                        isSelected = state.hasSelectedMuadhdhin && muadhdhin == state.selectedMuadhdhin,
+                        isPlaying = muadhdhin.id == previewingMuadhdhinId,
                         onClick = { onMuadhhinSelected(muadhdhin) },
                     )
 

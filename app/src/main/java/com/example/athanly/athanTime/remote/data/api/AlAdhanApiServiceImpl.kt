@@ -1,5 +1,6 @@
 package com.example.athanly.athanTime.remote.data.api
 
+import android.util.Log
 import com.example.athanly.athanTime.remote.data.dto.AlAdhanTimingsResponseDto
 import com.example.athanly.athanTime.remote.domain.api.AlAdhanApiService
 import io.ktor.client.HttpClient

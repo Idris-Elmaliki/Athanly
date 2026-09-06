@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.viewModel
 
+import android.media.AudioManager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.athanly.appData.domain.modelData.Muadhdhin
@@ -15,36 +16,49 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val preferencesDataStore: AppDataPreferencesDataStore
+    private val preferencesDataStore: AppDataPreferencesDataStore,
+    private val audioManager: AudioManager
 ) : ViewModel() {
     private val _settingsState = MutableStateFlow(AppDataUiState())
     val settingsState: StateFlow<AppDataUiState> = _settingsState.asStateFlow()
 
     init {
-        // combine()'s 5-flow overload — every preference is independent, so any single
+        // The slider reflects/controls the phone's actual STREAM_NOTIFICATION volume rather
+        // than a custom DataStore value, so it's read once here rather than as a Flow —
+        // AudioManager has no built-in way to observe it, only the hardware volume rocker
+        // (while this screen is open) can change it out from under this read.
+        _settingsState.update { current ->
+            current.copy(athanVolume = currentNotificationVolumeFraction())
+        }
+
+        // combine()'s 4-flow overload — every preference is independent, so any single
         // one changing (e.g. just toggling Hanafi mode) re-emits the full state with
-        // the other four values carried over unchanged.
+        // the other three values carried over unchanged.
         viewModelScope.launch {
             try {
                 combine(
                     preferencesDataStore.observedIs24HourFormat(),
                     preferencesDataStore.observedIsHanafiMode(),
-                    preferencesDataStore.observedAthanVolume(),
                     preferencesDataStore.observedLanguage(),
                     preferencesDataStore.observedSelectedMuadhdhin(),
-                ) { is24HourFormat, isHanafiMode, athanVolume, language, selectedMuadhdhin ->
+                ) { is24HourFormat, isHanafiMode, language, selectedMuadhdhin ->
                     AppDataUiState(
                         is24HourFormat = is24HourFormat,
                         isHanafiMode = isHanafiMode,
-                        athanVolume = athanVolume,
                         selectedLanguage = language,
                         selectedMuadhdhin = selectedMuadhdhin,
                     )
                 }.collect { combinedState ->
-                    _settingsState.update { combinedState }
+                    // athanVolume isn't backed by DataStore anymore — preserved here so this
+                    // combine (triggered by an unrelated preference) doesn't reset the slider
+                    // back to AppDataUiState's default
+                    _settingsState.update { current ->
+                        combinedState.copy(athanVolume = current.athanVolume)
+                    }
                 }
             } catch (e: Exception) {
                 _settingsState.update { data ->
@@ -55,6 +69,14 @@ class SettingsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun currentNotificationVolumeFraction(): Float {
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION)
+        if (maxVolume == 0) return 0f
+
+        val currentVolume = audioManager.getStreamVolume(AudioManager.STREAM_NOTIFICATION)
+        return currentVolume.toFloat() / maxVolume
     }
 
     // Reads the current value straight off settingsState rather than taking a Boolean
@@ -87,17 +109,17 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    // Sets the phone's actual notification volume directly — no DataStore write, no IO
+    // dispatch needed, since AudioManager calls are cheap, synchronous, and local to the device.
     fun onAthanVolumeChanged(volume: Float) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                preferencesDataStore.setAthanVolume(volume)
-            } catch (e: Exception) {
-                _settingsState.update { data ->
-                    data.copy(
-                        error = e.message
-                    )
-                }
-            }
+        val maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION)
+        audioManager.setStreamVolume(
+            AudioManager.STREAM_NOTIFICATION,
+            (volume * maxVolume).roundToInt(),
+            0
+        )
+        _settingsState.update { current ->
+            current.copy(athanVolume = volume)
         }
     }
 

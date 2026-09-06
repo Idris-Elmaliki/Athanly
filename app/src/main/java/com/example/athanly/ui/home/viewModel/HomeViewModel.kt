@@ -1,6 +1,7 @@
 package com.example.athanly.ui.home.viewModel
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
@@ -127,6 +128,7 @@ class HomeViewModel @Inject constructor(
                     }
                 }
             )
+
         }
         catch (e: Exception) {
             _homeState.update { current ->
@@ -145,10 +147,9 @@ class HomeViewModel @Inject constructor(
     }
 
     // Drives the ChangeCity screen (reached from Home's top bar) — same shape/reasoning as
-    // OnBoardingViewModel's own locationState. Unlike onboarding, ChangeCity saves a picked
-    // city immediately (see onPresetCitySelected below, matching how MuadhdhinPickerUi's
-    // selection saves immediately) rather than deferring to a "Continue" step, so city here
-    // is read straight off Room rather than held as a local pending value.
+    // OnBoardingViewModel's own locationState, including the same deferred-save pattern: a tap
+    // only updates this local state, and the pick is only committed to Room (see
+    // onChangeCityBackClick below) once the user actually leaves the screen.
     private val _locationState = MutableStateFlow(LocationUiState())
     val locationState: StateFlow<LocationUiState> = _locationState.asStateFlow()
 
@@ -185,8 +186,8 @@ class HomeViewModel @Inject constructor(
             try {
                 val city = locationProvider.getCurrentCity()
                 if (city != null) {
-                    athanTimeRepository.saveCity(city)
-                    enqueueImmediateScheduleSync()
+                    // Pending only — onChangeCityBackClick is what actually commits this to Room
+                    _locationState.update { current -> current.copy(city = city) }
                 }
                 // city == null (no fix obtained despite permission) just leaves the screen as-is —
                 // the previously saved city stays in place, same fallback as onboarding's version.
@@ -198,17 +199,29 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    // Called when the user picks a city from PresetCityPicker
+    // Called when the user picks a city from PresetCityPicker — just updates the pending
+    // selection shown on screen. Nothing is written to Room until onChangeCityBackClick.
     fun onPresetCitySelected(city: City) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                athanTimeRepository.saveCity(city)
-                enqueueImmediateScheduleSync()
-            } catch (e: Exception) {
-                _locationState.update { current ->
-                    current.copy(
-                        error = e.message
-                    )
+        _locationState.update { current ->
+            current.copy(
+                city = city
+            )
+        }
+    }
+
+    // Called when the user leaves the ChangeCity screen. Commits the pending pick to Room (and
+    // kicks off a fresh schedule fetch) only if it actually differs from what's already saved —
+    // homeState.city is already kept in sync with Room by the init block above, so it doubles
+    // as "what's currently persisted" here without a second DB read.
+    fun onChangeCityBackClick() {
+        val pendingCity = _locationState.value.city
+        if (pendingCity != null && pendingCity != _homeState.value.city) {
+            viewModelScope.launch(Dispatchers.IO) {
+                try {
+                    athanTimeRepository.saveCity(pendingCity)
+                    enqueueImmediateScheduleSync()
+                } catch (e: Exception) {
+                    _locationState.update { current -> current.copy(error = e.message) }
                 }
             }
         }
