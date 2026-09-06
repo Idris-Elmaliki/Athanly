@@ -1,5 +1,7 @@
 package com.example.athanly.location.domain.modelData
 
+import com.example.athanly.athanTime.local.domain.modelData.City
+
 // Holds the result of the runtime location permission request + the current-location fetch
 // on the onboarding Location screen — mirrors NotificationsUiState's shape.
 data class LocationUiState(
@@ -10,4 +12,5 @@ data class LocationUiState(
     // True once a city (GPS fix or preset pick) has actually been saved — lets the UI
     // know it's safe to advance past this onboarding step.
     val hasSavedCity: Boolean = false,
+    val city : City? = null
 )
