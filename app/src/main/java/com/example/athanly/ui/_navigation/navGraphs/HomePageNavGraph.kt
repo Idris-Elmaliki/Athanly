@@ -9,8 +9,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.window.core.layout.WindowSizeClass
-import com.example.athanly.ui._navigation.routes.MainRoutes
+import com.example.athanly.ui._navigation.routes.HomePageRoutes
 import com.example.athanly.ui.home.screens.home.HomeUi
+import com.example.athanly.ui.home.screens.home.homeSubScreens.changeCity.ChangeCityUi
 import com.example.athanly.ui.home.screens.qibla.QiblaUi
 import com.example.athanly.ui.home.screens.settings.SettingsUi
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.languagePicker.LanguagePickerUi
@@ -22,39 +23,39 @@ import com.example.athanly.ui.home.screens.settings.settingsSubScreens.muadhdhin
 const val SettingsDetailTransitionDurationMillis = 300
 
 // Extension on NavGraphBuilder so MainLayout stays clean — each feature owns its own graph
-fun NavGraphBuilder.mainNavGraph(
+fun NavGraphBuilder.homePageNavGraph(
     currentScreen: WindowSizeClass,
     topBarPadding: Dp,
     bottomBarPadding: Dp,
     navController: NavController
 ) {
-    composable<MainRoutes.Home> {
+    composable<HomePageRoutes.Home> {
         HomeUi(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
             topBarPadding = topBarPadding,
             bottomBarPadding = bottomBarPadding,
+            onChangeCityClick = { navController.navigate(HomePageRoutes.ChangeCity) },
         )
     }
-    composable<MainRoutes.Qibla> {
+    composable<HomePageRoutes.Qibla> {
         QiblaUi(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
         )
     }
-    composable<MainRoutes.Settings> {
+    composable<HomePageRoutes.Settings> {
         SettingsUi(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
             topBarPadding = topBarPadding,
-            onLanguageRowClick = { navController.navigate(MainRoutes.LanguagePicker) },
-            onMuadhdhinRowClick = { navController.navigate(MainRoutes.MuadhdhinPicker) },
-//            bottomBarPadding = bottomBarPadding,
+            onLanguageRowClick = { navController.navigate(HomePageRoutes.LanguagePicker) },
+            onMuadhdhinRowClick = { navController.navigate(HomePageRoutes.MuadhdhinPicker) }
         )
     }
     // Pushed from Settings — slides in from the right on the way in, slides back out to the
     // right when popped, instead of NavHost's default fade (see SettingsDetailTransitionDurationMillis)
-    composable<MainRoutes.LanguagePicker>(
+    composable<HomePageRoutes.LanguagePicker>(
         enterTransition = {
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -75,7 +76,7 @@ fun NavGraphBuilder.mainNavGraph(
             onBackClick = { navController.popBackStack() }
         )
     }
-    composable<MainRoutes.MuadhdhinPicker>(
+    composable<HomePageRoutes.MuadhdhinPicker>(
         enterTransition = {
             slideIntoContainer(
                 towards = AnimatedContentTransitionScope.SlideDirection.Left,
@@ -90,6 +91,28 @@ fun NavGraphBuilder.mainNavGraph(
         }
     ) {
         MuadhdhinPickerUi(
+            modifier = Modifier.fillMaxSize(),
+            windowSizeClass = currentScreen,
+            topBarPadding = topBarPadding,
+            onBackClick = { navController.popBackStack() }
+        )
+    }
+    // Pushed from Home's top bar — same slide transition as the Settings pickers above
+    composable<HomePageRoutes.ChangeCity>(
+        enterTransition = {
+            slideIntoContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Left,
+                animationSpec = tween(SettingsDetailTransitionDurationMillis)
+            )
+        },
+        popExitTransition = {
+            slideOutOfContainer(
+                towards = AnimatedContentTransitionScope.SlideDirection.Right,
+                animationSpec = tween(SettingsDetailTransitionDurationMillis)
+            )
+        }
+    ) {
+        ChangeCityUi(
             modifier = Modifier.fillMaxSize(),
             windowSizeClass = currentScreen,
             topBarPadding = topBarPadding,

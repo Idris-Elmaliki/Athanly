@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.viewModel
 
+import android.content.Context
 import app.cash.turbine.test
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import com.example.athanly.athanTime.domain.PrayerSchedule
@@ -7,6 +8,7 @@ import com.example.athanly.athanTime.local.domain.modelData.City
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
 import com.example.athanly.athanTime.domain.RefreshPrayerScheduleUseCase
+import com.example.athanly.location.domain.repository.LocationProvider
 import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -83,11 +85,18 @@ class HomeViewModelTest {
             // false matches AppDataUiState's own 12-hour default
             every { observedIs24HourFormat() } returns flowOf(false)
         },
+        // Only exercised by the ChangeCity screen's own functions (onLocationPermissionResult/
+        // onPresetCitySelected) — none of the tests below call those, so plain unconfigured
+        // mocks are enough to satisfy the constructor
+        locationProvider: LocationProvider = mockk(),
+        context: Context = mockk(),
     ) = HomeViewModel(
         clock = clock,
         athanTimeRepository = athanTimeRepository,
         refreshPrayerScheduleUseCase = refreshPrayerScheduleUseCase,
         preferencesDataStore = preferencesDataStore,
+        locationProvider = locationProvider,
+        context = context,
     )
 
     @Test

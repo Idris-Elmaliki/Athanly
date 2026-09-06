@@ -21,8 +21,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.athanly.R
 import com.example.athanly.ui._navigation.navGraphs.SettingsDetailTransitionDurationMillis
-import com.example.athanly.ui._navigation.navGraphs.mainNavGraph
-import com.example.athanly.ui._navigation.routes.MainRoutes
+import com.example.athanly.ui._navigation.navGraphs.homePageNavGraph
+import com.example.athanly.ui._navigation.routes.HomePageRoutes
 import com.example.athanly.ui.home.subscreens.BottomNavBar
 
 // Persistent scaffold for the post-onboarding app shell — owns the inner NavHost so the
@@ -38,17 +38,19 @@ fun HomeLayout(
 
     val currentBackStackEntry by innerNavController.currentBackStackEntryAsState()
 
-    // Map the active destination to its MainRoutes tab — falls back to Home if no match yet
+    // Map the active destination to its HomePageRoutes tab — falls back to Home if no match yet
     val currentRoute = when {
-        currentBackStackEntry?.destination?.hasRoute<MainRoutes.Qibla>() == true -> MainRoutes.Qibla
-        currentBackStackEntry?.destination?.hasRoute<MainRoutes.Settings>() == true -> MainRoutes.Settings
-        else -> MainRoutes.Home
+        currentBackStackEntry?.destination?.hasRoute<HomePageRoutes.Qibla>() == true -> HomePageRoutes.Qibla
+        currentBackStackEntry?.destination?.hasRoute<HomePageRoutes.Settings>() == true -> HomePageRoutes.Settings
+        else -> HomePageRoutes.Home
     }
 
-    // Screens pushed on top of Settings (Language/Muadhdhin pickers) have their own DetailTopBar
-    // and shouldn't show the tab bar over them
+    // Screens pushed on top of Home/Settings (Language/Muadhdhin/ChangeCity pickers) have
+    // their own DetailTopBar and shouldn't show the tab bar over them
     val isOnDetailScreen = currentBackStackEntry?.destination?.let { destination ->
-        destination.hasRoute<MainRoutes.LanguagePicker>() || destination.hasRoute<MainRoutes.MuadhdhinPicker>()
+        destination.hasRoute<HomePageRoutes.LanguagePicker>() ||
+            destination.hasRoute<HomePageRoutes.MuadhdhinPicker>() ||
+            destination.hasRoute<HomePageRoutes.ChangeCity>()
     } == true
 
     Scaffold(
@@ -63,7 +65,7 @@ fun HomeLayout(
             NavHost(
                 modifier = Modifier.fillMaxSize(),
                 navController = innerNavController,
-                startDestination = MainRoutes.Home
+                startDestination = HomePageRoutes.Home
             ) {
                 // Only HomeTopBar needs this — applying it to the whole NavHost would push
                 // AtmosphericBackground down from the top, exposing a plain white strip
@@ -72,7 +74,7 @@ fun HomeLayout(
                 // bottomBarPadding is the bar's own height plus however far the bar itself is
                 // lifted above the system nav bar — content needs to clear all of it, not just
                 // the system inset, since BottomNavBar is a floating overlay, not a Scaffold slot
-                mainNavGraph(
+                homePageNavGraph(
                     currentScreen = windowSizeClass,
                     topBarPadding = (innerPadding.calculateTopPadding() / 2),
                     bottomBarPadding = bottomDp,

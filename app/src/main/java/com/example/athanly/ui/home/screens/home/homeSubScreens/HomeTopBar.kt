@@ -6,7 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.AddLocationAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -17,7 +17,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import com.example.athanly.R
 
-// Single location now — no add-city button, only the menu button remains
+// Single location now — the one button left opens ChangeCity instead of an add-city flow
 @Composable
 fun HomeTopBar(
     onMenuClick: () -> Unit,
@@ -35,7 +35,7 @@ fun HomeTopBar(
             modifier = Modifier.size(dimensionResource(R.dimen.home_top_bar_button_size))
         ) {
             Icon(
-                imageVector = Icons.Filled.Menu,
+                imageVector = Icons.Filled.AddLocationAlt,
                 contentDescription = stringResource(R.string.home_menu_button_description),
                 tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier

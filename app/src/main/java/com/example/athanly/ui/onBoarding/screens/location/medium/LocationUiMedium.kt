@@ -31,6 +31,7 @@ fun LocationUiMedium(
     state: LocationUiState,
     onShareLocationClick: () -> Unit,
     onPresetCitySelected: (City) -> Unit,
+    undoPresetCitySelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -99,6 +100,18 @@ fun LocationUiMedium(
                             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_card_spacing)))
                         }
                     }
+                }
+            }
+            else if(state.hasSavedCity && !state.isPermissionGranted){
+                item {
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_text_gap)))
+
+                    PresetCityPicker(
+                        city = state.city ?: presetCities[0],
+                        isSelected = true,
+                        onClick = { undoPresetCitySelected() },
+                        modifier = Modifier
+                    )
                 }
             }
 
