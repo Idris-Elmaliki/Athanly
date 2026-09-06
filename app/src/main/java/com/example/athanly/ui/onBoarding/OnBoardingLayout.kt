@@ -28,6 +28,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.athanly.location.domain.modelData.LocationUiState
 import com.example.athanly.ui._navigation.navGraphs.onBoardingNavGraph
 import com.example.athanly.ui._navigation.routes.OnBoardingRoutes
 import com.example.athanly.ui.onBoarding.onBoardingSubScreens.OnBoardingBottomBar
@@ -53,13 +54,6 @@ fun OnBoardingLayout(
     // Resolves the current window size class reactively — updates on rotation or multi-window resize
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
 
-    // Separate instance from whatever the Location screen itself holds (hiltViewModel() is
-    // scoped per nav destination) — only used here to gate Continue below, reading
-    // hasSavedCity off Room via observeCity() so both instances agree regardless of which
-    // one actually performed the save (see OnBoardingViewModel)
-    val viewModel: OnBoardingViewModel = hiltViewModel()
-    val locationState by viewModel.locationState.collectAsStateWithLifecycle()
-
     // Ordered list used to derive the current step index from the active destination
     val steps = listOf(
         OnBoardingRoutes.Welcome,
@@ -70,6 +64,16 @@ fun OnBoardingLayout(
     )
 
     val currentBackStackEntry by innerNavController.currentBackStackEntryAsState()
+
+    // Passing the current back-stack entry explicitly (instead of a bare hiltViewModel())
+    // resolves to the SAME instance LocationUi's own hiltViewModel() call gets — Navigation
+    // Compose scopes both to that entry's ViewModelStore. This has to be the same instance
+    // now, not just agree via Room, since a preset city pick is held as local pending state
+    // (see onPresetCitySelected/updatePresetCity on OnBoardingViewModel) until Continue commits it.
+    val viewModel = currentBackStackEntry?.let { entry -> 
+        hiltViewModel<OnBoardingViewModel>(entry) 
+    }
+    val locationState = viewModel?.locationState?.collectAsStateWithLifecycle()?.value ?: LocationUiState()
 
     // Map the active destination to a 0-indexed step — falls back to 0 if no match
     val currentStep = steps.indexOfFirst { route ->
@@ -142,6 +146,14 @@ fun OnBoardingLayout(
                 ) {
                     OnBoardingBottomBar(
                         onContinueClick = {
+                            // Commits the pending preset-city pick to Room right as the user
+                            // leaves the Location step. Harmless to call even when the city
+                            // actually came from GPS (already saved) — it just re-saves the
+                            // same city, so there's no need to track which path it came from.
+                            if (currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.Location>() == true) {
+                                locationState.city?.let { city -> viewModel?.updatePresetCity(city) }
+                            }
+
                             when (steps.getOrNull(currentStep + 1)) {
                                 OnBoardingRoutes.AthanSelection -> innerNavController.navigate(OnBoardingRoutes.AthanSelection)
                                 OnBoardingRoutes.Location -> innerNavController.navigate(OnBoardingRoutes.Location)

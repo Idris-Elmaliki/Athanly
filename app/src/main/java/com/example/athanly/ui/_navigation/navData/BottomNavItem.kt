@@ -1,7 +1,6 @@
 package com.example.athanly.ui._navigation.navData
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Expand
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
@@ -10,11 +9,11 @@ import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.athanly.R
-import com.example.athanly.ui._navigation.routes.MainRoutes
+import com.example.athanly.ui._navigation.routes.HomePageRoutes
 
-// Icon + label spec for one BottomNavBar tab — pairs a MainRoutes destination with its display data
+// Icon + label spec for one BottomNavBar tab — pairs a HomePageRoutes destination with its display data
 data class BottomNavItem(
-    val route: MainRoutes,
+    val route: HomePageRoutes,
     val filledIcon: ImageVector,
     val outlinedIcon: ImageVector,
     val labelRes: Int
@@ -23,19 +22,19 @@ data class BottomNavItem(
 // The 3 bottom nav tabs, in display order — drives the BottomNavBar row-building loop
 val bottomNavItems = listOf(
     BottomNavItem(
-        route = MainRoutes.Home,
+        route = HomePageRoutes.Home,
         filledIcon = Icons.Filled.Home,
         outlinedIcon = Icons.Outlined.Home,
         labelRes = R.string.bottom_nav_home
     ),
     BottomNavItem(
-        route = MainRoutes.Qibla,
+        route = HomePageRoutes.Qibla,
         filledIcon = Icons.Filled.Explore,
         outlinedIcon = Icons.Outlined.Explore,
         labelRes = R.string.bottom_nav_qibla
     ),
     BottomNavItem(
-        route = MainRoutes.Settings,
+        route = HomePageRoutes.Settings,
         filledIcon = Icons.Filled.Settings,
         outlinedIcon = Icons.Outlined.Settings,
         labelRes = R.string.bottom_nav_settings

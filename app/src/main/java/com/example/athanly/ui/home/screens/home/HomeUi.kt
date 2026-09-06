@@ -18,19 +18,17 @@ fun HomeUi(
     windowSizeClass: WindowSizeClass,
     topBarPadding: Dp,
     bottomBarPadding: Dp,
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    onChangeCityClick: () -> Unit
 ) {
     val state by viewModel.homeState.collectAsStateWithLifecycle()
-
-    // TODO: wire to the nav drawer once it's built (separate future plan)
-    val onMenuClick = {}
 
     when {
         // 840dp+ — expanded (large tablets, landscape)
         windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
             HomeUiExpanded(
                 state = state,
-                onMenuClick = onMenuClick,
+                onMenuClick = onChangeCityClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier
             )
@@ -39,7 +37,7 @@ fun HomeUi(
         windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
             HomeUiMedium(
                 state = state,
-                onMenuClick = onMenuClick,
+                onMenuClick = onChangeCityClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier
             )
@@ -48,7 +46,7 @@ fun HomeUi(
         else -> {
             HomeUiCompact(
                 state = state,
-                onMenuClick = onMenuClick,
+                onMenuClick = onChangeCityClick,
                 topBarPadding = topBarPadding,
                 bottomBarPadding = bottomBarPadding,
                 modifier = modifier

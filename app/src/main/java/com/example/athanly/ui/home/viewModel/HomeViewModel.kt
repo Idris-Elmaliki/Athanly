@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.viewModel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
@@ -11,7 +12,15 @@ import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
 import com.example.athanly.athanTime.domain.RefreshPrayerScheduleUseCase
 import com.example.athanly.athanTime.domain.timeFor
+import com.example.athanly.location.domain.modelData.LocationUiState
+import com.example.athanly.location.domain.repository.LocationProvider
+import com.example.athanly.notifications.worker.PRAYER_SYNC_WORK_NAME
+import com.example.athanly.notifications.worker.PrayerScheduleSyncWorker
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +42,9 @@ class HomeViewModel @Inject constructor(
     private val clock: Clock,
     private val athanTimeRepository: AthanTimeRepository,
     private val refreshPrayerScheduleUseCase: RefreshPrayerScheduleUseCase,
-    private val preferencesDataStore: AppDataPreferencesDataStore
+    private val preferencesDataStore: AppDataPreferencesDataStore,
+    private val locationProvider: LocationProvider,
+    @param:ApplicationContext private val context: Context
 ) : ViewModel() {
     // Real city/schedule stream in from the local repository's Flows below — both start
     // null until the Location onboarding step saves a city and a schedule gets fetched
@@ -131,6 +142,89 @@ class HomeViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    // Drives the ChangeCity screen (reached from Home's top bar) — same shape/reasoning as
+    // OnBoardingViewModel's own locationState. Unlike onboarding, ChangeCity saves a picked
+    // city immediately (see onPresetCitySelected below, matching how MuadhdhinPickerUi's
+    // selection saves immediately) rather than deferring to a "Continue" step, so city here
+    // is read straight off Room rather than held as a local pending value.
+    private val _locationState = MutableStateFlow(LocationUiState())
+    val locationState: StateFlow<LocationUiState> = _locationState.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            athanTimeRepository.observeCity().collect { city ->
+                _locationState.update { current ->
+                    current.copy(
+                        hasSavedCity = city != null,
+                        city = city
+                    )
+                }
+            }
+        }
+    }
+
+    // Called with the OS permission dialog result on the ChangeCity screen. Granted kicks off
+    // the GPS fetch-and-save; denied leaves the PresetCityPicker as the only way to switch.
+    fun onLocationPermissionResult(isGranted: Boolean) {
+        _locationState.update { current ->
+            current.copy(
+                isPermissionGranted = isGranted
+            )
+        }
+
+        if (isGranted) {
+            fetchAndSaveCurrentLocation()
+        }
+    }
+
+    private fun fetchAndSaveCurrentLocation() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _locationState.update { current -> current.copy(isLoading = true) }
+            try {
+                val city = locationProvider.getCurrentCity()
+                if (city != null) {
+                    athanTimeRepository.saveCity(city)
+                    enqueueImmediateScheduleSync()
+                }
+                // city == null (no fix obtained despite permission) just leaves the screen as-is —
+                // the previously saved city stays in place, same fallback as onboarding's version.
+            } catch (e: Exception) {
+                _locationState.update { current -> current.copy(error = e.message) }
+            } finally {
+                _locationState.update { current -> current.copy(isLoading = false) }
+            }
+        }
+    }
+
+    // Called when the user picks a city from PresetCityPicker
+    fun onPresetCitySelected(city: City) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                athanTimeRepository.saveCity(city)
+                enqueueImmediateScheduleSync()
+            } catch (e: Exception) {
+                _locationState.update { current ->
+                    current.copy(
+                        error = e.message
+                    )
+                }
+            }
+        }
+    }
+
+    // Both saveCity call sites above land here right after a successful save. REPLACE (not
+    // KEEP, which AthanlyApplication's app-start enqueue uses) is deliberate: the user just
+    // changed to a real, different city, so the existing chain (scheduled for the OLD city's
+    // alarms) needs to be superseded with a real run right away, rather than waiting for its
+    // already-scheduled midnight fire.
+    private fun enqueueImmediateScheduleSync() {
+        WorkManager.getInstance(context).enqueueUniqueWork(
+            PRAYER_SYNC_WORK_NAME,
+            ExistingWorkPolicy.REPLACE,
+            OneTimeWorkRequestBuilder<PrayerScheduleSyncWorker>().build()
+        )
     }
 
     private fun tick() {

@@ -35,6 +35,7 @@ fun LocationUiExpanded(
     state: LocationUiState,
     onShareLocationClick: () -> Unit,
     onPresetCitySelected: (City) -> Unit,
+    undoPresetCitySelected: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -90,6 +91,18 @@ fun LocationUiExpanded(
                         city = city,
                         isSelected = false,
                         onClick = { onPresetCitySelected(city) },
+                    )
+                }
+            }
+            else if(state.hasSavedCity && !state.isPermissionGranted){
+                item {
+                    Spacer(modifier = Modifier.height(dimensionResource(R.dimen.welcome_text_gap)))
+
+                    PresetCityPicker(
+                        city = state.city ?: presetCities[0],
+                        isSelected = true,
+                        onClick = { undoPresetCitySelected() },
+                        modifier = Modifier
                     )
                 }
             }

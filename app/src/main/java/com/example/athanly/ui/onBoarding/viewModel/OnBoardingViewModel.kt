@@ -17,6 +17,7 @@ import android.content.Context
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
+import com.example.athanly.location.domain.modelData.presetCities
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -120,7 +121,9 @@ class OnBoardingViewModel @Inject constructor(
     // Called with the OS permission dialog result on the final onboarding step
     fun onNotificationPermissionResult(isGranted: Boolean) {
         _notificationsState.update { current ->
-            current.copy(isPermissionGranted = isGranted)
+            current.copy(
+                isPermissionGranted = isGranted
+            )
         }
     }
 
@@ -136,7 +139,11 @@ class OnBoardingViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             athanTimeRepository.observeCity().collect { city ->
-                _locationState.update { current -> current.copy(hasSavedCity = city != null) }
+                _locationState.update { current ->
+                    current.copy(
+                        hasSavedCity = city != null
+                    )
+                }
             }
         }
     }
@@ -158,7 +165,9 @@ class OnBoardingViewModel @Inject constructor(
 
     private fun fetchAndSaveCurrentLocation() {
         viewModelScope.launch(Dispatchers.IO) {
-            _locationState.update { current -> current.copy(isLoading = true) }
+            _locationState.update { current ->
+                current.copy(isLoading = true)
+            }
             try {
                 val city = locationProvider.getCurrentCity()
                 if (city != null) {
@@ -169,18 +178,35 @@ class OnBoardingViewModel @Inject constructor(
                 // the observeCity() collector above never sees a save, so the screen's forced
                 // fallback to PresetCityPicker handles it, same as an outright permission denial.
             } catch (e: Exception) {
-                _locationState.update { current -> current.copy(error = e.message) }
+                _locationState.update { current ->
+                    current.copy(
+                        error = e.message
+                    )
+                }
             } finally {
-                _locationState.update { current -> current.copy(isLoading = false) }
+                _locationState.update { current ->
+                    current.copy(
+                        isLoading = false
+                    )
+                }
             }
         }
     }
 
     // Called when the user picks a city from PresetCityPicker (permission denied/skipped path)
     fun onPresetCitySelected(city: City) {
+        _locationState.update { current ->
+            current.copy(
+                city = city,
+                hasSavedCity = true
+            )
+        }
+    }
+
+    fun updatePresetCity(city: City) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                athanTimeRepository.saveCity(city)
+                athanTimeRepository.saveCity(city = city)
                 enqueueImmediateScheduleSync()
             } catch (e: Exception) {
                 _locationState.update { current ->
@@ -189,6 +215,15 @@ class OnBoardingViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun undoPresetCitySelected() {
+        _locationState.update { current ->
+            current.copy(
+                city = null,
+                hasSavedCity = false
+            )
         }
     }
 

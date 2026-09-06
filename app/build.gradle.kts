@@ -121,4 +121,8 @@ dependencies {
     implementation(libs.androidx.hilt.work)
     // Annotation processor for @HiltWorker, run via KSP like the other Hilt/Room processors (androidx.hilt)
     ksp(libs.androidx.hilt.compiler)
+
+    // error_prone_annotations — Dagger declares this compileOnly, so Hilt's generated
+    // component code (which references @CanIgnoreReturnValue) needs it added explicitly here (com.google.errorprone)
+    implementation(libs.error.prone.annotations)
 }

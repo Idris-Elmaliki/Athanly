@@ -22,12 +22,12 @@ import androidx.compose.ui.res.stringResource
 import com.example.athanly.R
 import com.example.athanly.ui._navigation.navData.BottomNavItem
 import com.example.athanly.ui._navigation.navData.bottomNavItems
-import com.example.athanly.ui._navigation.routes.MainRoutes
+import com.example.athanly.ui._navigation.routes.HomePageRoutes
 
 @Composable
 fun BottomNavBar(
-    currentRoute: MainRoutes,
-    onTabSelected: (MainRoutes) -> Unit,
+    currentRoute: HomePageRoutes,
+    onTabSelected: (HomePageRoutes) -> Unit,
     modifier: Modifier = Modifier
 ) {
     // Rounded top corners + shadow separate the bar from the swipeable content behind it

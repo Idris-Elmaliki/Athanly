@@ -44,6 +44,9 @@
     <string name="location_card_button">SHARE LOCATION</string>
     <string name="location_card_saved">Location Set</string>
 
+    <!-- ChangeCity screen (Home top bar -> change city) -->
+    <string name="change_city_current_location_label">Use Current Location</string>
+
     <!-- Notifications screen -->
     <string name="notifications_heading">Never Miss a Prayer</string>
     <string name="notifications_body">Enable notifications to receive beautiful Athans and reminders for each prayer time throughout the day.</string>
@@ -71,7 +74,7 @@
     <string name="bottom_nav_settings">Settings</string>
 
     <!-- Home top bar -->
-    <string name="home_menu_button_description">Open menu</string>
+    <string name="home_menu_button_description">Change city</string>
 
     <!-- Qibla screen: distance unit labels -->
     <string name="qibla_unit_km">km</string>

@@ -47,6 +47,7 @@ fun LocationUi(
                 state = state,
                 onShareLocationClick = onShareLocationClick,
                 onPresetCitySelected = viewModel::onPresetCitySelected,
+                undoPresetCitySelected = viewModel::undoPresetCitySelected,
                 modifier = modifier,
             )
         }
@@ -56,6 +57,7 @@ fun LocationUi(
                 state = state,
                 onShareLocationClick = onShareLocationClick,
                 onPresetCitySelected = viewModel::onPresetCitySelected,
+                undoPresetCitySelected = viewModel::undoPresetCitySelected,
                 modifier = modifier,
             )
         }
@@ -65,6 +67,7 @@ fun LocationUi(
                 state = state,
                 onShareLocationClick = onShareLocationClick,
                 onPresetCitySelected = viewModel::onPresetCitySelected,
+                undoPresetCitySelected = viewModel::undoPresetCitySelected,
                 modifier = modifier,
             )
         }
