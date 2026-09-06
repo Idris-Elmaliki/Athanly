@@ -24,16 +24,16 @@
     <!-- Muadhdhin location names -->
     <string name="muadhdhin_makkah">Makkah</string>
     <string name="muadhdhin_madinah">Madinah</string>
-    <string name="muadhdhin_al_aqsa">Al-Aqsa</string>
-    <string name="muadhdhin_kuwait">Kuwait</string>
-    <string name="muadhdhin_soft_gentle">Soft &amp; Gentle</string>
+    <string name="muadhdhin_jerusalem">Jerusalem</string>
+    <string name="muadhdhin_istanbul">Istanbul</string>
+    <string name="muadhdhin_cairo">Cairo</string>
 
     <!-- Muadhdhin sheikh names -->
-    <string name="sheikh_ali_ahmad_mulla">Sheikh Ali Ahmad Mulla</string>
-    <string name="sheikh_essam_bukhari">Sheikh Essam Bukhari</string>
+    <string name="sheikh_farooq_hadhrawi">Sheikh Farooq Hadhrawi</string>
+    <string name="muhammad_marwan_qassas">Sheikh Muhammad Marwan Qassas</string>
     <string name="sheikh_firas_qazzaz">Sheikh Firas Qazzaz</string>
-    <string name="mishary_alafasy">Mishary Alafasy</string>
-    <string name="yusuf_islam">Yusuf Islam</string>
+    <string name="müezzin_ibrahim">Imam Müezzin İbrahim</string>
+    <string name="imam_muhammad_fawzi_al_barbari">Imam Muhammad Fawzi Al-Barbari</string>
 
     <!-- Location screen -->
     <string name="location_title">Your Location</string>
@@ -55,8 +55,12 @@
     <string name="notifications_illustration_content_description">Mosque illustration</string>
     <string name="notifications_badge_content_description">Notification bell</string>
 
-    <!-- Notification channel shown in system Settings, not in-app UI -->
-    <string name="prayer_notification_channel_name">Prayer Times</string>
+    <!-- Notification channels shown in system Settings, not in-app UI. One pair per Muadhdhin
+         (name formatted with the location, e.g. "Makkah Fajr" / "Makkah Prayers") since a
+         channel's sound can't change after creation, so each voice needs its own Fajr + shared
+         channel -->
+    <string name="prayer_notification_channel_name_fajr">%1$s Fajr</string>
+    <string name="prayer_notification_channel_name_other">%1$s Prayers</string>
     <string name="prayer_notification_channel_description">Athan alerts for each of the 5 daily prayers</string>
 
     <!-- Title for each of the 5 daily prayer notifications. %s is the prayer's name,

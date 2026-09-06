@@ -5,6 +5,7 @@ import app.cash.turbine.test
 import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
 import com.example.athanly.appData.domain.modelData.muadhhinList
+import com.example.athanly.appData.domain.repository.AthanPreviewPlayer
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
 import com.example.athanly.location.domain.repository.LocationProvider
@@ -56,17 +57,19 @@ class OnBoardingViewModelTest {
             every { observeCity() } returns flowOf(null)
         },
         locationProvider: LocationProvider = mockk(),
+        athanPreviewPlayer: AthanPreviewPlayer = mockk(),
         context: Context = mockk(),
     ) = OnBoardingViewModel(
         preferencesDataStore = preferencesDataStore,
         athanTimeRepository = athanTimeRepository,
         locationProvider = locationProvider,
+        athanPreviewPlayer = athanPreviewPlayer,
         context = context,
     )
 
     @Test
     fun `appDataState combines language, selectedMuadhdhin, and isHanafiMode from the DataStore`() = runTest {
-        val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
+        val kuwait = muadhhinList.first { it.id == MuadhdhinId.ISTANBUL }
 
         // Every onboarding screen that used to have its own local UiState (Welcome,
         // AthanSelection, Calculations) now reads straight off this shared state instead,
@@ -106,7 +109,7 @@ class OnBoardingViewModelTest {
 
     @Test
     fun `onMuadhhinSelected writes the given Muadhdhin through to the DataStore`() = runTest {
-        val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
+        val kuwait = muadhhinList.first { it.id == MuadhdhinId.ISTANBUL }
 
         val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedLanguage() } returns flowOf(Language.English)

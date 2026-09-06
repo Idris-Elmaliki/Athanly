@@ -1,5 +1,6 @@
 package com.example.athanly.athanTime.domain
 
+import android.util.Log
 import com.example.athanly.athanTime.local.domain.modelData.City
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
 import com.example.athanly.athanTime.remote.domain.repository.AthanApiRepository
@@ -25,11 +26,14 @@ class RefreshPrayerScheduleUseCase @Inject constructor(
         // needs a one-time check, not an ongoing observation
         val cachedSchedule = athanTimeRepository.observeSchedule().first()
 
-        // Either signal alone means the cached schedule no longer reflects reality: the day
-        // rolled over, or the user flipped Hanafi mode after this schedule was calculated
+        // Any one signal alone means the cached schedule no longer reflects reality: the day
+        // rolled over, the user flipped Hanafi mode after this schedule was calculated, or
+        // (ChangeCity) the saved city itself changed since this schedule was computed
         val isFresh = cachedSchedule != null &&
             cachedSchedule.date == today &&
-            cachedSchedule.isHanafiMode == isHanafiMode
+            cachedSchedule.isHanafiMode == isHanafiMode &&
+            cachedSchedule.latitude == city.latitude &&
+            cachedSchedule.longitude == city.longitude
 
         if (isFresh) return
 
@@ -44,6 +48,7 @@ class RefreshPrayerScheduleUseCase @Inject constructor(
             date = today,
             useHanafiAsr = isHanafiMode
         )
+
         athanTimeRepository.saveCityWithSchedule(city, fresh)
     }
 }

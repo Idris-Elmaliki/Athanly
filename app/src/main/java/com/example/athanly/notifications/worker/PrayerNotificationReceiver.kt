@@ -11,12 +11,24 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.athanly.MainActivity
 import com.example.athanly.R
+import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
+import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-// Fires when one of AlarmSchedulerImpl's exact alarms goes off. No Hilt injection needed —
-// everything it needs (which prayer, and static display info) comes off the Intent/resources,
-// not a repository, so this stays a plain BroadcastReceiver.
+// Fires when one of AlarmSchedulerImpl's exact alarms goes off. Hilt-enabled (field injection —
+// BroadcastReceiver doesn't support constructor injection) so it can read which Muadhdhin is
+// currently selected and pick that voice's channel.
+@AndroidEntryPoint
 class PrayerNotificationReceiver : BroadcastReceiver() {
+
+    @Inject
+    lateinit var appDataPreferencesDataStore: AppDataPreferencesDataStore
 
     override fun onReceive(context: Context, intent: Intent) {
         val ordinal = intent.getIntExtra(EXTRA_PRAYER_ORDINAL, -1)
@@ -28,9 +40,28 @@ class PrayerNotificationReceiver : BroadcastReceiver() {
             context,
             Manifest.permission.POST_NOTIFICATIONS
         ) == PackageManager.PERMISSION_GRANTED
-        
+
         if (!hasNotificationPermission) return
 
+        // onReceive can't be suspend, and reading the selected Muadhdhin needs DataStore's
+        // Flow — goAsync() keeps the receiver alive long enough for that one read to finish
+        // before the system is allowed to kill it
+        val pendingResult = goAsync()
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val muadhdhin = appDataPreferencesDataStore.observedSelectedMuadhdhin().first()
+                postNotification(context, prayer, muadhdhin.id)
+            } finally {
+                pendingResult.finish()
+            }
+        }
+    }
+
+    private fun postNotification(
+        context: Context,
+        prayer: Prayer,
+        muadhdhinId: MuadhdhinId
+    ) {
         val contentIntent = PendingIntent.getActivity(
             context,
             prayer.ordinal,
@@ -38,7 +69,12 @@ class PrayerNotificationReceiver : BroadcastReceiver() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(context, PRAYER_NOTIFICATION_CHANNEL_ID)
+        val channelId = prayerNotificationChannelId(
+            muadhdhinId, 
+            isFajr = prayer == Prayer.FAJR
+        )
+
+        val notification = NotificationCompat.Builder(context, channelId)
             // Placeholder — ic_launcher_foreground isn't a proper monochrome notification
             // icon yet, revisit once a dedicated status-bar icon asset exists
             .setSmallIcon(R.drawable.ic_launcher_foreground)

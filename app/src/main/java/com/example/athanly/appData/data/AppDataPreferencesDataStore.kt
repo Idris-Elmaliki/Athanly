@@ -4,7 +4,6 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import com.example.athanly.appData.domain.modelData.Muadhdhin
 import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
@@ -43,19 +42,6 @@ class AppDataPreferencesDataStore(
     suspend fun setIsHanafiMode(isHanafiMode: Boolean) {
         dataStore.edit { preferences ->
             preferences[IS_HANAFI_MODE_KEY] = isHanafiMode
-        }
-    }
-
-    // Athan playback volume, 0f-1f. Defaults to full volume when the key is missing.
-    fun observedAthanVolume(): Flow<Float> {
-        return dataStore.data.map { preferences ->
-            preferences[ATHAN_VOLUME_KEY] ?: 1f
-        }
-    }
-
-    suspend fun setAthanVolume(athanVolume: Float) {
-        dataStore.edit { preferences ->
-            preferences[ATHAN_VOLUME_KEY] = athanVolume
         }
     }
 
@@ -113,7 +99,6 @@ class AppDataPreferencesDataStore(
     companion object {
         private val IS_24_HOUR_FORMAT_KEY = booleanPreferencesKey("is_24_hour_format")
         private val IS_HANAFI_MODE_KEY = booleanPreferencesKey("is_hanafi_mode")
-        private val ATHAN_VOLUME_KEY = floatPreferencesKey("athan_volume")
         private val LANGUAGE_KEY = stringPreferencesKey("language")
         private val SELECTED_MUADHDHIN_ID_KEY = stringPreferencesKey("selected_muadhdhin_id")
         private val HAS_COMPLETED_ONBOARDING_KEY = booleanPreferencesKey("has_completed_onboarding")

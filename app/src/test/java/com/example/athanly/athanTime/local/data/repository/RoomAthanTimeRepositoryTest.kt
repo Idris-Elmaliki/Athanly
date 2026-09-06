@@ -97,7 +97,9 @@ class RoomAthanTimeRepositoryTest {
             asr = "15:45:00",
             maghrib = "18:20:00",
             isha = "19:45:00",
-            isHanafiMode = true
+            isHanafiMode = true,
+            latitude = 41.0082,
+            longitude = 28.9784
         )
         every { dao.observeSchedule() } returns flowOf(scheduleEntity)
 
@@ -109,7 +111,9 @@ class RoomAthanTimeRepositoryTest {
             asr = LocalTime.of(15, 45),
             maghrib = LocalTime.of(18, 20),
             isha = LocalTime.of(19, 45),
-            isHanafiMode = true
+            isHanafiMode = true,
+            latitude = 41.0082,
+            longitude = 28.9784
         )
 
         repository.observeSchedule().test {
@@ -176,7 +180,9 @@ class RoomAthanTimeRepositoryTest {
             asr = LocalTime.of(15, 45),
             maghrib = LocalTime.of(18, 20),
             isha = LocalTime.of(19, 45),
-            isHanafiMode = true
+            isHanafiMode = true,
+            latitude = 41.0082,
+            longitude = 28.9784
         )
         val expectedCityEntity = CityEntity(
             id = "current_location",
@@ -194,7 +200,9 @@ class RoomAthanTimeRepositoryTest {
             asr = "15:45:00",
             maghrib = "18:20:00",
             isha = "19:45:00",
-            isHanafiMode = true
+            isHanafiMode = true,
+            latitude = 41.0082,
+            longitude = 28.9784
         )
         coEvery { dao.upsertCityWithSchedule(any(), any()) } just Runs
 

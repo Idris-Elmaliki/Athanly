@@ -5,7 +5,7 @@ package com.example.athanly.appData.domain.modelData.enums
 enum class MuadhdhinId {
     MAKKAH,
     MADINAH,
-    AL_AQSA,
-    KUWAIT,
-    SOFT_GENTLE,
+    JERUSALEM,
+    ISTANBUL,
+    CAIRO,
 }

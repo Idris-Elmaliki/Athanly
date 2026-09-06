@@ -31,6 +31,13 @@ fun ChangeCityUi(
     val state by viewModel.locationState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    // Commits the pending pick (if any) to Room before actually navigating back — same
+    // "flush on the way out" spot as onboarding's Continue button
+    val handleBackClick: () -> Unit = {
+        viewModel.onChangeCityBackClick()
+        onBackClick()
+    }
+
     // Fine and coarse are requested together — a "granted" result from either is enough to
     // attempt a GPS fix, same as onboarding's Location step
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -64,7 +71,7 @@ fun ChangeCityUi(
                 state = state,
                 onShareLocationClick = onShareLocationClick,
                 onPresetCitySelected = viewModel::onPresetCitySelected,
-                onBackClick = onBackClick,
+                onBackClick = handleBackClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier,
             )
@@ -75,7 +82,7 @@ fun ChangeCityUi(
                 state = state,
                 onShareLocationClick = onShareLocationClick,
                 onPresetCitySelected = viewModel::onPresetCitySelected,
-                onBackClick = onBackClick,
+                onBackClick = handleBackClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier,
             )
@@ -86,7 +93,7 @@ fun ChangeCityUi(
                 state = state,
                 onShareLocationClick = onShareLocationClick,
                 onPresetCitySelected = viewModel::onPresetCitySelected,
-                onBackClick = onBackClick,
+                onBackClick = handleBackClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier,
             )

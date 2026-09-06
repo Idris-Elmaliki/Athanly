@@ -10,6 +10,7 @@ import com.example.athanly.athanTime.domain.PrayerSchedule
 import com.example.athanly.athanTime.domain.timeFor
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.time.Clock
 import java.time.ZoneId
 import javax.inject.Inject
 
@@ -17,7 +18,8 @@ import javax.inject.Inject
 const val EXTRA_PRAYER_ORDINAL = "prayer_ordinal"
 
 class AlarmSchedulerImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+    @param:ApplicationContext private val context: Context,
+    private val clock: Clock
 ) : AlarmScheduler {
     private val alarmManager = context.getSystemService<AlarmManager>()
 
@@ -30,7 +32,14 @@ class AlarmSchedulerImpl @Inject constructor(
                 .toInstant()
                 .toEpochMilli()
 
-            schedule(prayer, triggerAtMillis)
+            // setExactAndAllowWhileIdle fires IMMEDIATELY for a trigger time already in the
+            // past — without this check, the first time a schedule is armed mid-day (e.g. the
+            // user finishes onboarding at 3pm) every already-passed prayer for today would fire
+            // as an instant notification burst. Skipping it here just leaves that one prayer
+            // un-alarmed for the rest of today; tomorrow's sync arms it normally.
+            if (triggerAtMillis > clock.millis()) {
+                schedule(prayer, triggerAtMillis)
+            }
         }
     }
 

@@ -34,5 +34,12 @@ data class PrayerScheduleEntity(
 
     // Which Asr calculation mode this row was computed with — compared against DataStore's
     // live Hanafi setting to catch a mode flip as its own staleness signal
-    val isHanafiMode: Boolean
+    val isHanafiMode: Boolean,
+
+    // cityId is always the same hardcoded single-row constant (see RoomAthanTimeRepository),
+    // so it can't tell "this row is for the city just switched away from" apart from "this
+    // row is for the city just switched to" — these coordinates are the real staleness signal
+    // a city change needs
+    val latitude: Double,
+    val longitude: Double
 )

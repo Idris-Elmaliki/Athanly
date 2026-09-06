@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.athanly.appData.domain.modelData.AppDataUiState
 import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.appData.domain.modelData.Muadhdhin
+import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
+import com.example.athanly.appData.domain.repository.AthanPreviewPlayer
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import com.example.athanly.athanTime.local.domain.modelData.City
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
@@ -34,6 +36,7 @@ class OnBoardingViewModel @Inject constructor(
     private val preferencesDataStore: AppDataPreferencesDataStore,
     private val athanTimeRepository: AthanTimeRepository,
     private val locationProvider: LocationProvider,
+    private val athanPreviewPlayer: AthanPreviewPlayer,
     @param:ApplicationContext private val context: Context
 ) : ViewModel() {
 
@@ -59,7 +62,14 @@ class OnBoardingViewModel @Inject constructor(
                         isHanafiMode = isHanafiMode,
                     )
                 }.collect { combinedState ->
-                    _appDataState.update { combinedState }
+                    // hasSelectedMuadhdhin isn't backed by DataStore — preserved here so this
+                    // combine (re-triggered by onMuadhhinSelected's own setSelectedMuadhdhin
+                    // write, among other things) doesn't reset it back to false
+                    _appDataState.update { current ->
+                        combinedState.copy(
+                            hasSelectedMuadhdhin = current.hasSelectedMuadhdhin
+                        )
+                    }
                 }
             } catch (e: Exception) {
                 _appDataState.update { it.copy(isLoading = false, error = e.message) }
@@ -78,8 +88,41 @@ class OnBoardingViewModel @Inject constructor(
         }
     }
 
-    // Called whenever the user taps a Muadhdhin card
+    // Tapping a Muadhdhin card both selects it (saved immediately, same as before) and
+    // previews it — tapping the one already playing stops it instead of restarting it.
+    // previewingMuadhdhinId lives in its own StateFlow rather than on appDataState, since
+    // appDataState's combine above fully replaces its value on every DataStore emission
+    // (including this function's own setSelectedMuadhdhin write) and would otherwise wipe
+    // out the pause icon it just set.
+    private val _previewingMuadhdhinId = MutableStateFlow<MuadhdhinId?>(null)
+    val previewingMuadhdhinId: StateFlow<MuadhdhinId?> = _previewingMuadhdhinId.asStateFlow()
+
     fun onMuadhhinSelected(muadhdhin: Muadhdhin) {
+        if (_previewingMuadhdhinId.value == muadhdhin.id) {
+            stopPreview()
+            return
+        }
+
+        // MediaPlayer calls are made directly here (on the caller's thread, which is
+        // Compose's Main thread for an onClick) rather than inside the IO launch below,
+        // since MediaPlayer expects to be driven from a single consistent thread.
+        athanPreviewPlayer.play(
+            audioRes = muadhdhin.otherAudioRes,
+            onCompletion = {
+                // Only clear if this clip is still the one "playing" — guards against a
+                // stale completion callback clearing a newer selection's playing state
+                if (_previewingMuadhdhinId.value == muadhdhin.id) {
+                    _previewingMuadhdhinId.update { null }
+                }
+            }
+        )
+        _previewingMuadhdhinId.update { muadhdhin.id }
+        _appDataState.update { data ->
+            data.copy(
+                hasSelectedMuadhdhin = true
+            ) 
+        }
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 preferencesDataStore.setSelectedMuadhdhin(muadhdhin)
@@ -87,6 +130,18 @@ class OnBoardingViewModel @Inject constructor(
                 _appDataState.update { it.copy(error = e.message) }
             }
         }
+    }
+
+    // Called when the Athan Selection step is left, so a preview doesn't keep playing
+    // in the background on a later onboarding step
+    fun stopPreview() {
+        athanPreviewPlayer.stop()
+        _previewingMuadhdhinId.update { null }
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+        athanPreviewPlayer.stop()
     }
 
     // Called whenever the user flips the Hanafi mode toggle — reads the last known
