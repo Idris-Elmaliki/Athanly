@@ -1,5 +1,6 @@
 package com.example.athanly.ui.onBoarding.screens.athanSelection.athanSelectionSubScreens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,9 +26,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.example.athanly.R
 import com.example.athanly.appData.domain.modelData.Muadhdhin
@@ -35,6 +38,7 @@ import com.example.athanly.appData.domain.modelData.Muadhdhin
 fun MuadhhinCard(
     muadhdhin: Muadhdhin,
     isSelected: Boolean,
+    isPlaying: Boolean,
     onClick: () -> Unit,
 ) {
     val borderColor = if (isSelected) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.surfaceVariant
@@ -67,7 +71,7 @@ fun MuadhhinCard(
                 horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.athan_selection_avatar_content_gap)),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                MuadhhinAvatar(muadhdhin = muadhdhin)
+                MuadhhinAvatar(muadhdhin = muadhdhin, isPlaying = isPlaying)
                 MuadhhinInfo(muadhdhin = muadhdhin)
             }
 
@@ -77,23 +81,25 @@ fun MuadhhinCard(
 }
 
 @Composable
-private fun MuadhhinAvatar(muadhdhin: Muadhdhin) {
-    // Gradient colors are domain-layer placeholders — Color() conversion is the accepted exception
+private fun MuadhhinAvatar(
+    muadhdhin: Muadhdhin,
+    isPlaying: Boolean
+) {
     Box(
         modifier = Modifier
             .size(dimensionResource(R.dimen.athan_selection_avatar_size))
-            .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(muadhdhin.gradientStart),
-                        Color(muadhdhin.gradientEnd),
-                    ),
-                ),
-                shape = CircleShape,
-            ),
+            .clip(CircleShape),
         contentAlignment = Alignment.Center,
     ) {
-        // Subtle dark scrim so the play icon reads clearly against any gradient
+        Image(
+            painter = painterResource(muadhdhin.imageRes),
+            // Decorative — the location/sheikh text next to it already labels this avatar
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize(),
+        )
+
+        // Subtle dark scrim so the play icon reads clearly against any photo
         Box(
             modifier = Modifier
                 .matchParentSize()
@@ -104,7 +110,7 @@ private fun MuadhhinAvatar(muadhdhin: Muadhdhin) {
         )
 
         Icon(
-            imageVector = Icons.Default.PlayArrow,
+            imageVector = if (isPlaying) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = null,
             tint = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.size(dimensionResource(R.dimen.athan_selection_play_icon_size)),

@@ -28,6 +28,7 @@ import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.athanly.appData.domain.modelData.AppDataUiState
 import com.example.athanly.location.domain.modelData.LocationUiState
 import com.example.athanly.ui._navigation.navGraphs.onBoardingNavGraph
 import com.example.athanly.ui._navigation.routes.OnBoardingRoutes
@@ -74,6 +75,7 @@ fun OnBoardingLayout(
         hiltViewModel<OnBoardingViewModel>(entry) 
     }
     val locationState = viewModel?.locationState?.collectAsStateWithLifecycle()?.value ?: LocationUiState()
+    val appDataState = viewModel?.appDataState?.collectAsStateWithLifecycle()?.value ?: AppDataUiState()
 
     // Map the active destination to a 0-indexed step — falls back to 0 if no match
     val currentStep = steps.indexOfFirst { route ->
@@ -162,10 +164,12 @@ fun OnBoardingLayout(
                                 else -> onBoardingIsComplete()
                             }
                         },
-                        // Only the Location step requires state before advancing — every
-                        // other step's Continue stays enabled as before
-                        enabled = currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.Location>() != true ||
-                            locationState.hasSavedCity
+                        // AthanSelection and Location both require state before advancing —
+                        // every other step's Continue stays enabled as before
+                        enabled = (currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.AthanSelection>() != true ||
+                            appDataState.hasSelectedMuadhdhin) &&
+                            (currentBackStackEntry?.destination?.hasRoute<OnBoardingRoutes.Location>() != true ||
+                                locationState.hasSavedCity)
                     )
                 }
         },

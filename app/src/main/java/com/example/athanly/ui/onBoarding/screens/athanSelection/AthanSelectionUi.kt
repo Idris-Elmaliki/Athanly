@@ -1,6 +1,7 @@
 package com.example.athanly.ui.onBoarding.screens.athanSelection
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,12 +19,22 @@ fun AthanSelectionUi(
     viewModel: OnBoardingViewModel = hiltViewModel(),
 ) {
     val state by viewModel.appDataState.collectAsStateWithLifecycle()
+    val previewingMuadhdhinId by viewModel.previewingMuadhdhinId.collectAsStateWithLifecycle()
+
+    // Fires when this step is left (Continue, back, or otherwise) — stops a preview from
+    // playing on into a later onboarding step
+    DisposableEffect(Unit) {
+        onDispose {
+            viewModel.stopPreview()
+        }
+    }
 
     when {
         // 840dp+ — expanded (large tablets, landscape)
         windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_EXPANDED_LOWER_BOUND) -> {
             AthanSelectionUiExpanded(
                 state = state,
+                previewingMuadhdhinId = previewingMuadhdhinId,
                 onMuadhhinSelected = viewModel::onMuadhhinSelected,
                 modifier = modifier
             )
@@ -32,6 +43,7 @@ fun AthanSelectionUi(
         windowSizeClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND) -> {
             AthanSelectionUiMedium(
                 state = state,
+                previewingMuadhdhinId = previewingMuadhdhinId,
                 onMuadhhinSelected = viewModel::onMuadhhinSelected,
                 modifier = modifier
             )
@@ -40,6 +52,7 @@ fun AthanSelectionUi(
         else -> {
             AthanSelectionUiCompact(
                 state = state,
+                previewingMuadhdhinId = previewingMuadhdhinId,
                 onMuadhhinSelected = viewModel::onMuadhhinSelected,
                 modifier = modifier
             )

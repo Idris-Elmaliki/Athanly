@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.screens.settings.viewModel
 
+import android.media.AudioManager
 import app.cash.turbine.test
 import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
 import com.example.athanly.appData.domain.modelData.muadhhinList
@@ -12,6 +13,7 @@ import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -40,9 +42,22 @@ class SettingsViewModelTest {
         Dispatchers.resetMain()
     }
 
+    // Volume Control reads the phone's actual STREAM_NOTIFICATION volume directly rather than
+    // a DataStore value, so init{} always calls getStreamMaxVolume/getStreamVolume — every
+    // test needs this stubbed regardless of what it's actually checking. 5/10 = 0.5f, an
+    // arbitrary non-default fraction so a test can tell it apart from AppDataUiState's 1f default.
+    private fun fakeAudioManager(
+        currentVolume: Int = 5,
+        maxVolume: Int = 10
+    ) = mockk<AudioManager> {
+        every { getStreamMaxVolume(AudioManager.STREAM_NOTIFICATION) } returns maxVolume
+        every { getStreamVolume(AudioManager.STREAM_NOTIFICATION) } returns currentVolume
+        every { setStreamVolume(any(), any(), any()) } just Runs
+    }
+
     @Test
-    fun `settingsState combines all five preference flows from the DataStore`() = runTest {
-        val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
+    fun `settingsState combines all four preference flows from the DataStore, plus the phone's actual notification volume`() = runTest {
+        val kuwait = muadhhinList.first { it.id == MuadhdhinId.ISTANBUL }
 
         // mockk<T> { every { ... } returns ... } builds a fake AppDataPreferencesDataStore
         // where every observed-preference call returns a hardcoded flow we control,
@@ -50,12 +65,14 @@ class SettingsViewModelTest {
         val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(true)
             every { observedIsHanafiMode() } returns flowOf(true)
-            every { observedAthanVolume() } returns flowOf(0.5f)
             every { observedLanguage() } returns flowOf(Language.Arabic)
             every { observedSelectedMuadhdhin() } returns flowOf(kuwait)
         }
 
-        val viewModel = SettingsViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = SettingsViewModel(
+            preferencesDataStore = preferencesDataStore,
+            audioManager = fakeAudioManager(currentVolume = 5, maxVolume = 10)
+        )
 
         viewModel.settingsState.test {
             val state = awaitItem()
@@ -76,13 +93,15 @@ class SettingsViewModelTest {
         val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
-            every { observedAthanVolume() } returns flowOf(1f)
             every { observedLanguage() } returns flowOf(Language.English)
             every { observedSelectedMuadhdhin() } returns flowOf(muadhhinList.first())
             coEvery { setIs24HourFormat(any()) } just Runs
         }
 
-        val viewModel = SettingsViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = SettingsViewModel(
+            preferencesDataStore = preferencesDataStore,
+            audioManager = fakeAudioManager()
+        )
 
         viewModel.onTimeFormatToggled()
 
@@ -99,13 +118,15 @@ class SettingsViewModelTest {
         val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
-            every { observedAthanVolume() } returns flowOf(1f)
             every { observedLanguage() } returns flowOf(Language.English)
             every { observedSelectedMuadhdhin() } returns flowOf(muadhhinList.first())
             coEvery { setIsHanafiMode(any()) } just Runs
         }
 
-        val viewModel = SettingsViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = SettingsViewModel(
+            preferencesDataStore = preferencesDataStore,
+            audioManager = fakeAudioManager()
+        )
 
         viewModel.onHanafiModeToggled()
 
@@ -113,23 +134,26 @@ class SettingsViewModelTest {
     }
 
     @Test
-    fun `onAthanVolumeChanged writes the given volume through to the DataStore`() = runTest {
+    fun `onAthanVolumeChanged sets the phone's actual notification stream volume`() = runTest {
         val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
-            every { observedAthanVolume() } returns flowOf(1f)
             every { observedLanguage() } returns flowOf(Language.English)
             every { observedSelectedMuadhdhin() } returns flowOf(muadhhinList.first())
-            coEvery { setAthanVolume(any()) } just Runs
         }
+        val audioManager = fakeAudioManager(currentVolume = 10, maxVolume = 10)
 
-        val viewModel = SettingsViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = SettingsViewModel(
+            preferencesDataStore = preferencesDataStore,
+            audioManager = audioManager
+        )
 
         // Unlike the two toggles above, this one takes the new value directly — a slider
         // reports whatever position the user dragged it to, there's nothing to flip.
+        // 0.25f of a max of 10 rounds to stream index 3 (2.5 rounds up).
         viewModel.onAthanVolumeChanged(volume = 0.25f)
 
-        coVerify { preferencesDataStore.setAthanVolume(0.25f) }
+        verify { audioManager.setStreamVolume(AudioManager.STREAM_NOTIFICATION, 3, 0) }
     }
 
     @Test
@@ -137,13 +161,15 @@ class SettingsViewModelTest {
         val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
-            every { observedAthanVolume() } returns flowOf(1f)
             every { observedLanguage() } returns flowOf(Language.English)
             every { observedSelectedMuadhdhin() } returns flowOf(muadhhinList.first())
             coEvery { setLanguage(any()) } just Runs
         }
 
-        val viewModel = SettingsViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = SettingsViewModel(
+            preferencesDataStore = preferencesDataStore,
+            audioManager = fakeAudioManager()
+        )
 
         // Like the slider, the dropdown reports whichever option the user picked directly.
         viewModel.onLanguageSelected(language = Language.Arabic)
@@ -153,18 +179,20 @@ class SettingsViewModelTest {
 
     @Test
     fun `onMuadhdhinSelected writes the given Muadhdhin through to the DataStore`() = runTest {
-        val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
+        val kuwait = muadhhinList.first { it.id == MuadhdhinId.ISTANBUL }
 
         val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
             every { observedIs24HourFormat() } returns flowOf(false)
             every { observedIsHanafiMode() } returns flowOf(false)
-            every { observedAthanVolume() } returns flowOf(1f)
             every { observedLanguage() } returns flowOf(Language.English)
             every { observedSelectedMuadhdhin() } returns flowOf(muadhhinList.first())
             coEvery { setSelectedMuadhdhin(any()) } just Runs
         }
 
-        val viewModel = SettingsViewModel(preferencesDataStore = preferencesDataStore)
+        val viewModel = SettingsViewModel(
+            preferencesDataStore = preferencesDataStore,
+            audioManager = fakeAudioManager()
+        )
 
         viewModel.onMuadhdhinSelected(muadhdhin = kuwait)
 

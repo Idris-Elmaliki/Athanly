@@ -84,31 +84,6 @@ class SettingsPreferencesDataStoreTest {
         }
     }
 
-    // --- Volume Control (Athan playback volume) ---
-    // Float in the 0f-1f range, same default as AppDataUiState.athanVolume (full volume).
-
-    @Test
-    fun `observedAthanVolume defaults to 1f when nothing has been stored yet`() = runTest {
-        settingsPreferencesDataStore().observedAthanVolume().test {
-            assertEquals(1f, awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
-    @Test
-    fun `setAthanVolume persists 0_5f and observedAthanVolume reflects it on the next emission`() = runTest {
-        val preferencesDataStore = settingsPreferencesDataStore()
-
-        preferencesDataStore.observedAthanVolume().test {
-            assertEquals(1f, awaitItem()) // initial default, file is still empty
-
-            preferencesDataStore.setAthanVolume(0.5f)
-
-            assertEquals(0.5f, awaitItem())
-            cancelAndIgnoreRemainingEvents()
-        }
-    }
-
     // --- Language ---
     // Language has no native DataStore type, so (like Qibla's DistanceUnit) it's stored
     // as a string and parsed back, falling back to English if the key is missing or unparseable.
@@ -151,7 +126,7 @@ class SettingsPreferencesDataStoreTest {
     @Test
     fun `setSelectedMuadhdhin persists Kuwait and observedSelectedMuadhdhin reflects it on the next emission`() = runTest {
         val preferencesDataStore = settingsPreferencesDataStore()
-        val kuwait = muadhhinList.first { it.id == MuadhdhinId.KUWAIT }
+        val kuwait = muadhhinList.first { it.id == MuadhdhinId.ISTANBUL }
 
         preferencesDataStore.observedSelectedMuadhdhin().test {
             assertEquals(muadhhinList.first(), awaitItem()) // initial default, file is still empty

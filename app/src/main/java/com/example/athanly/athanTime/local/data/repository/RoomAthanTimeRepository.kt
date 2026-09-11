@@ -62,7 +62,9 @@ private fun PrayerScheduleEntity.toDomain() = PrayerSchedule(
     asr = asr.toLocalTime(),
     maghrib = maghrib.toLocalTime(),
     isha = isha.toLocalTime(),
-    isHanafiMode = isHanafiMode
+    isHanafiMode = isHanafiMode,
+    latitude = latitude,
+    longitude = longitude
 )
 
 private fun PrayerSchedule.toEntity() = PrayerScheduleEntity(
@@ -74,5 +76,7 @@ private fun PrayerSchedule.toEntity() = PrayerScheduleEntity(
     asr = asr.toIsoString(),
     maghrib = maghrib.toIsoString(),
     isha = isha.toIsoString(),
-    isHanafiMode = isHanafiMode
+    isHanafiMode = isHanafiMode,
+    latitude = latitude,
+    longitude = longitude
 )

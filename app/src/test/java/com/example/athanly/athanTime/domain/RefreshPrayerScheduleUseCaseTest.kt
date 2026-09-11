@@ -28,7 +28,12 @@ class RefreshPrayerScheduleUseCaseTest {
         longitude = 28.9
     )
 
-    private fun scheduleOn(date: LocalDate, isHanafiMode: Boolean = false) = PrayerSchedule(
+    private fun scheduleOn(
+        date: LocalDate,
+        isHanafiMode: Boolean = false,
+        latitude: Double = istanbul.latitude,
+        longitude: Double = istanbul.longitude
+    ) = PrayerSchedule(
         date = date,
         fajr = LocalTime.of(4, 30),
         sunrise = LocalTime.of(6, 5),
@@ -36,7 +41,9 @@ class RefreshPrayerScheduleUseCaseTest {
         asr = LocalTime.of(15, 45),
         maghrib = LocalTime.of(18, 20),
         isha = LocalTime.of(19, 45),
-        isHanafiMode = isHanafiMode
+        isHanafiMode = isHanafiMode,
+        latitude = latitude,
+        longitude = longitude
     )
 
     @Test
@@ -133,6 +140,53 @@ class RefreshPrayerScheduleUseCaseTest {
         useCase(city = istanbul, today = today, isHanafiMode = false)
 
         coVerify { athanTimeRepository.saveCityWithSchedule(istanbul, freshSchedule) }
+    }
+
+    @Test
+    fun `a schedule cached today under the right Hanafi mode but for a different city is stale and gets refetched`() = runTest {
+        val today = LocalDate.now()
+        val cairo = City(
+            name = "Cairo",
+            hijriDate = "12 Rabi' al-Awwal, 1445 AH",
+            latitude = 30.0,
+            longitude = 31.2
+        )
+        // Cached schedule matches today's date and the requested Hanafi mode exactly — only
+        // the coordinates (still Istanbul's) are wrong, isolating the bug this test guards:
+        // ChangeCity swaps the saved City but the OLD city's still-"fresh-by-date" schedule
+        // was never being treated as stale for the new one.
+        val staleSchedule = scheduleOn(
+            today,
+            isHanafiMode = false,
+            latitude = istanbul.latitude,
+            longitude = istanbul.longitude
+        )
+        val freshSchedule = scheduleOn(
+            today,
+            isHanafiMode = false,
+            latitude = cairo.latitude,
+            longitude = cairo.longitude
+        )
+
+        val athanTimeRepository = mockk<AthanTimeRepository> {
+            every { observeSchedule() } returns flowOf(staleSchedule)
+            coEvery { saveCityWithSchedule(any(), any()) } just Runs
+        }
+        val athanApiRepository = mockk<AthanApiRepository> {
+            coEvery {
+                fetchNewPrayerSchedule(
+                    latitude = cairo.latitude,
+                    longitude = cairo.longitude,
+                    date = today,
+                    useHanafiAsr = false
+                )
+            } returns freshSchedule
+        }
+
+        val useCase = RefreshPrayerScheduleUseCase(athanTimeRepository, athanApiRepository)
+        useCase(city = cairo, today = today, isHanafiMode = false)
+
+        coVerify { athanTimeRepository.saveCityWithSchedule(cairo, freshSchedule) }
     }
 
     @Test
