@@ -1,6 +1,6 @@
-package com.example.athanly.qibla.domain.local.repository
+package com.example.athanly.qibla.local.domain.repository
 
-import com.example.athanly.qibla.domain.local.modelData.Coordinates
+import com.example.athanly.qibla.local.domain.modelData.Coordinates
 import kotlinx.coroutines.flow.Flow
 
 // Abstraction over "where is the user right now" — mock-backed today (MockUserLocationRepository),

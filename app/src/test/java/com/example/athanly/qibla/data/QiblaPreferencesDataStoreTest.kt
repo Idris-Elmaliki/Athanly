@@ -2,7 +2,8 @@ package com.example.athanly.qibla.data
 
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import app.cash.turbine.test
-import com.example.athanly.qibla.domain.local.modelData.enums.DistanceUnit
+import com.example.athanly.qibla.local.data.QiblaPreferencesDataStore
+import com.example.athanly.qibla.local.domain.modelData.enums.DistanceUnit
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Rule

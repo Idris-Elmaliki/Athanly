@@ -15,11 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.example.athanly.R
-import com.example.athanly.qibla.domain.local.modelData.QiblaUiState
+import com.example.athanly.qibla.local.domain.modelData.QiblaUiState
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.DistanceCard
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaCompass
-import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaHeaderText
-import com.example.athanly.ui.subscreens.AtmosphericBackground
 
 // Medium (600–839dp) — 12 columns, 12dp min margins. Same structure as Compact, content
 // capped at 75% width to avoid over-stretching, mirroring HomeUiMedium's convention.

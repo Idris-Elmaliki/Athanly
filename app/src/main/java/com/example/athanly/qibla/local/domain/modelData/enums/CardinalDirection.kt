@@ -1,4 +1,4 @@
-package com.example.athanly.qibla.domain.local.modelData.enums
+package com.example.athanly.qibla.local.domain.modelData.enums
 
 import com.example.athanly.R
 

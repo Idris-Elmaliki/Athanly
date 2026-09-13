@@ -1,7 +1,7 @@
-package com.example.athanly.qibla.domain.local.modelData
+package com.example.athanly.qibla.local.domain.modelData
 
-import com.example.athanly.qibla.domain.local.modelData.enums.CardinalDirection
-import com.example.athanly.qibla.domain.local.modelData.enums.DistanceUnit
+import com.example.athanly.qibla.local.domain.modelData.enums.CardinalDirection
+import com.example.athanly.qibla.local.domain.modelData.enums.DistanceUnit
 
 // needleRotationDegrees and qiblaDegrees/qiblaDirection are deliberately independent.
 // needleRotationDegrees is a live compass hand driven purely by device heading — it

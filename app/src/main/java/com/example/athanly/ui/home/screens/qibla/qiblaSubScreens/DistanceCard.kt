@@ -22,8 +22,8 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.example.athanly.R
-import com.example.athanly.qibla.domain.local.modelData.enums.CardinalDirection
-import com.example.athanly.qibla.domain.local.modelData.enums.DistanceUnit
+import com.example.athanly.qibla.local.domain.modelData.enums.CardinalDirection
+import com.example.athanly.qibla.local.domain.modelData.enums.DistanceUnit
 import java.util.Locale
 
 // Outer card mirrors SacredCountdownCard's info-card convention (Box + clip + plain

@@ -1,4 +1,4 @@
-package com.example.athanly.qibla.domain.local.modelData
+package com.example.athanly.qibla.local.domain.modelData
 
 // Plain lat/lng pair — kept separate from City so the Qibla calculator works
 // against any coordinate source (mock today, real GPS/City later) without caring where it came from.
