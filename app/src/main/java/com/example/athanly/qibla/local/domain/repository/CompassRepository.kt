@@ -1,4 +1,4 @@
-package com.example.athanly.qibla.domain.local.repository
+package com.example.athanly.qibla.local.domain.repository
 
 import kotlinx.coroutines.flow.Flow
 

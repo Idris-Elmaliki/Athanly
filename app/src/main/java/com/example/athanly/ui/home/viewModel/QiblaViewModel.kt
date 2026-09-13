@@ -2,11 +2,12 @@ package com.example.athanly.ui.home.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.athanly.qibla.data.QiblaPreferencesDataStore
-import com.example.athanly.qibla.domain.local.modelData.QiblaUiState
-import com.example.athanly.qibla.domain.local.modelData.enums.DistanceUnit
-import com.example.athanly.qibla.domain.local.repository.CompassRepository
-import com.example.athanly.qibla.domain.local.repository.UserLocationRepository
+import com.example.athanly.qibla.local.data.QiblaPreferencesDataStore
+import com.example.athanly.qibla.local.domain.modelData.QiblaUiState
+import com.example.athanly.qibla.local.domain.modelData.enums.DistanceUnit
+import com.example.athanly.qibla.local.domain.repository.CompassRepository
+import com.example.athanly.qibla.local.domain.repository.UserLocationRepository
+import com.example.athanly.qibla.remote.domain.repository.QiblaApiRepository
 import com.example.athanly.qibla.userInfoCalculations.QiblaCalculator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +24,8 @@ import javax.inject.Inject
 class QiblaViewModel @Inject constructor(
     private val userLocationRepository: UserLocationRepository,
     private val compassRepository: CompassRepository,
-    private val preferencesDataStore: QiblaPreferencesDataStore
+    private val preferencesDataStore: QiblaPreferencesDataStore,
+    private val qiblaApiRepository: QiblaApiRepository
 ) : ViewModel() {
     private val _qiblaState = MutableStateFlow(QiblaUiState())
     val qiblaState: StateFlow<QiblaUiState> = _qiblaState.asStateFlow()
@@ -79,8 +81,6 @@ class QiblaViewModel @Inject constructor(
     // qiblaDegrees/qiblaDirection, which in turn move the compass's Kaaba marker and
     // the distance card's bearing text. Called once at startup; a future refresh
     // trigger (UI/UX not decided yet) will call this again to move the marker.
-    // bearingToKaaba is the local stand-in for the real API's `direction` field —
-    // this is the seam where that swap happens later without touching anything else.
     fun recalculateQiblaDirection() {
         viewModelScope.launch {
             try {
@@ -88,7 +88,10 @@ class QiblaViewModel @Inject constructor(
                 // subscribing to it — exactly what "only updates via explicit
                 // recalculation" requires, instead of combine()'s continuous reacting.
                 val coordinates = userLocationRepository.observedLocation().first()
-                val bearingDegrees = QiblaCalculator.bearingToKaaba(from = coordinates)
+                val bearingDegrees = qiblaApiRepository.fetchQiblaBearing(
+                    latitude = coordinates.latitude,
+                    longitude = coordinates.longitude
+                )
 
                 _qiblaState.update { data ->
                     data.copy(

@@ -15,11 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.example.athanly.R
-import com.example.athanly.qibla.domain.local.modelData.QiblaUiState
+import com.example.athanly.qibla.local.domain.modelData.QiblaUiState
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.DistanceCard
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaCompass
-import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaHeaderText
-import com.example.athanly.ui.subscreens.AtmosphericBackground
 
 // Expanded (840dp+) — 12 columns, 32dp min margins. Same structure as Compact/Medium, content
 // capped at 55% width to keep it readable on large displays, mirroring HomeUiExpanded.

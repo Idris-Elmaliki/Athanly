@@ -1,5 +1,6 @@
 package com.example.athanly.qibla.data
 
+import com.example.athanly.qibla.local.data.SensorCompassRepository
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.PI

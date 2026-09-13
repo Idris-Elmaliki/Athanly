@@ -1,13 +1,15 @@
 package com.example.athanly.ui.home.screens.qibla.viewModel
 
 import app.cash.turbine.test
-import com.example.athanly.qibla.data.QiblaPreferencesDataStore
-import com.example.athanly.qibla.domain.local.modelData.Coordinates
-import com.example.athanly.qibla.domain.local.modelData.enums.DistanceUnit
-import com.example.athanly.qibla.domain.local.repository.CompassRepository
-import com.example.athanly.qibla.domain.local.repository.UserLocationRepository
+import com.example.athanly.qibla.local.data.QiblaPreferencesDataStore
+import com.example.athanly.qibla.local.domain.modelData.Coordinates
+import com.example.athanly.qibla.local.domain.modelData.enums.DistanceUnit
+import com.example.athanly.qibla.local.domain.repository.CompassRepository
+import com.example.athanly.qibla.local.domain.repository.UserLocationRepository
+import com.example.athanly.qibla.remote.domain.repository.QiblaApiRepository
 import com.example.athanly.qibla.userInfoCalculations.QiblaCalculator
 import com.example.athanly.ui.home.viewModel.QiblaViewModel
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -65,19 +67,28 @@ class QiblaViewModelTest {
             } returns flowOf(DistanceUnit.KILOMETERS)
         }
 
+        // Bearing now comes from QiblaApiRepository (the Aladhan API), not a local
+        // formula — coEvery stubs its suspend fetchQiblaBearing call with a fixed value.
+        val expectedBearing = 136.14
+        val qiblaApiRepository = mockk<QiblaApiRepository> {
+            coEvery {
+                fetchQiblaBearing(latitude = coordinates.latitude, longitude = coordinates.longitude)
+            } returns expectedBearing
+        }
+
         val viewModel = QiblaViewModel(
             userLocationRepository = userLocationRepository,
             compassRepository = compassRepository,
-            preferencesDataStore = preferencesDataStore
+            preferencesDataStore = preferencesDataStore,
+            qiblaApiRepository = qiblaApiRepository
         )
 
         viewModel.qiblaState.test {
             val state = awaitItem()
 
-            // Expected values are computed via QiblaCalculator itself (already covered
-            // by its own tests) — this test is only checking that QiblaViewModel wires
-            // its inputs into the right state fields, not re-verifying the formula's math.
-            val expectedBearing = QiblaCalculator.bearingToKaaba(from = coordinates)
+            // Distance is still computed via QiblaCalculator locally (already covered by
+            // its own tests) — this test is only checking that QiblaViewModel wires its
+            // inputs into the right state fields, not re-verifying the formula's math.
             val expectedDistanceKm = QiblaCalculator.distanceToKaaba(from = coordinates)
 
             // Needle is now purely -heading — no bearing involved at all, since it's
@@ -109,11 +120,17 @@ class QiblaViewModelTest {
         val preferencesDataStore = mockk<QiblaPreferencesDataStore> {
             every { observedDistanceUnit() } returns flowOf(DistanceUnit.KILOMETERS)
         }
+        val qiblaApiRepository = mockk<QiblaApiRepository> {
+            coEvery {
+                fetchQiblaBearing(latitude = coordinates.latitude, longitude = coordinates.longitude)
+            } returns 136.14
+        }
 
         val viewModel = QiblaViewModel(
             userLocationRepository = userLocationRepository,
             compassRepository = compassRepository,
-            preferencesDataStore = preferencesDataStore
+            preferencesDataStore = preferencesDataStore,
+            qiblaApiRepository = qiblaApiRepository
         )
 
         viewModel.qiblaState.test {
@@ -152,15 +169,30 @@ class QiblaViewModelTest {
             every { observedDistanceUnit() } returns flowOf(DistanceUnit.KILOMETERS)
         }
 
+        // Each coordinate gets its own stubbed bearing — coEvery matches on the exact
+        // latitude/longitude args, so calling with coordinatesA vs coordinatesB returns
+        // different fixed values, standing in for the real API returning a different
+        // bearing once the phone's location has actually moved.
+        val expectedBearingA = 58.4
+        val expectedBearingB = 119.7
+        val qiblaApiRepository = mockk<QiblaApiRepository> {
+            coEvery {
+                fetchQiblaBearing(latitude = coordinatesA.latitude, longitude = coordinatesA.longitude)
+            } returns expectedBearingA
+            coEvery {
+                fetchQiblaBearing(latitude = coordinatesB.latitude, longitude = coordinatesB.longitude)
+            } returns expectedBearingB
+        }
+
         val viewModel = QiblaViewModel(
             userLocationRepository = userLocationRepository,
             compassRepository = compassRepository,
-            preferencesDataStore = preferencesDataStore
+            preferencesDataStore = preferencesDataStore,
+            qiblaApiRepository = qiblaApiRepository
         )
 
         viewModel.qiblaState.test {
             val initialState = awaitItem()
-            val expectedBearingA = QiblaCalculator.bearingToKaaba(from = coordinatesA)
             assertEquals(expectedBearingA, initialState.qiblaDegrees, 0.01)
 
             locationFlow.value = coordinatesB
@@ -179,7 +211,6 @@ class QiblaViewModelTest {
             // Only now, after the explicit call, does qiblaDegrees catch up to the
             // Kaaba bearing from the phone's current (drifted) location.
             val stateAfterRecalculation = awaitItem()
-            val expectedBearingB = QiblaCalculator.bearingToKaaba(from = coordinatesB)
             assertEquals(expectedBearingB, stateAfterRecalculation.qiblaDegrees, 0.01)
         }
     }

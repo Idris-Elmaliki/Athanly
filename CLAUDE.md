@@ -35,6 +35,14 @@ Work through every feature **one file at a time** using the following loop:
 This applies to all work: UI, business logic, repositories, use cases, data sources, etc.
 Never batch-write multiple files without a checkpoint in between.
 
+## Memory — NON-NEGOTIABLE
+Any time Claude would normally record something to its persistent memory system (a
+feedback correction, a project decision, an architectural convention, etc.), it must
+also be written to `memory.md` at the project root. This keeps memory portable and
+version-controlled across every clone of this repo, unlike Claude's private per-machine
+memory store, which does not travel with the codebase. Update `memory.md` in the same
+turn the underlying memory is saved — don't let it drift out of sync.
+
 ## App Flow
 
 ### 1. Splash Screen
