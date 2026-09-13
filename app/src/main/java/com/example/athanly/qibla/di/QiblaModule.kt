@@ -5,11 +5,12 @@ import android.hardware.SensorManager
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.example.athanly.qibla.data.MockUserLocationRepository
-import com.example.athanly.qibla.data.QiblaPreferencesDataStore
-import com.example.athanly.qibla.data.SensorCompassRepository
-import com.example.athanly.qibla.domain.local.repository.CompassRepository
-import com.example.athanly.qibla.domain.local.repository.UserLocationRepository
+import com.example.athanly.location.domain.repository.LocationProvider
+import com.example.athanly.qibla.local.data.GpsUserLocationRepository
+import com.example.athanly.qibla.local.data.QiblaPreferencesDataStore
+import com.example.athanly.qibla.local.data.SensorCompassRepository
+import com.example.athanly.qibla.local.domain.repository.CompassRepository
+import com.example.athanly.qibla.local.domain.repository.UserLocationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,11 +26,11 @@ private val Context.qiblaPreferencesDataStore: DataStore<Preferences> by prefere
 @InstallIn(SingletonComponent::class)
 object QiblaModule {
 
-    // Mock-backed today; swapping to a real GPS-backed UserLocationRepository later is
-    // just changing this one line — QiblaViewModel only ever depends on the interface.
     @Provides
     @Singleton
-    fun provideUserLocationRepository(): UserLocationRepository = MockUserLocationRepository()
+    fun provideUserLocationRepository(locationProvider: LocationProvider): UserLocationRepository {
+        return GpsUserLocationRepository(locationProvider)
+    }
 
     @Provides
     @Singleton

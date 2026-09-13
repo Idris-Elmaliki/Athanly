@@ -9,6 +9,7 @@ import android.os.Build
 import androidx.core.content.ContextCompat
 import com.example.athanly.athanTime.local.domain.modelData.City
 import com.example.athanly.location.domain.repository.LocationProvider
+import com.example.athanly.qibla.local.domain.modelData.Coordinates
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
@@ -21,7 +22,7 @@ import javax.inject.Inject
 import kotlin.coroutines.resume
 
 class LocationProviderImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
+    @param:ApplicationContext private val context: Context,
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : LocationProvider {
     override suspend fun getCurrentCity(): City? {
@@ -31,6 +32,17 @@ class LocationProviderImpl @Inject constructor(
         return City(
             name = name,
             hijriDate = "",
+            latitude = location.latitude,
+            longitude = location.longitude
+        )
+    }
+
+    // Reuses the same GPS fix as getCurrentCity() but skips reverseGeocode() — Qibla's
+    // bearing math only needs lat/lng, so there's no reason to pay for a geocode lookup here.
+    override suspend fun getCurrentCoordinates(): Coordinates? {
+        val location = fetchCurrentLocation() ?: return null
+
+        return Coordinates(
             latitude = location.latitude,
             longitude = location.longitude
         )

@@ -1,7 +1,7 @@
 package com.example.athanly.qibla.userInfoCalculations
 
-import com.example.athanly.qibla.domain.local.modelData.Coordinates
-import com.example.athanly.qibla.domain.local.modelData.enums.CardinalDirection
+import com.example.athanly.qibla.local.domain.modelData.Coordinates
+import com.example.athanly.qibla.local.domain.modelData.enums.CardinalDirection
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
@@ -57,36 +57,10 @@ object QiblaCalculator {
         return EARTH_RADIUS_KM * angularDistanceRadians
     }
 
-    // Initial bearing — the compass direction to start heading from `from` to follow
-    // the great-circle path to `to`. Not a fixed heading for the whole trip (the
-    // great-circle path curves relative to a flat-map straight line), just the start.
-    fun bearingTo(from: Coordinates, to: Coordinates): Double {
-        val fromLatitudeRadians = Math.toRadians(from.latitude)
-        val toLatitudeRadians = Math.toRadians(to.latitude)
-        val longitudeDeltaRadians = Math.toRadians(to.longitude - from.longitude)
-
-        // Decomposes the destination's offset from `from` into local east and north
-        // components. eastComponent scales the longitude gap by cos(toLatitude) for
-        // the same pole-convergence reason as in distanceTo.
-        val eastComponent = sin(longitudeDeltaRadians) * cos(toLatitudeRadians)
-        val northComponent = cos(fromLatitudeRadians) * sin(toLatitudeRadians) -
-            sin(fromLatitudeRadians) * cos(toLatitudeRadians) * cos(longitudeDeltaRadians)
-
-        // atan2(east, north) — north (not east) is the second/"x-axis" argument here
-        // specifically so the angle comes out measured from north, matching how a
-        // compass bearing is defined, rather than from the east/x-axis as usual.
-        val bearingRadians = atan2(eastComponent, northComponent)
-
-        // atan2 returns -180..180 degrees. Adding 360 shifts a negative result into
-        // 0..360 without changing the direction it represents (e.g. -90 == 270); the
-        // trailing % 360 only matters if the value was already positive, so it wraps
-        // back down instead of overshooting past 360.
-        return (Math.toDegrees(bearingRadians) + 360) % 360
-    }
-
     fun distanceToKaaba(from: Coordinates): Double = distanceTo(from = from, to = kaaba)
 
-    fun bearingToKaaba(from: Coordinates): Double = bearingTo(from = from, to = kaaba)
+    // Bearing to the Kaaba now comes from QiblaApiRepository (Aladhan's /v1/qibla
+    // endpoint) instead of being computed here — bearingTo/bearingToKaaba were removed.
 
     fun kmToMiles(km: Double): Double = km * KM_TO_MILES_FACTOR
 

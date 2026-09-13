@@ -14,11 +14,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.dimensionResource
 import com.example.athanly.R
-import com.example.athanly.qibla.domain.local.modelData.QiblaUiState
+import com.example.athanly.qibla.local.domain.modelData.QiblaUiState
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.DistanceCard
 import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaCompass
-import com.example.athanly.ui.home.screens.qibla.qiblaSubScreens.QiblaHeaderText
-import com.example.athanly.ui.subscreens.AtmosphericBackground
 
 // Compact (< 600dp): single-column, full-bleed — same shell shape as HomeUiCompact.
 @Composable

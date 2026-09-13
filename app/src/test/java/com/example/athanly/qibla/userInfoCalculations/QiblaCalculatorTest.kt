@@ -1,7 +1,7 @@
 package com.example.athanly.qibla.userInfoCalculations
 
-import com.example.athanly.qibla.domain.local.modelData.Coordinates
-import com.example.athanly.qibla.domain.local.modelData.enums.CardinalDirection
+import com.example.athanly.qibla.local.domain.modelData.Coordinates
+import com.example.athanly.qibla.local.domain.modelData.enums.CardinalDirection
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -28,23 +28,6 @@ class QiblaCalculatorTest {
         // required for Double comparisons since floating-point math is never exact.
         // 1.0 km of slack is generous enough to absorb rounding in Earth's radius constant.
         assertEquals(expectedDistanceKm, actualDistanceKm, 1.0)
-    }
-
-    @Test
-    fun `bearingTo returns due east for two points on the equator 90 degrees of longitude apart`() {
-        // Both points sit on the equator (latitude 0), so travelling from one to the
-        // other along the equator is the great-circle path — the initial bearing for
-        // that path is exactly due east (90 degrees), the simplest case to hand-verify.
-        val equatorWest = Coordinates(latitude = 0.0, longitude = 0.0)
-        val equatorEast = Coordinates(latitude = 0.0, longitude = 90.0)
-
-        val expectedBearingDegrees = 90.0
-
-        val actualBearingDegrees = QiblaCalculator.bearingTo(from = equatorWest, to = equatorEast)
-
-        // Same delta-tolerance reasoning as the distance test above — 0.1 degree is
-        // generous enough to absorb floating-point rounding.
-        assertEquals(expectedBearingDegrees, actualBearingDegrees, 0.1)
     }
 
     @Test

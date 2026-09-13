@@ -1,10 +1,10 @@
-package com.example.athanly.qibla.data
+package com.example.athanly.qibla.local.data
 
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import com.example.athanly.qibla.domain.local.repository.CompassRepository
+import com.example.athanly.qibla.local.domain.repository.CompassRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
