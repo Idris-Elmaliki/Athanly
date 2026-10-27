@@ -29,7 +29,7 @@ import com.example.athanly.R
 @Composable
 fun QiblaCompass(
     needleRotationDegrees: Float,
-    kaabaMarkerDegrees: Float,
+    kaabaMarkerDegrees: Float?,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -40,7 +40,8 @@ fun QiblaCompass(
                 ambientColor = MaterialTheme.colorScheme.onSurface
             )
             .clip(CircleShape)
-            .size(dimensionResource(R.dimen.qibla_compass_diameter)),
+            .size(dimensionResource(R.dimen.qibla_compass_diameter))
+        ,
         contentAlignment = Alignment.Center
     ) {
         // Glassmorphism ring — translucent fill + low-alpha border, same convention
@@ -57,26 +58,37 @@ fun QiblaCompass(
                 )
         )
 
-        CompassCardinalLabel(
-            text = stringResource(R.string.qibla_compass_north),
-            alignment = Alignment.TopCenter
-        )
-        CompassCardinalLabel(
-            text = stringResource(R.string.qibla_compass_east),
-            alignment = Alignment.CenterEnd
-        )
-        CompassCardinalLabel(
-            text = stringResource(R.string.qibla_compass_south),
-            alignment = Alignment.BottomCenter
-        )
-        CompassCardinalLabel(
-            text = stringResource(R.string.qibla_compass_west),
-            alignment = Alignment.CenterStart
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .clip(CircleShape)
+                .rotate(-needleRotationDegrees)
+        ) {
+            CompassCardinalLabel(
+                text = stringResource(R.string.qibla_compass_north),
+                alignment = Alignment.TopCenter
+            )
+            CompassCardinalLabel(
+                text = stringResource(R.string.qibla_compass_east),
+                alignment = Alignment.CenterEnd
+            )
+            CompassCardinalLabel(
+                text = stringResource(R.string.qibla_compass_south),
+                alignment = Alignment.BottomCenter
+            )
+            CompassCardinalLabel(
+                text = stringResource(R.string.qibla_compass_west),
+                alignment = Alignment.CenterStart
+            )
+
+            // Null means the bearing hasn't arrived from the API yet — hidden rather than drawn
+            // at a misleading default angle.
+            if (kaabaMarkerDegrees != null) {
+                CompassKaabaMarker(degrees = kaabaMarkerDegrees)
+            }
+        }
 
         CompassNeedle(rotationDegrees = needleRotationDegrees)
-
-        CompassKaabaMarker(degrees = kaabaMarkerDegrees)
     }
 }
 
@@ -104,7 +116,6 @@ private fun CompassNeedle(rotationDegrees: Float) {
     // is exactly the ring's center since the needle is centered in the parent Box.
     Box(
         modifier = Modifier
-            .rotate(rotationDegrees)
             .clip(CircleShape)
     ) {
         Image(

@@ -19,4 +19,38 @@ class SensorCompassRepositoryTest {
 
         assertEquals(270f, headingDegrees, 0.01f)
     }
+
+    @Test
+    fun `trueHeadingFrom adds the declination to a magnetic heading`() {
+        // Declination = how far magnetic north sits east (+) of true north at this spot.
+        // Facing 90 degrees from magnetic north with +10 declination means 100 degrees
+        // from true north. assertEquals(expected, actual, delta): the delta is the allowed
+        // float rounding error, since floats are never compared exactly.
+        val magneticHeadingDegrees = 90f
+        val declinationDegrees = 10f
+
+        val trueHeadingDegrees = SensorCompassRepository.trueHeadingFrom(
+            magneticHeadingDegrees = magneticHeadingDegrees,
+            declinationDegrees = declinationDegrees
+        )
+
+        assertEquals(100f, trueHeadingDegrees, 0.01f)
+    }
+
+    @Test
+    fun `trueHeadingFrom wraps results back into the 0-360 range`() {
+        // Adding declination can push past 360 (350 + 20 = 370 -> 10) or below 0
+        // (5 - 10 = -5 -> 355). Two cases in one test, since both are the same wraparound rule.
+        val pastFullCircle = SensorCompassRepository.trueHeadingFrom(
+            magneticHeadingDegrees = 350f,
+            declinationDegrees = 20f
+        )
+        val belowZero = SensorCompassRepository.trueHeadingFrom(
+            magneticHeadingDegrees = 5f,
+            declinationDegrees = -10f
+        )
+
+        assertEquals(10f, pastFullCircle, 0.01f)
+        assertEquals(355f, belowZero, 0.01f)
+    }
 }

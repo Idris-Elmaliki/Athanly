@@ -21,9 +21,17 @@ data class QiblaUiState(
     val isOnline: Boolean = true,
     val isLocationPermissionGranted: Boolean = true,
 
+    // Device-wide location toggle, separate from the app permission above — the user can
+    // grant the permission and still have location off, which needs its own blocker.
+    val isLocationServicesEnabled: Boolean = true,
+
     val needleRotationDegrees: Float = 0f,
+    // Raw distance, kept so a km/mi toggle can re-convert it without refetching the location.
+    val distanceKm: Double = 0.0,
     val distanceValue: Double = 0.0,
     val distanceUnit: DistanceUnit = DistanceUnit.KILOMETERS,
-    val qiblaDegrees: Double = 0.0,
+    // Null until the API's bearing arrives — the UI hides the Kaaba marker meanwhile, rather
+    // than showing it at a misleading default of 0° (north).
+    val qiblaDegrees: Double? = null,
     val qiblaDirection: CardinalDirection = CardinalDirection.N
 )
