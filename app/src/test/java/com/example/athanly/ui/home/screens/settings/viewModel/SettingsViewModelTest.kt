@@ -15,6 +15,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -30,6 +31,7 @@ class SettingsViewModelTest {
     // Same reasoning as QiblaViewModelTest: viewModelScope needs Dispatchers.Main
     // substituted before construction, and Unconfined so the init{} coroutine's
     // combine() runs eagerly instead of needing manual time-advancement.
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val mainDispatcher = UnconfinedTestDispatcher()
 
     @Before

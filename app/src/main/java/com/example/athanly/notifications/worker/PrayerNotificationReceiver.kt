@@ -75,9 +75,9 @@ class PrayerNotificationReceiver : BroadcastReceiver() {
         )
 
         val notification = NotificationCompat.Builder(context, channelId)
-            // Placeholder — ic_launcher_foreground isn't a proper monochrome notification
-            // icon yet, revisit once a dedicated status-bar icon asset exists
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            // Flat single-shape vector — the system tints small icons, so a full-color
+            // launcher drawable would render as a solid blob in the status bar
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(context.getString(R.string.prayer_notification_title, context.getString(prayer.displayNameRes)))
             .setContentText(context.getString(R.string.prayer_notification_body))
             .setPriority(NotificationCompat.PRIORITY_HIGH)

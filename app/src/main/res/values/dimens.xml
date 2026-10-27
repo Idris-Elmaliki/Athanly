@@ -216,4 +216,13 @@
     <!-- Settings volume control row -->
     <dimen name="settings_volume_row_title_slider_gap">16dp</dimen>
 
+    <!-- Compose splash -->
+    <!-- 288dp is the size the OS splash draws an icon with no background at, so the hand-off
+         from OS splash to Compose splash shows the icon at the identical size -->
+    <dimen name="splash_icon_size">288dp</dimen>
+    <dimen name="splash_icon_name_gap">8dp</dimen>
+    <!-- The icon image is mostly transparent padding around a narrow minaret — shifting the name
+         left by this much tucks it against the tower instead of the image edge. Tune on device. -->
+    <dimen name="splash_name_overlap">100dp</dimen>
+
 </resources>

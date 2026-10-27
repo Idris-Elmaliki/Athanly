@@ -35,7 +35,6 @@ import com.example.athanly.R
 import com.example.athanly.appData.domain.modelData.AppDataUiState
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsRow
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsSectionHeader
-import com.example.athanly.ui.home.screens.settings.settingsSubScreens.VolumeControlRow
 
 // Compact (< 600dp): single-column, full-bleed — same shell shape as HomeUiCompact/QiblaUiCompact.
 // No AtmosphericBackground here — the Figma design uses a plain near-white surface, not the
@@ -48,7 +47,6 @@ fun SettingsUiCompact(
     onTimeFormatToggled: () -> Unit,
     onAsrCalculationToggled: () -> Unit,
     onMuadhdhinRowClick: () -> Unit,
-    onVolumeChanged: (Float) -> Unit,
     onNotificationSettingsRowClick: () -> Unit,
     topBarPadding: Dp
 ) {
@@ -185,13 +183,6 @@ fun SettingsUiCompact(
                                         modifier = Modifier.size(dimensionResource(R.dimen.settings_row_chevron_size))
                                     )
                                 }
-                            )
-
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                            VolumeControlRow(
-                                volume = state.athanVolume,
-                                onVolumeChanged = onVolumeChanged
                             )
 
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
