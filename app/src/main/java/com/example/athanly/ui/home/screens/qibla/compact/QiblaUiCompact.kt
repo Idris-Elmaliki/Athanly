@@ -28,6 +28,7 @@ fun QiblaUiCompact(
     state: QiblaUiState,
     onUnitToggled: () -> Unit,
     onEnableLocationClick: () -> Unit,
+    onOpenAppSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
@@ -42,7 +43,7 @@ fun QiblaUiCompact(
             ) {
                 QiblaCompass(
                     needleRotationDegrees = state.needleRotationDegrees,
-                    kaabaMarkerDegrees = state.qiblaDegrees.toFloat()
+                    kaabaMarkerDegrees = state.qiblaDegrees?.toFloat()
                 )
 
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_screen_section_spacing)))
@@ -57,10 +58,10 @@ fun QiblaUiCompact(
             }
 
             // Floats over the (frozen, default-valued) compass/distance content above
-            // instead of replacing it. Priority order matters: offline is checked first,
-            // then permission-denied. A plain state.error alone (e.g. a GPS fix still
-            // being acquired, or an unrelated Qibla-bearing API failure) shows no blocker
-            // at all — intentionally scoped out of this pass, see project plan.
+            // instead of replacing it. Priority order matters: offline first, then app
+            // permission denied, then the device location toggle being off. Anything else
+            // (e.g. a GPS fix still pending) shows no blocker — the Kaaba marker is simply
+            // hidden until the bearing arrives.
             when {
                 !state.isOnline -> {
                     OfflineBlocker(
@@ -70,8 +71,12 @@ fun QiblaUiCompact(
                     )
                 }
 
-                !state.isLocationPermissionGranted -> {
+                // The blocker itself picks wording and action: denied permission opens the app
+                // settings page, a device toggle that's off opens location settings.
+                !state.isLocationPermissionGranted || !state.isLocationServicesEnabled -> {
                     LocationOffBlocker(
+                        isLocationPermissionGranted = state.isLocationPermissionGranted,
+                        onOpenAppSettingsClick = onOpenAppSettingsClick,
                         onEnableLocationClick = onEnableLocationClick,
                         modifier = Modifier
                             .fillMaxWidth()

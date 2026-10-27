@@ -29,6 +29,7 @@ fun QiblaUiMedium(
     state: QiblaUiState,
     onUnitToggled: () -> Unit,
     onEnableLocationClick: () -> Unit,
+    onOpenAppSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(modifier = modifier) {
@@ -44,7 +45,7 @@ fun QiblaUiMedium(
             ) {
                 QiblaCompass(
                     needleRotationDegrees = state.needleRotationDegrees,
-                    kaabaMarkerDegrees = state.qiblaDegrees.toFloat()
+                    kaabaMarkerDegrees = state.qiblaDegrees?.toFloat()
                 )
 
                 Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_screen_section_spacing)))
@@ -58,8 +59,8 @@ fun QiblaUiMedium(
                 )
             }
 
-            // Priority order matters: offline first, then permission-denied — see
-            // QiblaUiCompact's matching block for the full reasoning.
+            // Priority order matters: offline, app permission denied, then the device location
+            // toggle off — see QiblaUiCompact's matching block for the full reasoning.
             when {
                 !state.isOnline -> {
                     OfflineBlocker(
@@ -69,8 +70,10 @@ fun QiblaUiMedium(
                     )
                 }
 
-                !state.isLocationPermissionGranted -> {
+                !state.isLocationPermissionGranted || !state.isLocationServicesEnabled -> {
                     LocationOffBlocker(
+                        isLocationPermissionGranted = state.isLocationPermissionGranted,
+                        onOpenAppSettingsClick = onOpenAppSettingsClick,
                         onEnableLocationClick = onEnableLocationClick,
                         modifier = Modifier
                             .fillMaxWidth(fraction = 0.75f)

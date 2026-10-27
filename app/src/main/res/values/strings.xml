@@ -113,6 +113,10 @@
     <string name="qibla_location_off_message">Location is off. Turn it on to find the Qibla direction.</string>
     <string name="qibla_location_off_button">Enable Location</string>
 
+    <!-- Permission denied is a different fix from location being off (app settings vs. device toggle) -->
+    <string name="qibla_permission_denied_message">Location permission is needed to find the Qibla direction. Allow it in the app settings.</string>
+    <string name="qibla_permission_denied_button">Open Settings</string>
+
     <!-- Qibla offline blocker -->
     <string name="qibla_offline_message">You\'re offline. Qibla direction requires an internet connection.</string>
 

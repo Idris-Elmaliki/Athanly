@@ -25,6 +25,7 @@ import com.example.athanly.R
 import com.example.athanly.qibla.local.domain.modelData.enums.CardinalDirection
 import com.example.athanly.qibla.local.domain.modelData.enums.DistanceUnit
 import java.util.Locale
+import androidx.compose.ui.platform.LocalLocale
 
 // Outer card mirrors SacredCountdownCard's info-card convention (Box + clip + plain
 // surfaceContainerHigh background, no elevation/border) rather than the
@@ -34,7 +35,7 @@ import java.util.Locale
 fun DistanceCard(
     distanceValue: Double,
     distanceUnit: DistanceUnit,
-    qiblaDegrees: Double,
+    qiblaDegrees: Double?,
     qiblaDirection: CardinalDirection,
     onUnitToggled: () -> Unit,
     modifier: Modifier = Modifier
@@ -62,7 +63,7 @@ fun DistanceCard(
                 // %,.0f groups thousands (e.g. "10,875") and drops decimals, matching
                 // the design's whole-number distance display.
                 Text(
-                    text = String.format(Locale.getDefault(), "%,.0f", distanceValue),
+                    text = String.format(LocalLocale.current.platformLocale, "%,.0f", distanceValue),
                     style = MaterialTheme.typography.headlineLarge,
                     color = MaterialTheme.colorScheme.secondary
                 )
@@ -76,17 +77,21 @@ fun DistanceCard(
                 )
             }
 
-            Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_distance_card_value_bearing_gap)))
+            // Null means the API bearing hasn't arrived yet — hide the line (and its
+            // gap) rather than show a placeholder, per the no-loading-state decision.
+            if (qiblaDegrees != null) {
+                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_distance_card_value_bearing_gap)))
 
-            Text(
-                text = stringResource(
-                    R.string.qibla_distance_card_bearing,
-                    qiblaDegrees.toInt(),
-                    stringResource(qiblaDirection.abbreviationRes)
-                ),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.tertiaryContainer
-            )
+                Text(
+                    text = stringResource(
+                        R.string.qibla_distance_card_bearing,
+                        qiblaDegrees.toInt(),
+                        stringResource(qiblaDirection.abbreviationRes)
+                    ),
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.tertiaryContainer
+                )
+            }
 
             Spacer(modifier = Modifier.height(dimensionResource(R.dimen.qibla_distance_card_bearing_toggle_gap)))
 

@@ -1,6 +1,5 @@
 package com.example.athanly.qibla.data
 
-import app.cash.turbine.test
 import com.example.athanly.location.domain.repository.LocationProvider
 import com.example.athanly.qibla.local.data.GpsUserLocationRepository
 import com.example.athanly.qibla.local.domain.modelData.Coordinates
@@ -11,11 +10,12 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.Test
 
 class GpsUserLocationRepositoryTest {
     @Test
-    fun `observedLocation emits the coordinates LocationProvider returns`() = runTest {
+    fun `getCurrentLocation returns the coordinates LocationProvider returns`() = runTest {
         // mockk<LocationProvider>() fakes the interface so this test never touches real
         // GPS hardware — we control exactly what "the device's location" is for this test.
         val locationProvider = mockk<LocationProvider>()
@@ -30,21 +30,15 @@ class GpsUserLocationRepositoryTest {
 
         val repository = GpsUserLocationRepository(locationProvider)
 
-        // .test {} (Turbine) subscribes to the Flow so we can assert its emissions one
-        // at a time, instead of manually collecting into a list.
-        repository.observedLocation().test {
-            // awaitItem() suspends until the Flow emits, then returns that value.
-            val coordinates = awaitItem()
-            assertEquals(Coordinates(latitude = 30.0444, longitude = 31.2357), coordinates)
+        // A one-shot suspend call just returns its value, so no Turbine is needed —
+        // runTest lets us call it directly and assert on the result.
+        val coordinates = repository.getCurrentLocation()
 
-            // This is a one-shot GPS fetch, not a live location stream, so after the
-            // single emission the Flow should finish — same shape as MockUserLocationRepository.
-            awaitComplete()
-        }
+        assertEquals(Coordinates(latitude = 30.0444, longitude = 31.2357), coordinates)
     }
 
     @Test
-    fun `observedLocation throws when LocationProvider has no fix`() = runTest {
+    fun `getCurrentLocation throws when LocationProvider has no fix`() = runTest {
         val locationProvider = mockk<LocationProvider>()
 
         // Stubbing a null return — this is the "no GPS fix yet" case (permission denied,
@@ -53,13 +47,15 @@ class GpsUserLocationRepositoryTest {
 
         val repository = GpsUserLocationRepository(locationProvider)
 
-        repository.observedLocation().test {
-            // awaitError() asserts the Flow terminated via an exception rather than a
-            // normal emission/completion. QiblaViewModel already wraps every subscription
-            // to this Flow in try/catch and surfaces e.message as qiblaState.error, so
-            // throwing here (instead of silently emitting nothing) is what lets that
-            // existing error path actually show something to the user.
-            awaitError()
+        // try/catch + fail() instead of assertThrows: assertThrows' lambda isn't a suspend
+        // block, so it can't call getCurrentLocation(). Throwing (rather than returning
+        // null) is what lets QiblaViewModel's existing try/catch surface e.message as an
+        // error instead of silently showing nothing.
+        try {
+            repository.getCurrentLocation()
+            fail("Expected an IllegalStateException when there is no GPS fix")
+        } catch (e: IllegalStateException) {
+            assertEquals("No GPS fix available", e.message)
         }
     }
 

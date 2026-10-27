@@ -6,7 +6,6 @@ import com.example.athanly.qibla.local.domain.modelData.Coordinates
 // Wraps FusedLocationProviderClient + reverse geocoding behind a domain-friendly interface —
 // the onboarding Location screen never touches Google Play Services types directly.
 interface LocationProvider {
-
     // Null means no fix was obtained (permission denied, location off, or the device
     // couldn't resolve one in time) — the caller falls back to PresetCityPicker, it's not
     // an exceptional case worth throwing over.
@@ -20,4 +19,8 @@ interface LocationProvider {
     // on its own (e.g. to distinguish "permission denied" from "no GPS fix yet" for the Qibla
     // blocker) without needing to trigger an actual location fetch just to find out.
     fun hasLocationPermission(): Boolean
+
+    // The device-wide location toggle, independent of app permission — lets a caller tell
+    // "location switched off" apart from "permission denied" without attempting a fetch.
+    fun isLocationEnabled(): Boolean
 }

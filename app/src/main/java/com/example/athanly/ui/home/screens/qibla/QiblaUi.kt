@@ -1,6 +1,7 @@
 package com.example.athanly.ui.home.screens.qibla
 
 import android.content.Intent
+import android.net.Uri
 import android.provider.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,8 +26,22 @@ fun QiblaUi(
     val state by viewModel.qiblaState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
+    // Device-wide location toggle — for the "location is switched off" blocker.
     val onEnableLocationClick: () -> Unit = {
-        context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+        context.startActivity(
+            Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+        )
+    }
+
+    // This app's own settings page — the permission-denied blocker needs this, since the
+    // device toggle above never changes the app's runtime permission.
+    val onOpenAppSettingsClick: () -> Unit = {
+        context.startActivity(
+            Intent(
+                Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                Uri.fromParts("package", context.packageName, null)
+            )
+        )
     }
 
     // Fires on every resume, including the initial one (redundant with the ViewModel's own
@@ -43,6 +58,7 @@ fun QiblaUi(
                 state = state,
                 onUnitToggled = viewModel::onDistanceUnitToggled,
                 onEnableLocationClick = onEnableLocationClick,
+                onOpenAppSettingsClick = onOpenAppSettingsClick,
                 modifier = modifier
             )
         }
@@ -52,6 +68,7 @@ fun QiblaUi(
                 state = state,
                 onUnitToggled = viewModel::onDistanceUnitToggled,
                 onEnableLocationClick = onEnableLocationClick,
+                onOpenAppSettingsClick = onOpenAppSettingsClick,
                 modifier = modifier
             )
         }
@@ -61,6 +78,7 @@ fun QiblaUi(
                 state = state,
                 onUnitToggled = viewModel::onDistanceUnitToggled,
                 onEnableLocationClick = onEnableLocationClick,
+                onOpenAppSettingsClick = onOpenAppSettingsClick,
                 modifier = modifier
             )
         }

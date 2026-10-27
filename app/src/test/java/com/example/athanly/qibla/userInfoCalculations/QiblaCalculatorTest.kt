@@ -2,6 +2,7 @@ package com.example.athanly.qibla.userInfoCalculations
 
 import com.example.athanly.qibla.local.domain.modelData.Coordinates
 import com.example.athanly.qibla.local.domain.modelData.enums.CardinalDirection
+import com.example.athanly.userInfoCalculations.QiblaCalculator
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

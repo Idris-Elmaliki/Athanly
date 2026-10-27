@@ -11,7 +11,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -30,10 +29,11 @@ fun OfflineBlocker(
             .background(
                 Brush.verticalGradient(
                     colorStops = arrayOf(
-                        0f to Color.Transparent,
+                        // Theme background at 0 alpha — fades to the same hue, not a new color.
+                        0f to MaterialTheme.colorScheme.background.copy(alpha = 0f),
                         0.2f to MaterialTheme.colorScheme.background,
                         0.8f to MaterialTheme.colorScheme.background,
-                        1f to Color.Transparent
+                        1f to MaterialTheme.colorScheme.background.copy(alpha = 0f)
                     )
                 )
             )

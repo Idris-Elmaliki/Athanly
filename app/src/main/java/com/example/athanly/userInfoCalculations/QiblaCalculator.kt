@@ -1,4 +1,4 @@
-package com.example.athanly.qibla.userInfoCalculations
+package com.example.athanly.userInfoCalculations
 
 import com.example.athanly.qibla.local.domain.modelData.Coordinates
 import com.example.athanly.qibla.local.domain.modelData.enums.CardinalDirection
@@ -23,9 +23,9 @@ object QiblaCalculator {
 
     const val KAABA_LATITUDE = 21.4225
     const val KAABA_LONGITUDE = 39.8262
-    
+
     private val kaaba = Coordinates(
-        latitude = KAABA_LATITUDE, 
+        latitude = KAABA_LATITUDE,
         longitude = KAABA_LONGITUDE
     )
 
@@ -51,7 +51,10 @@ object QiblaCalculator {
         // arctangent — unlike atan(y/x), it doesn't lose the sign information division
         // throws away, so it's stable/accurate across the whole range instead of
         // breaking down (like asin would) for points near opposite sides of the globe.
-        val angularDistanceRadians = 2 * atan2(sqrt(squaredHalfChordLength), sqrt(1 - squaredHalfChordLength))
+        val angularDistanceRadians = 2 * atan2(
+            sqrt(squaredHalfChordLength),
+            sqrt(1 - squaredHalfChordLength)
+        )
 
         // Arc length = radius * angle (same relationship as for any circle).
         return EARTH_RADIUS_KM * angularDistanceRadians
