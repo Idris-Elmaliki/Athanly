@@ -2,4 +2,12 @@
 <resources>
 
     <style name="Theme.Athanly" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Only applied while the OS splash shows; postSplashScreenTheme swaps in Theme.Athanly
+         once MainActivity draws its first frame, so nothing else needs to know about this theme -->
+    <style name="Theme.Athanly.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/black</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_minaret</item>
+        <item name="postSplashScreenTheme">@style/Theme.Athanly</item>
+    </style>
 </resources>

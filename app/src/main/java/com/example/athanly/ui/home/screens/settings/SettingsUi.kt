@@ -46,7 +46,6 @@ fun SettingsUi(
                 onTimeFormatToggled = viewModel::onTimeFormatToggled,
                 onAsrCalculationToggled = viewModel::onHanafiModeToggled,
                 onMuadhdhinRowClick = onMuadhdhinRowClick,
-                onVolumeChanged = viewModel::onAthanVolumeChanged,
                 onNotificationSettingsRowClick = onNotificationSettingsRowClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier
@@ -60,7 +59,6 @@ fun SettingsUi(
                 onTimeFormatToggled = viewModel::onTimeFormatToggled,
                 onAsrCalculationToggled = viewModel::onHanafiModeToggled,
                 onMuadhdhinRowClick = onMuadhdhinRowClick,
-                onVolumeChanged = viewModel::onAthanVolumeChanged,
                 onNotificationSettingsRowClick = onNotificationSettingsRowClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier
@@ -74,7 +72,6 @@ fun SettingsUi(
                 onTimeFormatToggled = viewModel::onTimeFormatToggled,
                 onAsrCalculationToggled = viewModel::onHanafiModeToggled,
                 onMuadhdhinRowClick = onMuadhdhinRowClick,
-                onVolumeChanged = viewModel::onAthanVolumeChanged,
                 onNotificationSettingsRowClick = onNotificationSettingsRowClick,
                 topBarPadding = topBarPadding,
                 modifier = modifier

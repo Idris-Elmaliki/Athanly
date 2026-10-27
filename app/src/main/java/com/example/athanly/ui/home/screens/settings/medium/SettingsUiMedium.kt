@@ -17,8 +17,8 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.School
 import androidx.compose.material.icons.filled.Schedule
+import androidx.compose.material.icons.filled.School
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -35,7 +35,6 @@ import com.example.athanly.R
 import com.example.athanly.appData.domain.modelData.AppDataUiState
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsRow
 import com.example.athanly.ui.home.screens.settings.settingsSubScreens.SettingsSectionHeader
-import com.example.athanly.ui.home.screens.settings.settingsSubScreens.VolumeControlRow
 
 // Medium (600–839dp) — 12 columns, 12dp min margins. Same structure as Compact, content
 // capped at 75% width to avoid over-stretching, mirroring HomeUiMedium/QiblaUiMedium's convention.
@@ -47,7 +46,6 @@ fun SettingsUiMedium(
     onTimeFormatToggled: () -> Unit,
     onAsrCalculationToggled: () -> Unit,
     onMuadhdhinRowClick: () -> Unit,
-    onVolumeChanged: (Float) -> Unit,
     onNotificationSettingsRowClick: () -> Unit,
     topBarPadding: Dp
 ) {
@@ -188,13 +186,6 @@ fun SettingsUiMedium(
                                         modifier = Modifier.size(dimensionResource(R.dimen.settings_row_chevron_size))
                                     )
                                 }
-                            )
-
-                            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))
-
-                            VolumeControlRow(
-                                volume = state.athanVolume,
-                                onVolumeChanged = onVolumeChanged
                             )
 
                             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.3f))

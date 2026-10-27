@@ -6,6 +6,11 @@ import kotlinx.serialization.Serializable
 @Serializable
 sealed interface AppRoutes {
 
+    // Always the start destination — holds the app on the logo until the onboarding flag
+    // resolves, then routes to OnBoarding or Home so neither is shown by mistake
+    @Serializable
+    data object Splash : AppRoutes
+
     // @Serializable on each entry so Navigation 3 can serialize them onto the back stack
     @Serializable
     data object OnBoarding : AppRoutes

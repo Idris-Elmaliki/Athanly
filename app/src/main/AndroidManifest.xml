@@ -32,16 +32,19 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher_minaret"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher_minaret_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Athanly">
+        <!-- Starting theme is what Android paints at launch, before any Compose code runs —
+             that's how the OS splash gets its black background and icon. Theme.Athanly takes
+             over afterwards via postSplashScreenTheme. -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.Athanly">
+            android:theme="@style/Theme.Athanly.Starting">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
