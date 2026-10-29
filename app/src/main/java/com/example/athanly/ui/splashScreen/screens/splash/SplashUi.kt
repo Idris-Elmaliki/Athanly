@@ -1,4 +1,4 @@
-package com.example.athanly.ui.splash.screens.splash
+package com.example.athanly.ui.splashScreen.screens.splash
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -9,9 +9,9 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.window.core.layout.WindowSizeClass
-import com.example.athanly.ui.splash.screens.splash.compact.SplashUiCompact
-import com.example.athanly.ui.splash.screens.splash.expanded.SplashUiExpanded
-import com.example.athanly.ui.splash.screens.splash.medium.SplashUiMedium
+import com.example.athanly.ui.splashScreen.screens.splash.compact.SplashUiCompact
+import com.example.athanly.ui.splashScreen.screens.splash.expanded.SplashUiExpanded
+import com.example.athanly.ui.splashScreen.screens.splash.medium.SplashUiMedium
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.milliseconds
 

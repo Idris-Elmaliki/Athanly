@@ -1,5 +1,6 @@
 package com.example.athanly.ui.home.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
@@ -12,6 +13,7 @@ import com.example.athanly.qibla.local.domain.repository.UserLocationRepository
 import com.example.athanly.qibla.remote.domain.repository.QiblaApiRepository
 import com.example.athanly.userInfoCalculations.QiblaCalculator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.ktor.client.plugins.logging.Logging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -73,11 +75,14 @@ class QiblaViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val coordinates = userLocationRepository.getCurrentLocation()
+
+                Log.d("Qibla coordinates", "Gathering user coordinates: $coordinates")
                 val distanceKm = QiblaCalculator.distanceToKaaba(from = coordinates)
                 val bearingDegrees = qiblaApiRepository.fetchQiblaBearing(
                     latitude = coordinates.latitude,
                     longitude = coordinates.longitude
                 )
+                Log.d("Qibla coordinates", "Gathering Qibla coordinates: $bearingDegrees")
 
                 _qiblaState.update { data ->
                     data.copy(

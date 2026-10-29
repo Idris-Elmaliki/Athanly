@@ -1,4 +1,4 @@
-package com.example.athanly.notifications.worker
+package com.example.athanly.athanNotifications.worker
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,6 +8,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.core.content.getSystemService
 import com.example.athanly.R
+import com.example.athanly.appData.data.localizedFor
+import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.appData.domain.modelData.muadhhinList
 import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -22,12 +24,14 @@ fun prayerNotificationChannelId(muadhdhinId: MuadhdhinId, isFajr: Boolean): Stri
 }
 
 // Creates a Fajr + shared channel for every Muadhdhin (not just the selected one) so switching
-// the selection in Settings never needs to create a channel on the fly. Registering is a no-op
-// if a channel already exists, so this is safe to call on every app start rather than once ever.
+// the selection in Settings never needs to create a channel on the fly. Re-registering an
+// existing channel only refreshes its name and description (the sound stays fixed), which is
+// exactly what a language change needs — so this is safe to call on every app start and
+// every language switch.
 class NotificationChannelInitializer @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) {
-    fun initialize() {
+    fun initialize(language: Language) {
         // NotificationChannel/NotificationManager.createNotificationChannel don't exist
         // below API 26 — notifications on older devices have no channel concept
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O)
@@ -42,20 +46,27 @@ class NotificationChannelInitializer @Inject constructor(
             .setUsage(AudioAttributes.USAGE_NOTIFICATION)
             .build()
 
+        // The application context follows the device language; channel names are shown in
+        // system Settings, so they need the in-app language to match everything else
+        val localizedContext = context.localizedFor(language)
+        val channelDescription = localizedContext.getString(R.string.prayer_notification_channel_description)
+
         muadhhinList.forEach { muadhdhin ->
-            val locationName = context.getString(muadhdhin.locationNameRes)
+            val locationName = localizedContext.getString(muadhdhin.locationNameRes)
 
             createChannel(
                 notificationManager = notificationManager,
                 channelId = prayerNotificationChannelId(muadhdhin.id, isFajr = true),
-                channelName = context.getString(R.string.prayer_notification_channel_name_fajr, locationName),
+                channelName = localizedContext.getString(R.string.prayer_notification_channel_name_fajr, locationName),
+                channelDescription = channelDescription,
                 audioRes = muadhdhin.fajrAudioRes,
                 audioAttributes = audioAttributes
             )
             createChannel(
                 notificationManager = notificationManager,
                 channelId = prayerNotificationChannelId(muadhdhin.id, isFajr = false),
-                channelName = context.getString(R.string.prayer_notification_channel_name_other, locationName),
+                channelName = localizedContext.getString(R.string.prayer_notification_channel_name_other, locationName),
+                channelDescription = channelDescription,
                 audioRes = muadhdhin.otherAudioRes,
                 audioAttributes = audioAttributes
             )
@@ -66,6 +77,7 @@ class NotificationChannelInitializer @Inject constructor(
         notificationManager: NotificationManager,
         channelId: String,
         channelName: String,
+        channelDescription: String,
         audioRes: Int,
         audioAttributes: AudioAttributes
     ) {
@@ -74,7 +86,7 @@ class NotificationChannelInitializer @Inject constructor(
             channelName,
             NotificationManager.IMPORTANCE_HIGH
         ).apply {
-            description = context.getString(R.string.prayer_notification_channel_description)
+            description = channelDescription
             setSound(
                 Uri.parse("android.resource://${context.packageName}/$audioRes"),
                 audioAttributes

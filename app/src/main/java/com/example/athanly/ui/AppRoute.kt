@@ -13,7 +13,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.athanly.ui._navigation.routes.AppRoutes
 import com.example.athanly.ui.home.HomeLayout
 import com.example.athanly.ui.onBoarding.OnBoardingLayout
-import com.example.athanly.ui.splash.screens.splash.SplashUi
+import com.example.athanly.ui.splashScreen.screens.splash.SplashUi
 import com.example.athanly.ui.viewModel.AppViewModel
 
 // Single Compose entry point for all navigation — called by MainActivity

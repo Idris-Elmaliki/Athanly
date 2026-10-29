@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
@@ -33,6 +34,7 @@ import com.example.athanly.ui.subscreens.SkeletonBar
 import com.example.athanly.ui.subscreens.shimmerEffect
 import java.time.Duration
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 // The "Sacred Card" — next-prayer label, live countdown timer, and progress ring, all
 // centered over each other since the ring sits behind the text in the design.
@@ -48,8 +50,11 @@ fun SacredCountdownCard(
     is24HourFormat : Boolean,
     modifier: Modifier = Modifier
 ) {
-    val startsAtFormatter = remember(is24HourFormat) {
-        DateTimeFormatter.ofPattern(if (is24HourFormat) "HH:mm" else "h:mm a")
+    // The app's language (not the device's) so AM/PM matches the rest of the UI; the formatter
+    // still prints Latin digits whatever the locale
+    val appLocale = LocalConfiguration.current.locales[0]
+    val startsAtFormatter = remember(is24HourFormat, appLocale) {
+        DateTimeFormatter.ofPattern(if (is24HourFormat) "HH:mm" else "h:mm a", appLocale)
     }
 
     Box(
@@ -163,5 +168,6 @@ private fun formatCountdown(duration: Duration): String {
     val hours = totalSeconds / 3600
     val minutes = (totalSeconds % 3600) / 60
     val seconds = totalSeconds % 60
-    return "%02d:%02d:%02d".format(hours, minutes, seconds)
+    // Locale.ROOT pins Latin digits — the default locale would print Arabic-Indic ones on an Arabic device
+    return String.format(Locale.ROOT, "%02d:%02d:%02d", hours, minutes, seconds)
 }

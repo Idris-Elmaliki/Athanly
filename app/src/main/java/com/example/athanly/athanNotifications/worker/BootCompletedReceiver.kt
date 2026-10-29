@@ -1,4 +1,4 @@
-package com.example.athanly.notifications.worker
+package com.example.athanly.athanNotifications.worker
 
 import android.content.BroadcastReceiver
 import android.content.Context

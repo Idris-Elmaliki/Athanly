@@ -1,4 +1,4 @@
-package com.example.athanly.ui.splash.screens.splash.expanded
+package com.example.athanly.ui.splashScreen.screens.splash.medium
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandHorizontally
@@ -21,13 +21,14 @@ import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Constraints
 import com.example.athanly.R
 
-// Expanded (840dp+): same lockup as Compact/Medium with the largest name — plenty of width
-// here, so the text can take the biggest display style.
+// Medium (600–839dp): same lockup as Compact with a larger name — the extra width lets the
+// text grow without the pair outgrowing the screen.
 @Composable
-fun SplashUiExpanded(
+fun SplashUiMedium(
     nameVisible: Boolean,
     nameAnimationMillis: Int,
     modifier: Modifier = Modifier
@@ -66,8 +67,10 @@ fun SplashUiExpanded(
                 }
             ) {
                 Text(
-                    text = stringResource(R.string.app_name),
-                    style = MaterialTheme.typography.displayMedium,
+                    text = stringResource(R.string.app_name).uppercase(),
+                    style = MaterialTheme.typography.displaySmall.copy(
+                        fontWeight = FontWeight.Bold
+                    ),
                     color = Color.White,
                     modifier = Modifier.padding(start = dimensionResource(R.dimen.splash_icon_name_gap))
                 )

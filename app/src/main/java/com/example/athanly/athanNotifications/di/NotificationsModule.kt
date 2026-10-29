@@ -1,7 +1,7 @@
-package com.example.athanly.notifications.di
+package com.example.athanly.athanNotifications.di
 
-import com.example.athanly.notifications.worker.AlarmScheduler
-import com.example.athanly.notifications.worker.AlarmSchedulerImpl
+import com.example.athanly.athanNotifications.worker.AlarmScheduler
+import com.example.athanly.athanNotifications.worker.AlarmSchedulerImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

@@ -2,6 +2,7 @@ package com.example.athanly.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,7 +22,23 @@ class AppViewModel @Inject constructor(
     private val _hasCompletedOnboarding = MutableStateFlow<Boolean?>(null)
     val hasCompletedOnboarding: StateFlow<Boolean?> = _hasCompletedOnboarding.asStateFlow()
 
+    // English until the stored choice arrives — also the answer when none was ever stored, so
+    // MainActivity can apply it immediately without a loading state
+    private val _language = MutableStateFlow<Language>(Language.English)
+    val language: StateFlow<Language> = _language.asStateFlow()
+
     init {
+        // Separate launch + try/catch so a language failure can't block the onboarding flag
+        viewModelScope.launch {
+            try {
+                preferencesDataStore.observedLanguage().collect { storedLanguage ->
+                    _language.update { storedLanguage }
+                }
+            } catch (e: Exception) {
+                // Stays on English rather than leaving the UI without a language
+            }
+        }
+
         // No Dispatchers.IO override here — combine()/collect() on SettingsViewModel and
         // OnBoardingViewModel follow the same pattern. DataStore's own Flow already does
         // its file I/O off the main thread internally, so this just needs viewModelScope's

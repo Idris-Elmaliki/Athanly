@@ -1,7 +1,6 @@
 package com.example.athanly.ui.home.viewModel
 
 import android.content.Context
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
@@ -15,8 +14,8 @@ import com.example.athanly.athanTime.domain.RefreshPrayerScheduleUseCase
 import com.example.athanly.athanTime.domain.timeFor
 import com.example.athanly.location.domain.modelData.LocationUiState
 import com.example.athanly.location.domain.repository.LocationProvider
-import com.example.athanly.notifications.worker.PRAYER_SYNC_WORK_NAME
-import com.example.athanly.notifications.worker.PrayerScheduleSyncWorker
+import com.example.athanly.athanNotifications.worker.PRAYER_SYNC_WORK_NAME
+import com.example.athanly.athanNotifications.worker.PrayerScheduleSyncWorker
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -28,7 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Clock

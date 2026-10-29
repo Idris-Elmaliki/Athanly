@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,10 +45,12 @@ fun PrayerScheduleList(
     modifier: Modifier = Modifier
 ) {
     // Settings' time format toggle drives this — "HH:mm" (24hr) vs "h:mm a" (12hr, e.g. "4:30 PM").
-    // remember(is24HourFormat) avoids rebuilding the formatter on every recomposition, only
-    // when the toggle itself actually changes.
-    val rowTimeFormatter = remember(is24HourFormat) {
-        DateTimeFormatter.ofPattern(if (is24HourFormat) "HH:mm" else "h:mm a")
+    // remember(is24HourFormat, appLocale) avoids rebuilding the formatter on every recomposition,
+    // only when the toggle or the app language actually changes. The app's locale (not the
+    // device's) keeps AM/PM in the chosen language; digits stay Latin whatever the locale.
+    val appLocale = LocalConfiguration.current.locales[0]
+    val rowTimeFormatter = remember(is24HourFormat, appLocale) {
+        DateTimeFormatter.ofPattern(if (is24HourFormat) "HH:mm" else "h:mm a", appLocale)
     }
 
     Column(
