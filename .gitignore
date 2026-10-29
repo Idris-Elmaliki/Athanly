@@ -13,3 +13,13 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Release artifacts — built output, large, and re-creatable from source
+*.aab
+*.apk
+/app/release/
+
+# Signing keys must never be committed
+*.jks
+*.keystore
+keystore.properties

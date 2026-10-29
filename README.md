@@ -71,4 +71,4 @@ The app needs location permission for prayer times and the Qibla, and notificati
 
 ## Development
 
-The app is built one file at a time, test-first for ViewModels, use cases and repositories. `CLAUDE.md` describes the architecture and conventions in detail, and `memory.md` records project decisions.
+The app is built one file at a time, test-first for ViewModels, use cases and repositories. `CLAUDE.md` describes the architecture and conventions in detail, and `Memory/Memory.md` records project decisions.
