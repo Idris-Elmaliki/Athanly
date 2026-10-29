@@ -14,10 +14,14 @@ android {
     compileSdk = 37
 
     defaultConfig {
+        ndk {
+            debugSymbolLevel = "SYMBOL_TABLE"
+        }
+
         applicationId = "com.idris.athanly"
         minSdk = 28
         targetSdk = 37
-        versionCode = 1
+        versionCode = 2
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -25,7 +29,8 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"

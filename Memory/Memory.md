@@ -1,9 +1,8 @@
 # Athanly — Everything Claude Has Memorized
 
-Compiled from the persistent memory store at
-`/Users/idriselm/.claude/projects/-Users-idriselm-AndroidStudioProjects-Athanly/memory/`.
-This file is a snapshot for review — the live memory files are the source of truth and
-will keep evolving after this point.
+This is THE project memory file — it travels with the repo, so new memories are written
+here (in the same turn they're saved to Claude's private per-machine store at
+`/Users/idriselm/.claude/projects/-Users-idriselm-AndroidStudioProjects-Athanly/memory/`).
 
 ---
 
@@ -104,6 +103,22 @@ Confirmed while building Qibla's blocker differentiation: the user removed a lef
 from all three screen size classes for consistency — preferring an unhandled case show
 nothing over a blocker whose message might not match the actual problem.
 
+**No Job tracking for snapshots** (2026-10-25) — for one-shot/static data (Qibla
+location, distance, bearing — the user is stationary), use a plain
+`viewModelScope.launch { ... _state.update { } }`. No tracked `Job?` fields,
+`cancel()`/relaunch, or Flow subscriptions. **Why:** user rejected a `refreshJob` in the
+Qibla `refresh()` rewrite; the old distanceJob/bearingJob assumed a changing location.
+**How to apply:** check whether the data can actually change before adding Job tracking
+or reactive streams.
+
+**Don't over-engineer presentation** (2026-10-28) — when localizing, the user said "don't
+worry about any alteration of data, as long as the message is the same then that's what
+matters", and rejected a `DistanceCard.kt` edit that pinned `Locale.ROOT` for digits and
+grouping ("WHAT is this for??"). **How to apply:** limit localization changes to text
+language, RTL correctness, and things that change the message (notification text, AM/PM
+language). Skip digit/separator pinning and similar formatting extras; ask first if one
+seems important.
+
 ---
 
 ## Project context (state, decisions, history)
@@ -139,11 +154,31 @@ fixed at creation time on API 26+, this required one Fajr channel + one shared c
 reading the live-selected Muadhdhin from DataStore at fire-time to pick the right
 channel.
 
-**Arabic localization is the last step** — deliberately not started. No
-`res/values-ar/` exists yet and nothing calls `AppCompatDelegate.setApplicationLocales`,
-even though the Settings language toggle already exists (currently decorative). Do not
-touch this until the user explicitly says all UI text is finalized — this is meant to
-be the very last development step before the Play Store upload.
+**Arabic localization done, applied without AppCompat** (2026-10-28) — replaces the old
+"Arabic is the last step" note. `values-ar/strings.xml` is MSA/Fusha (Claude-written,
+user-reviewed). The stored `Language` (default English, not the device language) is the
+single source of truth: `Context.localizedFor(language)` in
+`appData/data/LocalizedContext.kt`, provided in `MainActivity` via `LocalResources` /
+`LocalConfiguration` / `LocalLayoutDirection` (not `LocalContext`), fed by
+`AppViewModel.language`. The notification receiver and
+`NotificationChannelInitializer.initialize(language)` (collected in `AthanlyApplication`)
+use the same helper. **Why:** the user rejected `AppCompatActivity` /
+`setApplicationLocales` / `localeConfig` (AppCompat theme parent would put the splash at
+risk; no system per-app language wanted). **How to apply:** don't reintroduce AppCompat
+locale APIs; format times with the app locale from `LocalConfiguration`, not
+`Locale.getDefault()`; the Qibla compass stays pinned LTR (N/E/S/W are physical
+directions). See also "Don't over-engineer presentation" above.
+
+**Athan through DND/silent is a planned post-release update, not v1** (2026-10-28) — the
+user wants it as the first update shipped to Google Play, to practice the update process.
+**Why:** the channels in `NotificationChannelInitializer.kt` use `USAGE_NOTIFICATION`,
+which DND and ringer silent/vibrate mute (AlarmManager itself is unaffected). **How to
+apply:** don't implement before release. Plan: switch channel audio to `USAGE_ALARM`;
+since a channel's sound is fixed at creation, give channels new versioned IDs (e.g.
+`..._v2` in `prayerNotificationChannelId`) and `deleteNotificationChannel` the old ones;
+alarm stream has its own volume (Settings "Volume Control" should mean that); optionally
+`ACCESS_NOTIFICATION_POLICY` + `setBypassDnd(true)` and a Settings toggle for it. Retest
+on a real device in silent mode and DND, and bump `versionCode`/`versionName`.
 
 **Qibla location differentiation** — done (2026-09-22). The Qibla blocker used to fire
 off any generic `QiblaUiState.error`, which conflated permission-denied, GPS-fix
