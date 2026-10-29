@@ -55,13 +55,13 @@
         <!-- Not exported — only AlarmManager (same app, via the PendingIntent AlarmSchedulerImpl
              built) ever needs to deliver this broadcast -->
         <receiver
-            android:name=".notifications.worker.PrayerNotificationReceiver"
+            android:name=".athanNotifications.worker.PrayerNotificationReceiver"
             android:exported="false" />
 
         <!-- Exported=true is required for the system to deliver an implicit BOOT_COMPLETED
              broadcast; the intent-filter restricts it to only that one action -->
         <receiver
-            android:name=".notifications.worker.BootCompletedReceiver"
+            android:name=".athanNotifications.worker.BootCompletedReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />

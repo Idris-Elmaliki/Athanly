@@ -11,14 +11,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.LayoutDirection
 import com.example.athanly.R
 
 // needleRotationDegrees and kaabaMarkerRotationDegrees are deliberately independent —
@@ -28,6 +31,23 @@ import com.example.athanly.R
 // changes when a fresh calculation happens, never in response to the phone turning.
 @Composable
 fun QiblaCompass(
+    needleRotationDegrees: Float,
+    kaabaMarkerDegrees: Float?,
+    modifier: Modifier = Modifier
+) {
+    // N/E/S/W are physical directions, not reading order — in RTL, CenterStart/CenterEnd would
+    // swap E and W, so the compass is pinned to LTR whatever the app language is
+    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Ltr) {
+        QiblaCompassContent(
+            needleRotationDegrees = needleRotationDegrees,
+            kaabaMarkerDegrees = kaabaMarkerDegrees,
+            modifier = modifier
+        )
+    }
+}
+
+@Composable
+private fun QiblaCompassContent(
     needleRotationDegrees: Float,
     kaabaMarkerDegrees: Float?,
     modifier: Modifier = Modifier

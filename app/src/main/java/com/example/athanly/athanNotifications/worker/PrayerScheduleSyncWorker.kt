@@ -1,4 +1,4 @@
-package com.example.athanly.notifications.worker
+package com.example.athanly.athanNotifications.worker
 
 import android.content.Context
 import androidx.hilt.work.HiltWorker

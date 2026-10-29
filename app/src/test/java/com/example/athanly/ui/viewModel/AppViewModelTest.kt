@@ -1,5 +1,6 @@
 package com.example.athanly.ui.viewModel
 
+import com.example.athanly.appData.domain.modelData.Language
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import io.mockk.every
 import io.mockk.mockk
@@ -67,5 +68,25 @@ class AppViewModelTest {
         advanceUntilIdle()
 
         assertEquals(false, viewModel.hasCompletedOnboarding.value)
+    }
+
+    @Test
+    fun `language resolves to Arabic once the DataStore says Arabic`() = runTest {
+        // mockk<T> { every { call() } returns value } builds a fake DataStore whose Flows
+        // emit exactly what we script — no real file or Android needed. Both Flows are
+        // stubbed because the ViewModel's init{} subscribes to each of them.
+        val preferencesDataStore = mockk<AppDataPreferencesDataStore> {
+            every { observedHasCompletedOnboarding() } returns flowOf(true)
+            every { observedLanguage() } returns flowOf(Language.Arabic)
+        }
+
+        val viewModel = AppViewModel(preferencesDataStore = preferencesDataStore)
+        // StandardTestDispatcher queues init{}'s coroutine; advanceUntilIdle() runs it, so
+        // the Arabic emission has reached the StateFlow by the time we read .value
+        advanceUntilIdle()
+
+        // Red now: AppViewModel has no `language` property yet, so this doesn't compile.
+        // Making it compile and pass is the next step.
+        assertEquals(Language.Arabic, viewModel.language.value)
     }
 }

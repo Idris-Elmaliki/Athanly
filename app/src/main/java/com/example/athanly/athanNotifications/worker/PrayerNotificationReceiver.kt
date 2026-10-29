@@ -1,4 +1,4 @@
-package com.example.athanly.notifications.worker
+package com.example.athanly.athanNotifications.worker
 
 import android.Manifest
 import android.app.PendingIntent
@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.example.athanly.MainActivity
 import com.example.athanly.R
+import com.example.athanly.appData.data.localizedFor
 import com.example.athanly.appData.domain.modelData.enums.MuadhdhinId
 import com.example.athanly.appDataPreference.data.AppDataPreferencesDataStore
 import com.example.athanly.athanTime.local.domain.modelData.enums.Prayer
@@ -50,7 +51,10 @@ class PrayerNotificationReceiver : BroadcastReceiver() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val muadhdhin = appDataPreferencesDataStore.observedSelectedMuadhdhin().first()
-                postNotification(context, prayer, muadhdhin.id)
+                // A receiver's context follows the device language, so wrap it with the in-app
+                // choice or the notification text wouldn't match the language the user picked
+                val language = appDataPreferencesDataStore.observedLanguage().first()
+                postNotification(context.localizedFor(language), prayer, muadhdhin.id)
             } finally {
                 pendingResult.finish()
             }

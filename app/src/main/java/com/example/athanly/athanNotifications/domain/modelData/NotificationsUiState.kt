@@ -1,4 +1,4 @@
-package com.example.athanly.notifications.domain.modelData
+package com.example.athanly.athanNotifications.domain.modelData
 
 // Holds the result of the runtime notification permission request on the final onboarding step
 data class NotificationsUiState(

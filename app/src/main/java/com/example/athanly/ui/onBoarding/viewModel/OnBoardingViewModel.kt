@@ -12,14 +12,13 @@ import com.example.athanly.athanTime.local.domain.modelData.City
 import com.example.athanly.athanTime.local.domain.repository.AthanTimeRepository
 import com.example.athanly.location.domain.modelData.LocationUiState
 import com.example.athanly.location.domain.repository.LocationProvider
-import com.example.athanly.notifications.domain.modelData.NotificationsUiState
-import com.example.athanly.notifications.worker.PRAYER_SYNC_WORK_NAME
-import com.example.athanly.notifications.worker.PrayerScheduleSyncWorker
+import com.example.athanly.athanNotifications.domain.modelData.NotificationsUiState
+import com.example.athanly.athanNotifications.worker.PRAYER_SYNC_WORK_NAME
+import com.example.athanly.athanNotifications.worker.PrayerScheduleSyncWorker
 import android.content.Context
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.example.athanly.location.domain.modelData.presetCities
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers

@@ -1,0 +1,155 @@
+<resources>
+    <!-- Arabic (MSA) translations — keys mirror values/strings.xml one-to-one -->
+    <string name="app_name">Athanly</string>
+
+    <!-- Onboarding -->
+    <string name="onboarding_continue">متابعة</string>
+
+    <!-- Welcome screen -->
+    <string name="welcome_title">أهلاً بك</string>
+    <string name="welcome_title_arabic">أهلاً بك</string>
+    <string name="welcome_subtitle">اختر لغتك المفضلة لتبدأ رحلتك نحو السكينة.</string>
+    <!-- Language names stay in their own script so each is readable whatever the current language -->
+    <string name="welcome_language_english">English</string>
+    <string name="welcome_language_arabic">العربية</string>
+
+    <!-- Athan selection screen -->
+    <string name="athan_selection_title">اختر المؤذّن</string>
+    <string name="athan_selection_subtitle">اختر الصوت الذي يمنحك السكينة. يمكنك الاستماع إليه وتغييره لاحقاً من الإعدادات.</string>
+
+    <!-- Prayer settings screen -->
+    <string name="prayer_settings_title">إعدادات الصلاة</string>
+    <string name="prayer_settings_subtitle">خصّص طرق الحساب لضمان دقة المواقيت في منطقتك.</string>
+    <string name="hanafi_card_title">المذهب الحنفي</string>
+    <string name="hanafi_card_description">يعدّل حساب وقت صلاة العصر وفق طريقة المذهب الحنفي.</string>
+
+    <!-- Muadhdhin location names -->
+    <string name="muadhdhin_makkah">مكة المكرمة</string>
+    <string name="muadhdhin_madinah">المدينة المنورة</string>
+    <string name="muadhdhin_jerusalem">القدس</string>
+    <string name="muadhdhin_istanbul">إسطنبول</string>
+    <string name="muadhdhin_cairo">القاهرة</string>
+
+    <!-- Muadhdhin sheikh names -->
+    <string name="sheikh_farooq_hadhrawi">الشيخ فاروق حضراوي</string>
+    <string name="muhammad_marwan_qassas">الشيخ محمد مروان قصاص</string>
+    <string name="sheikh_firas_qazzaz">الشيخ فراس قزاز</string>
+    <string name="müezzin_ibrahim">الإمام المؤذّن إبراهيم</string>
+    <string name="imam_muhammad_fawzi_al_barbari">الإمام محمد فوزي البربري</string>
+
+    <!-- Location screen -->
+    <string name="location_title">موقعك</string>
+    <string name="location_subtitle">نحتاج إلى موقعك لحساب مواقيت الصلاة بدقة.</string>
+    <string name="location_choose_city_heading">أو اختر مدينتك</string>
+    <string name="location_card_title">شارك موقعك</string>
+    <string name="location_card_description">نستخدمه لحساب مواقيت الصلاة الدقيقة لك.</string>
+    <string name="location_card_button">مشاركة الموقع</string>
+    <string name="location_card_saved">تم تحديد الموقع</string>
+
+    <!-- ChangeCity screen (Home top bar -> change city) -->
+    <string name="change_city_current_location_label">استخدام الموقع الحالي</string>
+
+    <!-- Notifications screen -->
+    <string name="notifications_heading">لا تفوّت أي صلاة</string>
+    <string name="notifications_body">فعّل الإشعارات لتصلك أذانات جميلة وتذكيرات بكل وقت صلاة على مدار اليوم.</string>
+    <string name="notifications_enable_button">تفعيل الإشعارات</string>
+    <string name="notifications_maybe_later">لاحقاً</string>
+    <string name="notifications_illustration_content_description">رسم توضيحي لمسجد</string>
+    <string name="notifications_badge_content_description">جرس الإشعارات</string>
+
+    <!-- Notification channels shown in system Settings. %1$s is the Muadhdhin's location -->
+    <string name="prayer_notification_channel_name_fajr">الفجر – %1$s</string>
+    <string name="prayer_notification_channel_name_other">الصلوات – %1$s</string>
+    <string name="prayer_notification_channel_description">تنبيهات الأذان لكل صلاة من الصلوات الخمس اليومية</string>
+
+    <!-- %s is the prayer's name, e.g. "حان وقت صلاة الفجر" -->
+    <string name="prayer_notification_title">حان وقت صلاة %s</string>
+    <string name="prayer_notification_body">اضغط لعرض جدول الصلاة لهذا اليوم</string>
+
+    <!-- Greeting screen -->
+    <string name="greeting_salam">السلام عليكم</string>
+    <string name="greeting_subtitle">رحلتك تبدأ من هنا.</string>
+
+    <!-- Bottom navigation bar -->
+    <string name="bottom_nav_home">الرئيسية</string>
+    <string name="bottom_nav_qibla">القبلة</string>
+    <string name="bottom_nav_settings">الإعدادات</string>
+
+    <!-- Home top bar -->
+    <string name="home_menu_button_description">تغيير المدينة</string>
+
+    <!-- Qibla screen: distance unit labels -->
+    <string name="qibla_unit_km">كم</string>
+    <string name="qibla_unit_mi">ميل</string>
+
+    <!-- Qibla screen: header -->
+    <string name="qibla_header_title">القبلة</string>
+    <string name="qibla_header_subtitle">قم بمعايرة جهازك بتحريكه على شكل الرقم 8.</string>
+
+    <!-- Qibla compass -->
+    <string name="qibla_compass_north">ش</string>
+    <string name="qibla_compass_east">ق</string>
+    <string name="qibla_compass_south">ج</string>
+    <string name="qibla_compass_west">غ</string>
+    <string name="qibla_compass_kaaba_marker_description">اتجاه الكعبة</string>
+
+    <!-- Qibla bearing text: 8-point cardinal abbreviations -->
+    <string name="qibla_cardinal_n">ش</string>
+    <string name="qibla_cardinal_ne">ش ق</string>
+    <string name="qibla_cardinal_e">ق</string>
+    <string name="qibla_cardinal_se">ج ق</string>
+    <string name="qibla_cardinal_s">ج</string>
+    <string name="qibla_cardinal_sw">ج غ</string>
+    <string name="qibla_cardinal_w">غ</string>
+    <string name="qibla_cardinal_nw">ش غ</string>
+
+    <!-- Qibla distance card -->
+    <string name="qibla_distance_card_label">المسافة إلى مكة</string>
+    <string name="qibla_distance_card_bearing">%1$d° %2$s</string>
+
+    <!-- Qibla location-off blocker -->
+    <string name="qibla_location_off_message">خدمة الموقع متوقفة. فعّلها لتحديد اتجاه القبلة.</string>
+    <string name="qibla_location_off_button">تفعيل الموقع</string>
+
+    <!-- Permission denied is a different fix from location being off (app settings vs. device toggle) -->
+    <string name="qibla_permission_denied_message">نحتاج إلى إذن الموقع لتحديد اتجاه القبلة. اسمح به من إعدادات التطبيق.</string>
+    <string name="qibla_permission_denied_button">فتح الإعدادات</string>
+
+    <!-- Qibla offline blocker -->
+    <string name="qibla_offline_message">أنت غير متصل بالإنترنت. يتطلب تحديد اتجاه القبلة اتصالاً بالإنترنت.</string>
+
+    <!-- Prayer names -->
+    <string name="prayer_fajr">الفجر</string>
+    <string name="prayer_sunrise">الشروق</string>
+    <string name="prayer_dhuhr">الظهر</string>
+    <string name="prayer_asr">العصر</string>
+    <string name="prayer_maghrib">المغرب</string>
+    <string name="prayer_isha">العشاء</string>
+
+    <!-- Sacred countdown card -->
+    <string name="home_next_prayer_label">الصلاة القادمة: %1$s</string>
+    <string name="home_starts_at_label">تبدأ عند %1$s</string>
+
+    <!-- Settings screen -->
+    <string name="settings_title">الإعدادات</string>
+
+    <!-- Settings screen: section headers -->
+    <string name="settings_section_general">عام</string>
+    <string name="settings_section_prayer_settings">إعدادات الصلاة</string>
+    <string name="settings_section_athan_alerts">الأذان والتنبيهات</string>
+
+    <!-- Settings screen: General section -->
+    <string name="settings_language_title">اللغة</string>
+    <string name="settings_time_format_title">تنسيق الوقت</string>
+    <string name="settings_time_format_subtitle">نظام 24 ساعة</string>
+
+    <!-- Settings screen: Prayer Settings section -->
+    <string name="settings_asr_calculation_title">حساب العصر (حنفي)</string>
+    <string name="settings_asr_calculation_subtitle">وقت متأخر</string>
+
+    <!-- Settings screen: Athan and Alerts section -->
+    <string name="settings_selected_muadhdhin_title">المؤذّن المختار</string>
+    <string name="settings_volume_control_title">التحكم بالصوت</string>
+    <string name="settings_notification_settings_title">إعدادات الإشعارات</string>
+    <string name="settings_notification_settings_subtitle">إدارة التنبيهات والتذكيرات</string>
+</resources>
