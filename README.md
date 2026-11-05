@@ -2,6 +2,22 @@
 
 An Islamic prayer times app for Android. It gives accurate Athan times for your city, plays the call to prayer from a Muadhdhin of your choice, and points you to the Qibla.
 
+## Screenshots
+
+<p> 
+<img src="screenshots/Athanly-Home-Page.png" width="1080" alt="Home screen with next-prayer countdown"/>
+  &nbsp;&nbsp;
+  <img src="screenshots/Athanly-Qibla-Page.png" width="1080" alt="Qibla compass and distance to Makkah"/>
+  &nbsp;&nbsp;
+  <img src="screenshots/Athanly-Muadhin-Screen.png" width="1080" alt="Choose your Muadhin"/>
+</p>
+<p>
+  <img src="screenshots/Athanly-Arabic.png" width="1080" alt="Onboarding in Arabic"/>
+  &nbsp;&nbsp;
+  <img src="screenshots/Athanly-Loading-Screen.png" width="1080" alt="Loading screen"/>
+</p>
+
+
 ## Features
 
 - **Athan times** for the five daily prayers (Fajr, Dhuhr, Asr, Maghrib, Isha) plus sunrise, based on your location or a city you choose, with a live countdown to the next prayer.
