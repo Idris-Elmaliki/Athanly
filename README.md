@@ -5,16 +5,16 @@ An Islamic prayer times app for Android. It gives accurate Athan times for your 
 ## Screenshots
 
 <p> 
-<img src="screenshots/Athanly-Home-Page.png" width="1080" alt="Home screen with next-prayer countdown"/>
+<img src="screenshots/Athanly-Home-Page.png" width="320" alt="Home screen with next-prayer countdown"/>
   &nbsp;&nbsp;
-  <img src="screenshots/Athanly-Qibla-Page.png" width="1080" alt="Qibla compass and distance to Makkah"/>
+  <img src="screenshots/Athanly-Qibla-Page.png" width="320" alt="Qibla compass and distance to Makkah"/>
   &nbsp;&nbsp;
-  <img src="screenshots/Athanly-Muadhin-Screen.png" width="1080" alt="Choose your Muadhin"/>
+  <img src="screenshots/Athanly-Muadhin-Screen.png" width="320" alt="Choose your Muadhin"/>
 </p>
 <p>
-  <img src="screenshots/Athanly-Arabic.png" width="1080" alt="Onboarding in Arabic"/>
+  <img src="screenshots/Athanly-Arabic.png" width="320" alt="Onboarding in Arabic"/>
   &nbsp;&nbsp;
-  <img src="screenshots/Athanly-Loading-Screen.png" width="1080" alt="Loading screen"/>
+  <img src="screenshots/Athanly-Loading-Screen.png" width="320" alt="Loading screen"/>
 </p>
 
 
